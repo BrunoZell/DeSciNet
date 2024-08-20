@@ -10,6 +10,8 @@ type IEvaluationContext =
     abstract member t : DateTime
     /// Get the last measurement of an exogenous variable
     abstract member latest : string -> obj
+    /// Get the timestamp of the last measurement of an exogenous variable
+    abstract member latestTime : string -> DateTime
     /// Get the current value of an endogenous variable
     abstract member value : string -> obj
 
@@ -35,6 +37,13 @@ type EvaluationContext(t: DateTime, i: I, j: J) =
                 // Logic to get the latest measurement
                 match exoVar.Measurements with
                 | (_, latestValue) :: _ -> latestValue
+                | [] -> failwithf "No measurements available for exogenous variable '%s'" name
+            | None -> failwithf "Exogenous variable '%s' not found" name
+        member _.latestTime name =
+            match j.TryFind(name) with
+            | Some exoVar ->
+                match exoVar.Measurements with
+                | (latestTime, _) :: _ -> latestTime
                 | [] -> failwithf "No measurements available for exogenous variable '%s'" name
             | None -> failwithf "Exogenous variable '%s' not found" name
         member self.value name = 
