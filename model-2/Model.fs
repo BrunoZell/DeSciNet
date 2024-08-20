@@ -50,10 +50,24 @@ type Plane = {
 
 type World = {
     Humans: Map<int, Human>
-    Airports: Map<string, Airport>
+    Airports: Airport list
     Planes: Map<int, Plane>
     Timestamp: System.DateTime
     History: World list
+}
+
+let existingAirports = [
+    { Name = "Amsterdam Airport"; Location = { Latitude = Latitude 52.3105; Longitude = Longitude 4.7683 } }
+    { Name = "London Heathrow"; Location = { Latitude = Latitude 51.4700; Longitude = Longitude -0.4543 } }
+    { Name = "Munich Airport"; Location = { Latitude = Latitude 48.3538; Longitude 11.7861 } }
+]
+
+let emptyWorld = {
+    Humans = Map.empty
+    Airports = existingAirports
+    Planes = Map.empty
+    Timestamp = DateTime.UtcNow
+    History = []
 }
 
 ///// OBSERVATIONS /////
