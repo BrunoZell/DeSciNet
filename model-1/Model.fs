@@ -29,6 +29,17 @@ type World = {
     History: World list
 }
 
+///// OBSERVATIONS /////
+
+let integrateObservation (obs: GoogleLocationObservation) : Observation<Position>
+    let position = {
+        Coordinate = {
+            Latitude = Latitude obs.Latitude
+            Longitude = Longitude obs.Longitude
+        }
+    }
+    { Variable = position; Timestamp = obs.Timestamp }
+
 ///// INTERVENTIONS /////
 
 type Walk = {

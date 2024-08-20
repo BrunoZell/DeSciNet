@@ -56,7 +56,20 @@ type World = {
     History: World list
 }
 
-// Utility: Calculate distance between two absolute positions (Haversine formula)
+///// OBSERVATIONS /////
+
+let integrateObservation (obs: GoogleLocationObservation) : Observation<Position>
+    let position = {
+        Coordinate = {
+            Latitude = Latitude obs.Latitude
+            Longitude = Longitude obs.Longitude
+        }
+    }
+    { Variable = position; Timestamp = obs.Timestamp }
+
+///// UTILITY /////
+
+// Calculate distance between two absolute positions (Haversine formula)
 let distance (pos1: AbsolutePosition) (pos2: AbsolutePosition) : float =
     let r = 6371e3  // Earth's radius in meters
     let toRadians deg = deg * Math.PI / 180.0
@@ -67,6 +80,8 @@ let distance (pos1: AbsolutePosition) (pos2: AbsolutePosition) : float =
             Math.Sin(dLon / 2.0) ** 2.0
     let c = 2.0 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1.0 - a))
     r * c
+
+///// INTERVENTIONS /////
 
 // Walking intervention: Moves human to a new position within a short distance
 let walkIntervention (destination: AbsolutePosition) : Intervention<Human> = {
