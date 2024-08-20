@@ -34,22 +34,13 @@ let j : Map<string, ExogenousVariable> =
 type ObservationTypes =
     | GoogleTimeline of Google.Timeline.GoogleLocationObservation
 
-///// SCM INTEGRATION /////
-
-let initializeHumanMovementModel (initialObservation: GoogleLocationObservation) =
-    let model = CausalModel.create()
-    let initialPosition = (Latitude initialObservation.Latitude, Longitude initialObservation.Longitude)
-    let initialEquation () = initialPosition
-    let model = CausalModel.addVariable model "H" (Some initialPosition) (Some initialEquation)
-    model
-
-let integrateHumanObservation (model: CausalModel<Position>) (obs: GoogleLocationObservation) =
-    let measurement = integrateObservation obs
-    CausalModel.integrateMeasurement model "H" measurement.Value measurement.Timestamp
-
-let updateHumanModel (model: CausalModel<Position>, elapsed: TimeSpan) =
-    // For simplicity, assume we just re-evaluate the current equations
-    model
+let integrateObservation (j: J) (obs: ObservationTypes) =
+    match obs with
+    | GoogleTimeline googleObs ->
+        let updatedJ = j
+                       |> addMeasurement "M-longitude" googleObs.Timestamp googleObs.Longitude
+                       |> addMeasurement "M-latitude" googleObs.Timestamp googleObs.Latitude
+        updatedJ
 
 ///// PROBABILITY MODEL /////
 
