@@ -1,11 +1,8 @@
 ﻿open System
 open System.IO
 open System.Text.Json
-open HumanMovementModel
-
-// Convert HumanObservation to the general-purpose Observation<Position>
-let toGeneralObservation (obs: HumanObservation) : Observation<Position> =
-    { Variable = obs.Position; Timestamp = obs.Timestamp }
+open HumanMovementModel1
+open ICausalModel
 
 let simulateTrajectory (world: WorldState) (strategy: Strategy<Position>) (start: DateTime) (end: DateTime) : Timeline<Position> =
     let rec loop currentWorld currentTime timeline =
@@ -67,9 +64,24 @@ let main argv =
         let observationFile = argv.[0]
         let observations = Google.Timeline.loadObservations observationFile
         
-        let strategy = WalkStrategy() :> Strategy<Position>
-        let initialWorld = { PositionVars = Map.empty; HumidityVars = Map.empty }
+        let model = HumanMovementModel() :> ICausalModel<GoogleLocationObservation, Walk, Position>
+        let causalModel = model.Initialize()
+        let initialWorld = { Humans = Map.empty.Add(1, { Position = (Latitude 0.0, Longitude 0.0) }) }
 
-        let surprisal = calculateSurprisal observations strategy initialWorld
-        printfn "Total surprisal: %f" surprisal
+        // Integrate an observation
+        let observation = { Latitude = 1.0; Longitude = 1.0; Timestamp = DateTime.Now }
+        let causalModel = model.IntegrateMeasurement(causalModel, observation)
+
+        // Apply a walk intervention
+        let walk = simpleWalkStrategy initialWorld
+        let causalModel = model.ApplyIntervention(causalModel, walk)
+
+        // Update the model
+        let elapsed = TimeSpan.FromSeconds(1.0)
+        let causalModel = model.Update(causalModel, elapsed)
+
+        // Compute the outcome
+        let outcome = CausalModel.computeOutcome causalModel ["Human1_Position"] DateTime.Now
+        printfn "Outcome: %A" outcome
+
         0
