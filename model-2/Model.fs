@@ -32,7 +32,6 @@ type HumanPosition =
               Altitude = match plane.Position.Altitude, relPos.Altitude with | Altitude alt, Altitude dAlt -> Altitude (alt + dAlt) }
 
 type Human = {
-    Id: int
     Position: HumanPosition
 }
 
@@ -42,7 +41,6 @@ type Airport = {
 }
 
 type Plane = {
-    Id: int
     Position: Position
 }
 

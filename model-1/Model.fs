@@ -9,7 +9,6 @@ type Longitude = Longitude of float
 type Position = Latitude * Longitude
 
 type Human = {
-    Id: int
     Position: Position
 }
 
