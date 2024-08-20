@@ -1,5 +1,8 @@
 module Google.Timeline
 
+open System
+open System.Text.Json
+
 type GoogleLocationObservation = {
     Latitude: float
     Longitude: float
