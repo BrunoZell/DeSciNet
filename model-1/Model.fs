@@ -25,8 +25,6 @@ type Human = {
 
 type World = {
     Humans: Map<int, Human>
-    Timestamp: System.DateTime
-    History: World list
 }
 
 ///// OBSERVATIONS /////
@@ -67,3 +65,34 @@ let walkIntervention = {
     Name = "Walk"
     Apply = applyWalk
 }
+
+///// STRATEGIES /////
+
+let simpleWalkStrategy (model: CausalModel<World>) : Intervention<World> =
+    {
+        Name = "Simple Walk"
+        Apply = fun model ->
+            let dx = Random().NextDouble() * 2.0 - 1.0
+            let dy = Random().NextDouble() * 2.0 - 1.0
+            let updatedVariables = model.Variables |> List.map (fun variable ->
+                if variable.Name = "Position" then
+                    let (x, y) = variable.Value
+                    { variable with Value = (x + dx, y + dy) }
+                else
+                    variable)
+            { model with Variables = updatedVariables }
+    }
+
+///// MODEL /////
+
+let worldToCausalModel (world: World) : CausalModel<World> =
+    let variables = 
+        world.Humans
+        |> Map.toList
+        |> List.map (fun (id, human) -> 
+            { Name = sprintf "Human_%d_Position" id; Value = human.Position })
+    {
+        Variables = variables
+        Equations = []
+        Interventions = [walkIntervention]
+    }
