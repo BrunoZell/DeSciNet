@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="SCM.fs" />
     <Compile Include="JSON.fs" />
   </ItemGroup>
 
