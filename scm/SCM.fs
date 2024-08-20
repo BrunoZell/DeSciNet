@@ -1,7 +1,6 @@
-module SCM3
+module SCM
 
 open System
-open System.Collections.Generic
 
 type IVariable =
     abstract member Value : obj
