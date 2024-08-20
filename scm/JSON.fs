@@ -16,4 +16,4 @@ type SCM = {
 
 type IContext =
     abstract member t: System.DateTime
-    abstract member latest: (string * System.DateTime) -> object
+    abstract member latest: (string * System.DateTime) -> obj

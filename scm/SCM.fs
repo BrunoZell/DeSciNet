@@ -24,10 +24,10 @@ type ExogenousVariable = {
     Measurements: (DateTime * obj) list // sorted by timestamp, latest first at [0]
 }
 
-let i : Map<string, EndogenousVariable> = Map.empty
-let j : Map<string, ExogenousVariable> = Map.empty
+type I = Map<string, EndogenousVariable>
+type J = Map<string, ExogenousVariable>
 
-type EvaluationContext(t: DateTime, i: Map<string, EndogenousVariable>, j: Map<string, ExogenousVariable>) =
+type EvaluationContext(t: DateTime, i: I, j: J) =
     interface IEvaluationContext with
         member _.t = t
         member _.latest name = 
@@ -38,11 +38,11 @@ type EvaluationContext(t: DateTime, i: Map<string, EndogenousVariable>, j: Map<s
                 | (_, latestValue) :: _ -> latestValue
                 | [] -> failwithf "No measurements available for exogenous variable '%s'" name
             | None -> failwithf "Exogenous variable '%s' not found" name
-        member _.value name = 
+        member self.value name = 
             match i.TryFind(name) with
             | Some endoVar -> 
                 // Logic to get the current value using the equation
-                endoVar.Equation (this :> IEvaluationContext)
+                endoVar.Equation (self :> IEvaluationContext)
             | None -> failwithf "Endogenous variable '%s' not found" name
 
 let addMeasurement (variableName: string) (timestamp: DateTime) (value: obj) (j: Map<string, ExogenousVariable>) =
