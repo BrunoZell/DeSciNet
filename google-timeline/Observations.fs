@@ -4,9 +4,9 @@ open System
 open System.Text.Json
 
 type GoogleLocationObservation = {
-    Latitude: float
-    Longitude: float
-    Timestamp: int64
+    latitude: float
+    longitude: float
+    timestamp: int64
 }
 
 // Load observations from JSON file

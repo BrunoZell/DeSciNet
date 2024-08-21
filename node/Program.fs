@@ -11,7 +11,7 @@ let main argv =
     else
         // Load and sort observations from the provided file by timestamp (earliest first)
         let observations = Google.Timeline.loadObservations argv.[0]
-                        |> Seq.sortBy (fun obs -> obs.Timestamp)
+                        |> Seq.sortBy (fun obs -> obs.timestamp)
         
         // Initialize the model variables i and j
         let i = HumanMovementModel.i
@@ -47,13 +47,13 @@ let main argv =
             observations
             |> Seq.fold (fun (j, totalSurprise) observation ->
                 // Sample and cast the model's prediction for the variable "H-latitude" at the observation's timestamp
-                let nextObservationTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(observation.Timestamp).DateTime
+                let nextObservationTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(observation.timestamp).DateTime
                 let predictedSamplesLatitude = 
                     sampleModel i j "H-latitude" nextObservationTimestamp
                     |> Seq.map (fun x -> x :?> float)
                 
                 // Get the actual value of the observation for latitude
-                let actualValueLatitude = observation.Latitude
+                let actualValueLatitude = observation.latitude
                 // Compute the surprise for the current observation for latitude
                 let surpriseLatitude = computeSurprise(predictedSamplesLatitude, actualValueLatitude)
 
@@ -63,7 +63,7 @@ let main argv =
                     |> Seq.map (fun x -> x :?> float)
                 
                 // Get the actual value of the observation for longitude
-                let actualValueLongitude = observation.Longitude
+                let actualValueLongitude = observation.longitude
                 // Compute the surprise for the current observation for longitude
                 let surpriseLongitude = computeSurprise(predictedSamplesLongitude, actualValueLongitude)
 
