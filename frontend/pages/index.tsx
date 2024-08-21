@@ -98,29 +98,34 @@ const Page = () => {
             const width = svgRef.current.clientWidth;
             const height = svgRef.current.clientHeight;
 
-            const { minDate, maxDate } = processDataForExtents(locationObservations);
-
-            const xScale = d3.scaleTime()
-                .domain([minDate, maxDate])
+            const xScale = d3.scaleLinear()
+                .domain(d3.extent(locationObservations, d => d.longitude))
                 .range([50, width - 10]);
 
-            // const yScale = d3.scaleLinear()
-            //     .domain([minValue, maxValue])
-            //     .range([height - 30, 10]);
+            const yScale = d3.scaleLinear()
+                .domain(d3.extent(locationObservations, d => d.latitude))
+                .range([height - 30, 10]);
 
-            // Assuming drawCandles is adjusted to use scales
-            // drawCandles(barsM1, 1, 'candle-M1', { xScale, yScale });
-            
+            // Plot points
+            svg.selectAll("circle")
+                .data(locationObservations)
+                .enter()
+                .append("circle")
+                .attr("cx", d => xScale(d.longitude))
+                .attr("cy", d => yScale(d.latitude))
+                .attr("r", 3)
+                .attr("fill", "blue");
+
             // Axes
             const xAxis = svg.append("g")
                 .attr("transform", `translate(0,${height - 30})`)
-                .call(d3.axisBottom(xScale).tickFormat(d3.timeFormat("%b %d")));
+                .call(d3.axisBottom(xScale));
 
-            // const yAxis = svg.append("g")
-            //     .attr("transform", `translate(50,0)`)
-            //     .call(d3.axisLeft(yScale));
+            const yAxis = svg.append("g")
+                .attr("transform", `translate(50,0)`)
+                .call(d3.axisLeft(yScale));
         }
-    }, []);
+    }, [locationObservations]);
 
     return (
         <div style={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
