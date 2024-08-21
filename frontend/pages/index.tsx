@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import * as d3 from 'd3';
 import { GoogleLocationMeasurement } from '../types/GoogleTimeline';
-import { SurpriseResponse, Surprise } from '../types/SurpriseModel';
+import { SurpriseResponse, Surprise } from '../types/SurpriseResponse';
 
 const Page = () => {
     const svgRef = useRef(null);
     const [locationObservations, setLocationObservations] = useState<GoogleLocationMeasurement[]>([]);
-    const [surprises, setSurprises] = useState<Surprise[]>([]);
+    const [surpriseResponse, setSurpriseResponse] = useState<SurpriseResponse | null>(null);
 
     const handleDragOver = (event: React.DragEvent) => {
         event.preventDefault();
@@ -53,11 +53,26 @@ const Page = () => {
             }
 
             const rawText = await response.text();
-            console.log("Raw response body:", rawText); // Log raw response body
+            console.log("Raw response body:");
+            console.log(rawText); // Log raw response body
 
-            const data: SurpriseResponse = JSON.parse(rawText);
-            console.log("Parsed response data:", data); // Log parsed response data
-            setSurprises(data.surprises);
+            try {
+                const parsedResponse = JSON.parse(rawText);
+                console.log("Parsed response data:");
+                console.log(parsedResponse);
+                console.log(parsedResponse.modelName);
+
+                // Check if the parsed response is an object with a 'surprises' array
+                if (parsedResponse && Array.isArray(parsedResponse.surprises)) {
+                    setSurpriseResponse(parsedResponse); // Store the full response
+                    console.log("Parsed response data:", parsedResponse.surprises); // Log parsed response data
+                } else {
+                    console.error("Unexpected response format:", parsedResponse);
+                }
+            } catch (parseError) {
+                console.error("Error parsing response JSON:", parseError);
+                console.error("Response text:", rawText);
+            }
         } catch (error) {
             console.error("Error uploading file:", error);
         }
@@ -137,7 +152,10 @@ const Page = () => {
     }, [locationObservations]);
 
     useEffect(() => {
-        if (surprises && surprises.length > 0) {
+        if (surpriseResponse && surpriseResponse.surprises) {
+            const surprises = surpriseResponse.surprises;
+            console.log("Surprises to draw:", surpriseResponse);
+
             const svg = d3.select(svgRef.current);
             svg.selectAll("*").remove();
 
@@ -173,7 +191,7 @@ const Page = () => {
                 .attr("transform", `translate(50,0)`)
                 .call(d3.axisLeft(yScale));
         }
-    }, [surprises]);
+    }, [surpriseResponse]);
 
     return (
         <div style={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
