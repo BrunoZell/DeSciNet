@@ -58,6 +58,7 @@ const Page = () => {
 
     const uploadFile = async (fileContent: string) => {
         try {
+            console.log("Uploading file content:", fileContent); // Log file content
             const response = await fetch('http://localhost:5000/backtest/model-1', {
                 method: 'POST',
                 headers: {
@@ -66,7 +67,16 @@ const Page = () => {
                 body: fileContent,
                 timeout: 600000, // 10 minutes timeout
             });
-            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(`Server responded with status: ${response.status}`);
+            }
+
+            const rawText = await response.text();
+            console.log("Raw response body:", rawText); // Log raw response body
+
+            const data = JSON.parse(rawText);
+            console.log("Parsed response data:", data); // Log parsed response data
             setSurprises(data);
         } catch (error) {
             console.error("Error uploading file:", error);
