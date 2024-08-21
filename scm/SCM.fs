@@ -15,9 +15,14 @@ type IEvaluationContext =
     /// Get the current value of an endogenous variable
     abstract member value : string -> obj
 
+// Define a type for probabilistic values
+type ProbabilisticValue = 
+    | Deterministic of obj
+    | Probabilistic of (unit -> obj)
+
 type EndogenousVariable = {
     Type: System.Type
-    Equation: IEvaluationContext -> obj
+    Equation: IEvaluationContext -> ProbabilisticValue
 }
 
 type ExogenousVariable = {
@@ -50,7 +55,9 @@ type EvaluationContext(t: DateTime, i: I, j: J) =
             match i.TryFind(name) with
             | Some endoVar -> 
                 // Logic to get the current value using the equation
-                endoVar.Equation (self :> IEvaluationContext)
+                match endoVar.Equation (self :> IEvaluationContext) with
+                | Deterministic v -> v
+                | Probabilistic f -> f()
             | None -> failwithf "Endogenous variable '%s' not found" name
 
 let addMeasurement (variableName: string) (timestamp: DateTime) (value: obj) (j: Map<string, ExogenousVariable>) =

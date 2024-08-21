@@ -2,6 +2,7 @@ module HumanMovementModel
 
 open System
 open SCM
+open MathNet.Numerics.Distributions
 
 ///// MODEL /////
 
@@ -14,8 +15,13 @@ let i : Map<string, EndogenousVariable> =
                 let epsilon = ctx.value "epsilon" :?> float
                 let lambda = ctx.value "lambda" :?> float
                 let t = ctx.t
-                let h_longitude = m_longitude + epsilon * Math.Exp(-lambda * (t - (ctx.latestTime "M-longitude")).TotalSeconds)
-                h_longitude
+                let delta_t = (t - (ctx.latestTime "M-longitude")).TotalSeconds
+                let std_dev = epsilon * Math.Exp(-lambda * delta_t)
+                Probabilistic (fun () -> 
+                    let change = Normal.Sample(0.0, std_dev)
+                    let sample = m_longitude + change
+                    sample
+                )
         })
         ("H-latitude", {
             Type = typeof<float>;
@@ -24,11 +30,16 @@ let i : Map<string, EndogenousVariable> =
                 let epsilon = ctx.value "epsilon" :?> float
                 let lambda = ctx.value "lambda" :?> float
                 let t = ctx.t
-                let h_latitude = m_latitude + epsilon * Math.Exp(-lambda * (t - (ctx.latestTime "M-latitude")).TotalSeconds)
-                h_latitude
+                let delta_t = (t - (ctx.latestTime "M-latitude")).TotalSeconds
+                let std_dev = epsilon * Math.Exp(-lambda * delta_t)
+                Probabilistic (fun () -> 
+                    let change = Normal.Sample(0.0, std_dev)
+                    let sample = m_latitude + change
+                    sample
+                )
          })
-        ("epsilon", {Type = typeof<float>; Equation = fun _ -> 0.5})
-        ("lambda", {Type = typeof<float>; Equation = fun _ -> 0.05})
+        ("epsilon", {Type = typeof<float>; Equation = fun _ -> Deterministic 0.5})
+        ("lambda", {Type = typeof<float>; Equation = fun _ -> Deterministic 0.05})
     ]
 
 let j : Map<string, ExogenousVariable> = 
@@ -46,6 +57,6 @@ let integrateObservation (j: J) (obs: ObservationTypes) =
     match obs with
     | GoogleTimeline googleObs ->
         let updatedJ = j
-                       |> addMeasurement "M-longitude" googleObs.Timestamp googleObs.Longitude
-                       |> addMeasurement "M-latitude" googleObs.Timestamp googleObs.Latitude
+                       |> addMeasurement "M-longitude" googleObs.Timestamp (Deterministic googleObs.Longitude)
+                       |> addMeasurement "M-latitude" googleObs.Timestamp (Deterministic googleObs.Latitude)
         updatedJ
