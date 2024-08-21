@@ -49,14 +49,6 @@ let j : Map<string, ExogenousVariable> =
     ]
 
 ///// OBSERVATIONS /////
-
-type ObservationTypes =
-    | GoogleTimeline of Google.Timeline.GoogleLocationObservation
-
-let integrateObservation (j: J) (obs: ObservationTypes) =
-    match obs with
-    | GoogleTimeline googleObs ->
-        let updatedJ = j
-                       |> addMeasurement "M-longitude" googleObs.Timestamp (Deterministic googleObs.Longitude)
-                       |> addMeasurement "M-latitude" googleObs.Timestamp (Deterministic googleObs.Latitude)
-        updatedJ
+let integrateObservation (j: J) (obs: Google.Timeline.GoogleLocationObservation) =
+    j |> addMeasurement "M-longitude" obs.Timestamp (Deterministic obs.Longitude)
+      |> addMeasurement "M-latitude" obs.Timestamp (Deterministic obs.Latitude)

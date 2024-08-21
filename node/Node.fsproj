@@ -9,4 +9,10 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\google-timeline\Google.Timeline.fsproj" />
+    <ProjectReference Include="..\model-1\Model1.fsproj" />
+    <ProjectReference Include="..\scm\SCM.fsproj" />
+  </ItemGroup>
+
 </Project>
