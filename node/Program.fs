@@ -108,7 +108,7 @@ let configureApp (app: IApplicationBuilder) =
         options.AllowAnyOrigin()
                .AllowAnyMethod()
                .AllowAnyHeader()
-               .WithExposedHeaders("Access-Control-Allow-Origin"))
+               |> ignore)
     app.UseGiraffe webApp
 
 let configureServices (services: IServiceCollection) =
