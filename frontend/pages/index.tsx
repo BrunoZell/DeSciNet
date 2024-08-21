@@ -53,19 +53,26 @@ const Page = () => {
             }
 
             const rawText = await response.text();
-            console.log("Raw response body:");
-            console.log(rawText); // Log raw response body
+            console.log("Raw response body:", rawText); // Log raw response body
 
             try {
                 const parsedResponse = JSON.parse(rawText);
-                console.log("Parsed response data:");
-                console.log(parsedResponse);
-                console.log(parsedResponse.modelName);
+                console.log("Parsed response data:", parsedResponse);
+                console.log("Type of parsedResponse:", typeof parsedResponse);
 
-                // Check if the parsed response is an object with a 'surprises' array
-                if (parsedResponse && Array.isArray(parsedResponse.surprises)) {
-                    setSurpriseResponse(parsedResponse); // Store the full response
-                    console.log("Parsed response data:", parsedResponse.surprises); // Log parsed response data
+                // If parsedResponse is a string, parse it again
+                if (typeof parsedResponse === 'string') {
+                    const doubleParsedResponse = JSON.parse(parsedResponse);
+                    console.log("Double parsed response data:", doubleParsedResponse);
+                    console.log("Type of doubleParsedResponse:", typeof doubleParsedResponse);
+
+                    // Check if the double parsed response is an object with a 'surprises' array
+                    if (doubleParsedResponse && Array.isArray(doubleParsedResponse.surprises)) {
+                        setSurpriseResponse(doubleParsedResponse); // Store the full response
+                        console.log("Parsed response data:", doubleParsedResponse.surprises); // Log parsed response data
+                    } else {
+                        console.error("Unexpected response format:", doubleParsedResponse);
+                    }
                 } else {
                     console.error("Unexpected response format:", parsedResponse);
                 }
