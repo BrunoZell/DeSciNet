@@ -50,5 +50,6 @@ let j : Map<string, ExogenousVariable> =
 
 ///// OBSERVATIONS /////
 let integrateObservation (j: J) (obs: Google.Timeline.GoogleLocationObservation) =
-    j |> addMeasurement "M-longitude" obs.Timestamp (Deterministic obs.Longitude)
-      |> addMeasurement "M-latitude" obs.Timestamp (Deterministic obs.Latitude)
+    let timestamp = DateTimeOffset.FromUnixTimeMilliseconds(obs.Timestamp).DateTime
+    j |> addMeasurement "M-longitude" timestamp (Deterministic obs.Longitude)
+      |> addMeasurement "M-latitude" timestamp (Deterministic obs.Latitude)

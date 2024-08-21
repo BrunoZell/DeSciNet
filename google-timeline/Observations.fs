@@ -6,7 +6,7 @@ open System.Text.Json
 type GoogleLocationObservation = {
     Latitude: float
     Longitude: float
-    Timestamp: DateTime
+    Timestamp: int64
 }
 
 // Load observations from JSON file
