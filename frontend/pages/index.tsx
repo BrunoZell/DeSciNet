@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import * as d3 from 'd3';
 import { GoogleLocationMeasurement } from '../types/GoogleTimeline';
+import { SurpriseResponse, Surprise } from '../types/SurpriseResponse';
 
 // Utility function for processing data
 const processDataForExtents = (datasets) => {
