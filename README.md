@@ -59,6 +59,11 @@ DeSciNet is a crowd-sourced model-building network that leverages a general-purp
     - Open your browser and navigate to `http://localhost:3000`.
     - Drop the `observations.json` file into the application.
 
+5. **Or Run Surprise Backtest Manually**:
+    ```sh
+    curl -X POST http://localhost:5000/backtest/model-1 -H "Content-Type: application/json" -d @observations.json
+    ```
+
 ### Root Folders
 
 - **node**: Contains the main program and related files for running the DeSciNet application.
