@@ -17,10 +17,6 @@ let create () : Map<string, EndogenousVariable> * Map<string, ExogenousVariable>
                     let t = ctx.t
                     let delta_t = (t - (ctx.latestTime "M-longitude")).TotalSeconds
                     let std_dev = epsilon * Math.Sqrt(delta_t)
-                    
-                    // Debug prints
-                    printfn "m_longitude: %f, epsilon: %f, delta_t: %f, std_dev: %f" m_longitude epsilon delta_t std_dev
-                    
                     Probabilistic (fun () -> 
                         let change = Normal.Sample(0.0, std_dev)
                         let sample = m_longitude + change
@@ -35,10 +31,6 @@ let create () : Map<string, EndogenousVariable> * Map<string, ExogenousVariable>
                     let t = ctx.t
                     let delta_t = (t - (ctx.latestTime "M-latitude")).TotalSeconds
                     let std_dev = epsilon * Math.Sqrt(delta_t)
-                    
-                    // Debug prints
-                    printfn "m_latitude: %f, epsilon: %f, delta_t: %f, std_dev: %f" m_latitude epsilon delta_t std_dev
-                    
                     Probabilistic (fun () -> 
                         let change = Normal.Sample(0.0, std_dev)
                         let sample = m_latitude + change
