@@ -1,33 +1,12 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import * as d3 from 'd3';
 import { GoogleLocationMeasurement } from '../types/GoogleTimeline';
-import { SurpriseResponse, Surprise } from '../types/SurpriseResponse';
-
-// Utility function for processing data
-const processDataForExtents = (datasets) => {
-    let minDate = new Date(8640000000000000);
-    let maxDate = new Date(-8640000000000000);
-    let minValue = Infinity;
-    let maxValue = -Infinity;
-
-    datasets.forEach(data => {
-        data.forEach(d => {
-            if (d.DATETIME < minDate) minDate = d.DATETIME;
-            if (d.DATETIME > maxDate) maxDate = d.DATETIME;
-            if ('LOW' in d && d.LOW < minValue) minValue = d.LOW;
-            if ('HIGH' in d && d.HIGH > maxValue) maxValue = d.HIGH;
-            if ('BID' in d && d.BID < minValue) minValue = d.BID;
-            if ('ASK' in d && d.ASK > maxValue) maxValue = d.ASK;
-        });
-    });
-
-    return { minDate, maxDate, minValue, maxValue };
-};
+import { SurpriseResponse, Surprise } from '../types/SurpriseModel';
 
 const Page = () => {
     const svgRef = useRef(null);
     const [locationObservations, setLocationObservations] = useState<GoogleLocationMeasurement[]>([]);
-    const [surprises, setSurprises] = useState(null);
+    const [surprises, setSurprises] = useState<Surprise[]>([]);
 
     const handleDragOver = (event: React.DragEvent) => {
         event.preventDefault();
@@ -76,9 +55,9 @@ const Page = () => {
             const rawText = await response.text();
             console.log("Raw response body:", rawText); // Log raw response body
 
-            const data = JSON.parse(rawText);
+            const data: SurpriseResponse = JSON.parse(rawText);
             console.log("Parsed response data:", data); // Log parsed response data
-            setSurprises(data);
+            setSurprises(data.surprises);
         } catch (error) {
             console.error("Error uploading file:", error);
         }
@@ -158,9 +137,41 @@ const Page = () => {
     }, [locationObservations]);
 
     useEffect(() => {
-        if (surprises) {
-            console.log("Surprises:", surprises);
-            // Handle the surprises data as needed
+        if (surprises && surprises.length > 0) {
+            const svg = d3.select(svgRef.current);
+            svg.selectAll("*").remove();
+
+            const width = svgRef.current.clientWidth;
+            const height = svgRef.current.clientHeight;
+
+            const xScale = d3.scaleBand()
+                .domain(surprises.map((d, i) => i.toString()))
+                .range([50, width - 10])
+                .padding(0.1);
+
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(surprises, d => d.totalSurprise) || 0])
+                .range([height - 30, 10]);
+
+            // Plot bars
+            svg.selectAll("rect")
+                .data(surprises)
+                .enter()
+                .append("rect")
+                .attr("x", (d, i) => xScale(i.toString())!)
+                .attr("y", d => yScale(d.totalSurprise))
+                .attr("width", xScale.bandwidth())
+                .attr("height", d => height - 30 - yScale(d.totalSurprise))
+                .attr("fill", "blue");
+
+            // Axes
+            const xAxis = svg.append("g")
+                .attr("transform", `translate(0,${height - 30})`)
+                .call(d3.axisBottom(xScale).tickFormat((d, i) => surprises[i].timestamp));
+
+            const yAxis = svg.append("g")
+                .attr("transform", `translate(50,0)`)
+                .call(d3.axisLeft(yScale));
         }
     }, [surprises]);
 
