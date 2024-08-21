@@ -109,9 +109,9 @@ let webApp =
                 let json = JsonSerializer.Serialize(response, jsonOptions)
                 
                 // Log the JSON before sending
-                printfn "JSON Response: %s" json
+                // printfn "JSON Response: %s" json
                 
-                return! json |> Successful.OK |> ctx.WriteJsonAsync
+                return! Successful.OK json next ctx
             }
     ]
 
