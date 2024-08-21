@@ -28,7 +28,7 @@ let main argv =
             let ctx = createContext i j timestamp
             let variable = i.[variable]
             match variable.Equation ctx with
-            | Probabilistic f -> Seq.init 100 (fun _ -> f()) // Generate 100 samples from the probabilistic function
+            | Probabilistic f -> Seq.init 3000 (fun _ -> f()) // Generate 3000 samples from the probabilistic function
             | Deterministic v -> Seq.singleton v // Return a single value for deterministic variables
 
         // Function to compute the KL divergence (surprise) between predicted samples and the actual observation
@@ -68,6 +68,10 @@ let main argv =
 
                 // Accumulate the total surprise by summing the surprises for latitude and longitude
                 let totalSurprise = totalSurprise + surpriseLatitude + surpriseLongitude
+
+                // Log the surprise for the current observation with timestamp and lat/long values
+                printfn "%O, Lat: %f, Lon: %f, Lat Surp: %f, Lon Surp: %f, Total Surp: %f" 
+                        nextObservationTimestamp actualValueLatitude actualValueLongitude surpriseLatitude surpriseLongitude totalSurprise
 
                 // Integrate the current observation into the model
                 let j = HumanMovementModel.integrateObservation j observation
