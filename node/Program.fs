@@ -80,6 +80,9 @@ let calculateSurprises (observations: seq<Google.Timeline.GoogleLocationObservat
                 totalSurprise = totalSurprise
             |})
 
+            // Log the surprise calculation
+            printfn "Timestamp: %A, Latitude Surprise: %f, Longitude Surprise: %f, Total Surprise: %f" nextObservationTimestamp surpriseLatitude surpriseLongitude totalSurprise
+
             // Integrate the current observation into the model
             let j = HumanMovementModel.integrateObservation j observation
 
