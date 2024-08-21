@@ -90,8 +90,8 @@ let calculateSurprises (observations: seq<Google.Timeline.GoogleLocationObservat
         ) (j, 0.0)
         |> snd
 
-    // Return the list of surprises
-    surprises
+    // Return the list of surprises and the total surprise
+    surprises, totalSurprise
 
 let webApp =
     choose [
@@ -99,9 +99,18 @@ let webApp =
             task {
                 let! body = ctx.ReadBodyFromRequestAsync()
                 let observations = JsonSerializer.Deserialize<Google.Timeline.GoogleLocationObservation list>(body)
-                let surprises = calculateSurprises observations
+                let surprises, totalSurprise = calculateSurprises observations
+                let response = {| 
+                    modelName = "model-1"
+                    totalSurprise = totalSurprise
+                    surprises = surprises 
+                |}
                 let jsonOptions = JsonSerializerOptions(WriteIndented = true)
-                let json = JsonSerializer.Serialize(surprises, jsonOptions)
+                let json = JsonSerializer.Serialize(response, jsonOptions)
+                
+                // Log the JSON before sending
+                printfn "JSON Response: %s" json
+                
                 return! json |> Successful.OK |> ctx.WriteJsonAsync
             }
     ]
