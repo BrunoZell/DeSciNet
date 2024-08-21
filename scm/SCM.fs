@@ -60,6 +60,9 @@ type EvaluationContext(t: DateTime, i: I, j: J) =
                 | Probabilistic f -> f()
             | None -> failwithf "Endogenous variable '%s' not found" name
 
+let createContext (i: I) (j: J) (timestamp: DateTime) =
+    EvaluationContext(timestamp, i, j) :> IEvaluationContext
+
 let addMeasurement (variableName: string) (timestamp: DateTime) (value: obj) (j: Map<string, ExogenousVariable>) =
     match j.TryFind variableName with
     | Some exoVar ->

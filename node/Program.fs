@@ -43,6 +43,8 @@ let main argv =
                 let j = HumanMovementModel.integrateObservation j observation
                 // Sample the model's prediction for the variable "H-latitude" at the observation's timestamp
                 let predictedSamples = sampleModel i j "H-latitude" observation.Timestamp
+                // Cast the sequence of objects to a sequence of floats
+                let predictedSamples = predictedSamples |> Seq.map (fun x -> x :?> float)
                 // Get the actual value of the observation
                 let actualValue = observation.Latitude
                 // Compute the surprise for the current observation
