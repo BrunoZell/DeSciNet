@@ -2,8 +2,7 @@
   "I": [
     ["H-longitude", "float"],
     ["H-latitude", "float"],
-    ["epsilon", "float"],
-    ["lambda", "float"]
+    ["epsilon", "float"]
   ],
   "J": [
     ["M-longitude", "float"],
@@ -12,23 +11,18 @@
   "f": [
     {
       "output": "H-longitude",
-      "inputs": ["M-longitude", "epsilon", "lambda"],
-      "expression": "latest(M-longitude, t) + epsilon * exp(-lambda * (t - latest(M-longitude, t).timestamp))"
+      "inputs": ["M-longitude", "epsilon"],
+      "expression": "latest(M-longitude, t) + Normal.Sample(0, epsilon * sqrt(t - latestTime(M-longitude, t)))"
     },
     {
       "output": "H-latitude",
-      "inputs": ["M-latitude", "epsilon", "lambda"],
-      "expression": "latest(M-latitude, t) + epsilon * exp(-lambda * (t - latest(M-latitude, t).timestamp))"
+      "inputs": ["M-latitude", "epsilon"],
+      "expression": "latest(M-latitude, t) + Normal.Sample(0, epsilon * sqrt(t - latestTime(M-latitude, t)))"
     },
     {
       "output": "epsilon",
       "inputs": [],
-      "expression": "0.5"
-    },
-    {
-      "output": "lambda",
-      "inputs": [],
-      "expression": "0.05"
+      "expression": "1.0"
     }
   ]
 }
