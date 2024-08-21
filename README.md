@@ -19,6 +19,46 @@ DeSciNet is a crowd-sourced model-building network that leverages a general-purp
 3. **Summing Up Surprise**: The surprise for all observations is summed up to get a total surprise for the model.
 4. **Model Ranking**: Models are ranked based on their total surprise, with the lowest surprise model being the best.
 
+### How to Run
+
+1. **Prepare Observations File**: Create an `observations.json` file with the following structure:
+    ```json
+    [
+      {
+        "latitude": 34.052235,
+        "longitude": 118.243683,
+        "timestamp": 1622548800000
+      },
+      {
+        "latitude": 40.712776,
+        "longitude": 74.005974,
+        "timestamp": 1622635200000
+      },
+      {
+        "latitude": 51.507351,
+        "longitude": 0.127758,
+        "timestamp": 1622721600000
+      }
+    ]
+    ```
+
+2. **Run Backend**:
+    ```sh
+    cd node
+    dotnet run
+    ```
+
+3. **Run Frontend**:
+    ```sh
+    cd frontend
+    yarn install
+    yarn dev
+    ```
+
+4. **Load Observations in Browser**:
+    - Open your browser and navigate to `http://localhost:3000`.
+    - Drop the `observations.json` file into the application.
+
 ### Root Folders
 
 - **node**: Contains the main program and related files for running the DeSciNet application.
