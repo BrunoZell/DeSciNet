@@ -9,13 +9,20 @@ let main argv =
         printfn "Usage: CausalModelApp observation.json"
         1
     else
-        // Load observations from the provided file
-        let observationFile = argv.[0]
-        let observations = Google.Timeline.loadObservations observationFile
+        // Load and sort observations from the provided file by timestamp (earliest first)
+        let observations = Google.Timeline.loadObservations argv.[0]
+                        |> Seq.sortBy (fun obs -> obs.Timestamp)
         
         // Initialize the model variables i and j
         let i = HumanMovementModel.i
         let j = HumanMovementModel.j
+
+        // Integrate the earliest observation into the model
+        let initialObservation = Seq.head observations
+        let j = HumanMovementModel.integrateObservation j initialObservation
+
+        // Remaining observations after the initial one
+        let observations = Seq.tail observations
 
         // Function to sample the model's predicted distribution for a given variable at a specific timestamp
         let sampleModel (i: I) (j: J) (variable: string) (timestamp: DateTime) =
@@ -35,13 +42,10 @@ let main argv =
                 0.5 * (Math.Log(actualVariance / predictedVariance) + (predictedVariance + (predictedMean - actualValue) ** 2.0) / actualVariance - 1.0)
             klDivergence
 
-        // Compute the total surprise by iterating over all observations
+        // Compute the total surprise by iterating over all remaining observations
         let totalSurprise = 
             observations
             |> Seq.fold (fun (j, totalSurprise) observation ->
-                // Integrate the current observation into the model
-                let j = HumanMovementModel.integrateObservation j observation
-                
                 // Sample and cast the model's prediction for the variable "H-latitude" at the observation's timestamp
                 let predictedSamplesLatitude = 
                     sampleModel i j "H-latitude" observation.Timestamp
@@ -63,7 +67,12 @@ let main argv =
                 let surpriseLongitude = computeSurprise(predictedSamplesLongitude, actualValueLongitude)
 
                 // Accumulate the total surprise by summing the surprises for latitude and longitude
-                (j, totalSurprise + surpriseLatitude + surpriseLongitude)
+                let totalSurprise = totalSurprise + surpriseLatitude + surpriseLongitude
+
+                // Integrate the current observation into the model
+                let j = HumanMovementModel.integrateObservation j observation
+
+                (j, totalSurprise)
             ) (j, 0.0)
             |> snd
 
