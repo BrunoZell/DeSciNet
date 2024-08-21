@@ -39,24 +39,6 @@ In this simple model, we assume that human movement follows a normal distributio
    - $t$ is the current time.
    - $t_{\text{latest}}$ is the time of the latest measurement.
 
-#### Probabilistic Form
-
-To introduce the probabilistic nature, we assume that the actual value follows a normal distribution centered around the latest measured value with a standard deviation that increases with the square root of the time difference:
-
-1. **Probabilistic H-longitude**:
-   $$
-   H_{\text{longitude}}(t) \sim \mathcal{N}\left(M_{\text{longitude}}(t_{\text{latest}}), \sigma_{\text{longitude}}^2\right)
-   $$
-   where:
-   - $\sigma_{\text{longitude}} = \epsilon \cdot \sqrt{t - t_{\text{latest}}}$ is the standard deviation.
-
-2. **Probabilistic H-latitude**:
-   $$
-   H_{\text{latitude}}(t) \sim \mathcal{N}\left(M_{\text{latitude}}(t_{\text{latest}}), \sigma_{\text{latitude}}^2\right)
-   $$
-   where:
-   - $\sigma_{\text{latitude}} = \epsilon \cdot \sqrt{t - t_{\text{latest}}}$ is the standard deviation.
-
 ### Inserting Measurements
 
 Measurements are inserted into the exogenous variables $M$ using the `addMeasurement` function. For example, when a new observation is received, it updates the latest measurements for `M-longitude` and `M-latitude`.
