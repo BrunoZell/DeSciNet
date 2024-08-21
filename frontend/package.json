@@ -1,0 +1,40 @@
+{
+  "name": "descinet",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.3.6",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/material": "^5.11.8",
+    "@project-serum/anchor": "^0.25.0",
+    "@solana-mobile/wallet-adapter-mobile": "^0.0.1-alpha.8",
+    "@solana/spl-token": "^0.3.7",
+    "@solana/wallet-adapter-base": "^0.9.9",
+    "@solana/wallet-adapter-react": "^0.15.8",
+    "@solana/wallet-adapter-react-ui": "^0.9.11",
+    "@solana/wallet-adapter-wallets": "^0.16.9",
+    "@solana/web3.js": "^1.50.1",
+    "d3": "^7.9.0",
+    "framer-motion": "^7.6.1",
+    "next": "^12.2.3",
+    "papaparse": "^5.4.1",
+    "react": "^18.2.0",
+    "react-dom": "18.0.0"
+  },
+  "devDependencies": {
+    "@metaplex-foundation/solita": "^0.19.3",
+    "@types/node": "^17.0.23",
+    "@types/react": "^18.0.15",
+    "eslint": "8.12.0",
+    "eslint-config-next": "12.1.2",
+    "typescript": "^4.6.3"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}
