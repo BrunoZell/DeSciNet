@@ -41,16 +41,29 @@ let main argv =
             |> Seq.fold (fun (j, totalSurprise) observation ->
                 // Integrate the current observation into the model
                 let j = HumanMovementModel.integrateObservation j observation
-                // Sample the model's prediction for the variable "H-latitude" at the observation's timestamp
-                let predictedSamples = sampleModel i j "H-latitude" observation.Timestamp
-                // Cast the sequence of objects to a sequence of floats
-                let predictedSamples = predictedSamples |> Seq.map (fun x -> x :?> float)
-                // Get the actual value of the observation
-                let actualValue = observation.Latitude
-                // Compute the surprise for the current observation
-                let surprise = computeSurprise(predictedSamples, actualValue)
-                // Accumulate the total surprise
-                (j, totalSurprise + surprise)
+                
+                // Sample and cast the model's prediction for the variable "H-latitude" at the observation's timestamp
+                let predictedSamplesLatitude = 
+                    sampleModel i j "H-latitude" observation.Timestamp
+                    |> Seq.map (fun x -> x :?> float)
+                
+                // Get the actual value of the observation for latitude
+                let actualValueLatitude = observation.Latitude
+                // Compute the surprise for the current observation for latitude
+                let surpriseLatitude = computeSurprise(predictedSamplesLatitude, actualValueLatitude)
+
+                // Sample and cast the model's prediction for the variable "H-longitude" at the observation's timestamp
+                let predictedSamplesLongitude = 
+                    sampleModel i j "H-longitude" observation.Timestamp
+                    |> Seq.map (fun x -> x :?> float)
+                
+                // Get the actual value of the observation for longitude
+                let actualValueLongitude = observation.Longitude
+                // Compute the surprise for the current observation for longitude
+                let surpriseLongitude = computeSurprise(predictedSamplesLongitude, actualValueLongitude)
+
+                // Accumulate the total surprise by summing the surprises for latitude and longitude
+                (j, totalSurprise + surpriseLatitude + surpriseLongitude)
             ) (j, 0.0)
             |> snd
 
