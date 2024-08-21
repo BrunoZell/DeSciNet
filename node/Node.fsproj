@@ -15,4 +15,9 @@
     <ProjectReference Include="..\scm\SCM.fsproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Giraffe" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
+  </ItemGroup>
+
 </Project>
