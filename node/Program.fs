@@ -47,8 +47,9 @@ let main argv =
             observations
             |> Seq.fold (fun (j, totalSurprise) observation ->
                 // Sample and cast the model's prediction for the variable "H-latitude" at the observation's timestamp
+                let nextObservationTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(observation.Timestamp).DateTime
                 let predictedSamplesLatitude = 
-                    sampleModel i j "H-latitude" observation.Timestamp
+                    sampleModel i j "H-latitude" nextObservationTimestamp
                     |> Seq.map (fun x -> x :?> float)
                 
                 // Get the actual value of the observation for latitude
@@ -58,7 +59,7 @@ let main argv =
 
                 // Sample and cast the model's prediction for the variable "H-longitude" at the observation's timestamp
                 let predictedSamplesLongitude = 
-                    sampleModel i j "H-longitude" observation.Timestamp
+                    sampleModel i j "H-longitude" nextObservationTimestamp
                     |> Seq.map (fun x -> x :?> float)
                 
                 // Get the actual value of the observation for longitude
