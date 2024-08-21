@@ -64,6 +64,28 @@ DeSciNet is a crowd-sourced model-building network that leverages a general-purp
     curl -X POST http://localhost:5000/backtest/model-1 -H "Content-Type: application/json" -d @observations.json
     ```
 
+    It will output the surprise for each observation, and the total model surprise over all observations:
+    ```json
+    {
+      "modelName": "model-1",
+      "surprises": [
+        {
+          "latitudeSurprise": 61161.24970075105,
+          "longitudeSurprise": 63742.415754987414,
+          "timestamp": "2021-06-02T12:00:00",
+          "totalSurprise": 124903.66545573846
+        },
+        {
+          "latitudeSurprise": 63305.268561105564,
+          "longitudeSurprise": 63937.053127532155,
+          "timestamp": "2021-06-03T12:00:00",
+          "totalSurprise": 252145.98714437618
+        }
+      ],
+      "totalSurprise": 252145.98714437618
+    }
+    ```
+
 ### Root Folders
 
 - **node**: Contains the main program and related files for running the DeSciNet application.
