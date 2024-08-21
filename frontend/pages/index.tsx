@@ -26,6 +26,7 @@ const processDataForExtents = (datasets) => {
 const Page = () => {
     const svgRef = useRef(null);
     const [locationObservations, setLocationObservations] = useState<GoogleLocationMeasurement[]>([]);
+    const [surprises, setSurprises] = useState(null);
 
     const handleDragOver = (event: React.DragEvent) => {
         event.preventDefault();
@@ -36,21 +37,39 @@ const Page = () => {
         return header.replace(/<|>/g, '');
     };
 
-    const handleDrop = (event) => {
+    const handleDrop = (event: React.DragEvent) => {
         event.preventDefault();
         const files = event.dataTransfer.files;
         if (files.length) {
             const file = files[0];
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 const text = e.target?.result as string;
                 if (text.includes("timestamp")) {
                     parseGoogleLocationObservations(text);
+                    await uploadFile(text);
                 } else {
                     console.error("Unsupported file format.");
                 }
             };
             reader.readAsText(file);
+        }
+    };
+
+    const uploadFile = async (fileContent: string) => {
+        try {
+            const response = await fetch('http://localhost:5000/backtest/model-1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: fileContent,
+                timeout: 600000, // 10 minutes timeout
+            });
+            const data = await response.json();
+            setSurprises(data);
+        } catch (error) {
+            console.error("Error uploading file:", error);
         }
     };
 
@@ -126,6 +145,13 @@ const Page = () => {
                 .call(d3.axisLeft(yScale));
         }
     }, [locationObservations]);
+
+    useEffect(() => {
+        if (surprises) {
+            console.log("Surprises:", surprises);
+            // Handle the surprises data as needed
+        }
+    }, [surprises]);
 
     return (
         <div style={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

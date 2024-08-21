@@ -9,11 +9,9 @@ open Microsoft.Extensions.Hosting
 open MathNet.Numerics.Distributions
 open SCM
 
-let calculateSurprises (observationsFile: string) =
-    // Load and sort observations from the provided file by timestamp (earliest first)
-    let observations = Google.Timeline.loadObservations observationsFile
-                    |> Seq.sortBy (fun obs -> obs.timestamp)
-    
+let calculateSurprises (observations: seq<Google.Timeline.GoogleLocationObservation>) =
+    // Sort observations by timestamp (earliest first)
+    let sortedObservations = observations |> Seq.sortBy (fun obs -> obs.timestamp)
     // Initialize the model variables i and j
     let i, j = HumanMovementModel.create()
 
@@ -93,11 +91,11 @@ let calculateSurprises (observationsFile: string) =
 
 let webApp =
     choose [
-        route "/calculate" >=> POST >=> fun next ctx ->
+        route "/backtest/model-1" >=> POST >=> fun next ctx ->
             task {
                 let! body = ctx.ReadBodyFromRequestAsync()
-                let observationsFile = body
-                let surprises = calculateSurprises observationsFile
+                let observations = JsonSerializer.Deserialize<Google.Timeline.GoogleLocationObservation list>(body)
+                let surprises = calculateSurprises observations
                 let jsonOptions = JsonSerializerOptions(WriteIndented = true)
                 let json = JsonSerializer.Serialize(surprises, jsonOptions)
                 return! json |> Successful.OK |> ctx.WriteJsonAsync
