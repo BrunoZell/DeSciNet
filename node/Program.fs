@@ -6,6 +6,7 @@ open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
+open Microsoft.AspNetCore.Cors.Infrastructure
 open MathNet.Numerics.Distributions
 open SCM
 
@@ -103,9 +104,15 @@ let webApp =
     ]
 
 let configureApp (app: IApplicationBuilder) =
+    app.UseCors(fun options ->
+        options.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .WithExposedHeaders("Access-Control-Allow-Origin"))
     app.UseGiraffe webApp
 
 let configureServices (services: IServiceCollection) =
+    services.AddCors() |> ignore
     services.AddGiraffe() |> ignore
 
 [<EntryPoint>]
