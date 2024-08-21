@@ -12,12 +12,15 @@ let create () : Map<string, EndogenousVariable> * Map<string, ExogenousVariable>
             ("H-longitude", {
                 Type = typeof<float>;
                 Equation = fun ctx -> 
-                    let m_longitude = ctx.latest "M-longitude" :?> float
-                    let epsilon = ctx.value "epsilon" :?> float
-                    let lambda = ctx.value "lambda" :?> float
+                    let m_longitude = (ctx.latest "M-longitude") :?> float
+                    let epsilon = (ctx.value "epsilon") :?> float
                     let t = ctx.t
                     let delta_t = (t - (ctx.latestTime "M-longitude")).TotalSeconds
-                    let std_dev = epsilon * Math.Exp(-lambda * delta_t)
+                    let std_dev = epsilon * Math.Sqrt(delta_t)
+                    
+                    // Debug prints
+                    printfn "m_longitude: %f, epsilon: %f, delta_t: %f, std_dev: %f" m_longitude epsilon delta_t std_dev
+                    
                     Probabilistic (fun () -> 
                         let change = Normal.Sample(0.0, std_dev)
                         let sample = m_longitude + change
@@ -27,20 +30,22 @@ let create () : Map<string, EndogenousVariable> * Map<string, ExogenousVariable>
             ("H-latitude", {
                 Type = typeof<float>;
                 Equation = fun ctx -> 
-                    let m_latitude = ctx.latest "M-latitude" :?> float
-                    let epsilon = ctx.value "epsilon" :?> float
-                    let lambda = ctx.value "lambda" :?> float
+                    let m_latitude = (ctx.latest "M-latitude") :?> float
+                    let epsilon = (ctx.value "epsilon") :?> float
                     let t = ctx.t
                     let delta_t = (t - (ctx.latestTime "M-latitude")).TotalSeconds
-                    let std_dev = epsilon * Math.Exp(-lambda * delta_t)
+                    let std_dev = epsilon * Math.Sqrt(delta_t)
+                    
+                    // Debug prints
+                    printfn "m_latitude: %f, epsilon: %f, delta_t: %f, std_dev: %f" m_latitude epsilon delta_t std_dev
+                    
                     Probabilistic (fun () -> 
                         let change = Normal.Sample(0.0, std_dev)
                         let sample = m_latitude + change
                         sample
                     )
             })
-            ("epsilon", {Type = typeof<float>; Equation = fun _ -> Deterministic 0.5})
-            ("lambda", {Type = typeof<float>; Equation = fun _ -> Deterministic 0.05})
+            ("epsilon", {Type = typeof<float>; Equation = fun _ -> Deterministic 1.2})
         ]
 
     let j : Map<string, ExogenousVariable> = 
@@ -54,5 +59,5 @@ let create () : Map<string, EndogenousVariable> * Map<string, ExogenousVariable>
 ///// OBSERVATIONS /////
 let integrateObservation (j: J) (obs: Google.Timeline.GoogleLocationObservation) =
     let timestamp = DateTimeOffset.FromUnixTimeMilliseconds(obs.timestamp).DateTime
-    j |> addMeasurement "M-longitude" timestamp (Deterministic obs.longitude)
-      |> addMeasurement "M-latitude" timestamp (Deterministic obs.latitude)
+    j |> addMeasurement "M-longitude" timestamp obs.longitude
+      |> addMeasurement "M-latitude" timestamp obs.latitude
