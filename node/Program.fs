@@ -14,8 +14,7 @@ let main argv =
                         |> Seq.sortBy (fun obs -> obs.timestamp)
         
         // Initialize the model variables i and j
-        let i = HumanMovementModel.i
-        let j = HumanMovementModel.j
+        let i, j = HumanMovementModel.create()
 
         // Integrate the earliest observation into the model
         let initialObservation = Seq.head observations
