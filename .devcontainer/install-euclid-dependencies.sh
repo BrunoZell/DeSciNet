@@ -105,18 +105,3 @@ sudo ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
 sudo apt-get install -y software-properties-common && \
 sudo add-apt-repository -y --update ppa:ansible/ansible && \
 sudo apt-get install -y ansible
-
-# Print versions
-docker --version
-cs version
-rustc --version
-cargo --version
-rustup --version
-rustup override list
-node --version
-npm --version
-yarn --version
-jq --version
-yq --version
-ansible --version
-git --version
