@@ -82,7 +82,7 @@ cs install giter8
 
 # Install rustup and cargo
 curl https://sh.rustup.rs -sSf | sh -s -- -y
-export PATH="/root/.cargo/bin:${PATH}"
+export PATH="$HOME/.cargo/bin:${PATH}"
 rustup install stable && \
 rustup default stable
 
