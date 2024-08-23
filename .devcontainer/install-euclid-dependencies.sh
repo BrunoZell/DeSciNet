@@ -6,7 +6,7 @@ COURSIER_VERSION=v2.1.10
 SCALA_VERSION=2.13.14
 NODE_VERSION=v20.14.0
 NVM_INSTALL_SCRIPT_VERSION=v0.39.7
-YQ_VERSION=v4.44.1
+YQ_VERSION=v4.44.3
 ZSH_IN_DOCKER_VERSION=v1.2.0
 
 # This script assumes that the ARCH argument is passed when running the script:
@@ -100,6 +100,7 @@ sudo add-apt-repository -y --update ppa:ansible/ansible && \
 sudo apt-get install -y ansible
 
 # Print versions
+docker --version
 cs version
 rustc --version
 cargo --version
