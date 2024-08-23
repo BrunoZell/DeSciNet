@@ -13,10 +13,17 @@ ZSH_IN_DOCKER_VERSION=v1.2.0 # Check new versions at: https://github.com/deluan/
 # This script assumes that the ARCH argument is passed when running the script:
 # bash install-euclid-dependencies-linux.sh x86_64
 ARCH=$(echo $1 | tr '[:upper:]' '[:lower:]')
+DISTRO=$(echo $2 | tr '[:upper:]' '[:lower:]')
 
 # Validate ARCH
 if [[ "$ARCH" != "amd64" && "$ARCH" != "arm" ]]; then
     echo "Unsupported architecture: $ARCH"
+    exit 1
+fi
+
+# Validate DISTRO
+if [[ "$DISTRO" != "ubuntu" && "$DISTRO" != "debian" ]]; then
+    echo "Unsupported distribution: $DISTRO"
     exit 1
 fi
 
@@ -45,8 +52,8 @@ sudo apt-get install -y \
 # Install Docker CLI (client only, assuming hosts docker.sock is mounted)
 sudo apt-get update && \
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common lsb-release && \
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \
-sudo add-apt-repository "deb [arch=${ARCH}] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+curl -fsSL https://download.docker.com/linux/${DISTRO}/gpg | sudo apt-key add - && \
+echo "deb [arch=${ARCH}] https://download.docker.com/linux/${DISTRO} $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list && \
 sudo apt-get update && \
 sudo apt-get install -y docker-ce-cli
 
