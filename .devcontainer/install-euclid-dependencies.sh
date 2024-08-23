@@ -109,7 +109,7 @@ sudo mv ${YQ_BINARY} /usr/bin/yq
 
 # Install ansible
 echo 'Etc/UTC' | sudo tee /etc/timezone && \
-sudo ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
-sudo apt-get install -y software-properties-common && \
-sudo add-apt-repository -y --update ppa:ansible/ansible && \
+sudo ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository -y --update ppa:ansible/ansible
 sudo apt-get install -y ansible
