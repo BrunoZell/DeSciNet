@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # Define versions for easy updates
-DOCKER_COMPOSE_VERSION=v2.27.1
-COURSIER_VERSION=v2.1.10
-SCALA_VERSION=2.13.14
-NODE_VERSION=v20.14.0
-NVM_INSTALL_SCRIPT_VERSION=v0.39.7
-YQ_VERSION=v4.44.3
-ZSH_IN_DOCKER_VERSION=v1.2.0
+
+DOCKER_COMPOSE_VERSION=v2.29.2 # Check new versions at: https://github.com/docker/compose/releases
+COURSIER_VERSION=v2.1.10 # Check new versions at: https://github.com/coursier/coursier/releases and https://github.com/VirtusLab/coursier-m1/releases
+SCALA_VERSION=2.13.14 # Check new versions at: https://github.com/scala/scala/releases
+NODE_VERSION=v20.17.0 # Check new versions at: https://github.com/nodejs/node/releases
+NVM_INSTALL_SCRIPT_VERSION=v0.40.0 # Check new versions at: https://github.com/nvm-sh/nvm/releases
+YQ_VERSION=v4.44.3 # Check new versions at: https://github.com/mikefarah/yq/releases
+ZSH_IN_DOCKER_VERSION=v1.2.0 # Check new versions at: https://github.com/deluan/zsh-in-docker/releases
 
 # This script assumes that the ARCH argument is passed when running the script:
 # bash install-euclid-dependencies-linux.sh x86_64
