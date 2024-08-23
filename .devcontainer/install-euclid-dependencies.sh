@@ -11,7 +11,13 @@ ZSH_IN_DOCKER_VERSION=v1.2.0
 
 # This script assumes that the ARCH argument is passed when running the script:
 # bash install-euclid-dependencies-linux.sh x86_64
-ARCH=$1
+ARCH=$(echo $1 | tr '[:upper:]' '[:lower:]')
+
+# Validate ARCH
+if [[ "$ARCH" != "amd64" && "$ARCH" != "arm" ]]; then
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+fi
 
 # Update and install necessary packages
 sudo apt-get update && \
@@ -36,11 +42,10 @@ sudo apt-get install -y \
     libudev-dev
 
 # Install Docker CLI (client only, assuming hosts docker.sock is mounted)
-LOWERCASE_ARCH=$(echo ${ARCH} | tr '[:upper:]' '[:lower:]')
 sudo apt-get update && \
 sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common lsb-release && \
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \
-sudo add-apt-repository "deb [arch=${LOWERCASE_ARCH}] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+sudo add-apt-repository "deb [arch=${ARCH}] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
 sudo apt-get update && \
 sudo apt-get install -y docker-ce-cli
 
@@ -49,10 +54,13 @@ sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPO
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Install Coursier
-if [ "${ARCH}" = "ARM64" ]; then
+if [ "$ARCH" = "arm" ]; then
     curl -fL "https://github.com/VirtusLab/coursier-m1/releases/download/${COURSIER_VERSION}/cs-aarch64-pc-linux.gz" | gzip -d > cs
-else
+elif [ "$ARCH" = "amd64" ]; then
     curl -fL "https://github.com/coursier/coursier/releases/download/${COURSIER_VERSION}/cs-x86_64-pc-linux.gz" | gzip -d > cs
+else
+    echo "Error: Unsupported architecture: $ARCH"
+    exit 1
 fi
 chmod +x cs && \
 sudo mv cs /usr/local/bin/cs
@@ -86,8 +94,7 @@ export PATH=$NODE_PATH:$PATH
 npm install -g yarn
 
 # Install yq
-LOWERCASE_ARCH=$(echo ${ARCH} | tr '[:upper:]' '[:lower:]')
-YQ_BINARY=yq_linux_${LOWERCASE_ARCH}
+YQ_BINARY=yq_linux_${ARCH}
 wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY}.tar.gz -O - | \
 tar xz && \
 sudo mv ${YQ_BINARY} /usr/bin/yq
