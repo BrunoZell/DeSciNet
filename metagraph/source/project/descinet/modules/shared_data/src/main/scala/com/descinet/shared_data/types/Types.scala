@@ -119,8 +119,9 @@ object Types {
 
   @derive(decoder, encoder)
   case class NewSample(
-    modelId: Long,
-    solution: Solution
+    modelId   : Long,
+    submitter : Address,
+    solution  : Solution
   ) extends DeSciNetUpdate
 
   /**
