@@ -131,8 +131,8 @@ object Types {
 
   @derive(decoder, encoder)
   case class DeSciNetOnChainState(
-    exogenousVariables: Map[ExogenousVariableId, ExogenousVariable],
-    measurements: Map[ExogenousVariableId, Measurement],
+    exogenousVariables: Set[ExogenousVariableId],
+    measurements: Map[ExogenousVariableId, MeasurementSequence],
     models: Map[Long, Model],
     targets: Map[Long, Target],
     bounties: Map[Long, Bounty],
@@ -147,6 +147,11 @@ object Types {
 
   @derive(decoder, encoder)
   case class DeSciNetCalculatedState(
-    models: Map[Long, Model]
+    exogenousVariables: Map[ExogenousVariableId, ExogenousVariable],
+    measurements: Map[ExogenousVariableId, Measurement],
+    models: Map[Long, Model],
+    targets: Map[Long, Target],
+    bounties: Map[Long, Bounty],
+    scores: Map[Long, Score],
   ) extends DataCalculatedState
 }
