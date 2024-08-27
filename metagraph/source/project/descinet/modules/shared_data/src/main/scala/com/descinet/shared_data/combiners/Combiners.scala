@@ -1,0 +1,90 @@
+package com.descinet.shared_data.combiners
+
+import com.descinet.shared_data.serializers.Serializers
+import com.descinet.shared_data.types.Types._
+import monocle.Monocle.toAppliedFocusOps
+import org.tessellation.currency.dataApplication.DataState
+import org.tessellation.schema.address.Address
+import org.tessellation.security.hash.Hash
+
+object Combiners {
+  def combineNewVariable(
+    update: NewVariable,
+    state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
+    author: Address
+  ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
+    val variableKey = ExogenousVariableKey(update.sourceMetagraph, update.dataApplicationUrlPath)
+    val variableId = ExogenousVariableId(Hash.fromBytes(Serializers.serializeVariableKey(variableKey)))
+    val newVariable = ExogenousVariable(update.name, author, update.sourceMetagraph, update.dataApplicationUrlPath, update.l0NodeUrls)
+
+    val newOnChainState = state.onChain.copy(exogenousVariables = state.onChain.exogenousVariables + variableId)
+    val newCalculatedState = state.calculated.copy(exogenousVariables = state.calculated.exogenousVariables + (variableId -> newVariable))
+
+    DataState(newOnChainState, newCalculatedState)
+  }
+
+  def combineNewTarget(
+    update: NewTarget,
+    state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
+  ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
+    // Todo: Introduce global target counter to avoid collisions when targets are removed.
+    val targetId = state.onChain.targets.size.toLong + 1
+    val newTarget = Target(targetId, update.exogenousVariables)
+
+    val newOnChainState = state.onChain.copy(targets = state.onChain.targets + (targetId -> newTarget))
+    val newCalculatedState = state.calculated.copy(targets = state.calculated.targets + (targetId -> newTarget))
+
+    DataState(newOnChainState, newCalculatedState)
+  }
+
+  def combineNewBounty(
+    update: NewBounty,
+    state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
+    author: Address
+  ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
+    // Todo: Introduce functional bounty key avoid collisions when bounties are removed.
+    val bountyId = state.onChain.bounties.size.toLong + 1
+    val newBounty = Bounty(bountyId, update.target, author, update.amount, update.amount)
+
+    val newOnChainState = state.onChain.copy(bounties = state.onChain.bounties + (bountyId -> newBounty))
+    val newCalculatedState = state.calculated.copy(bounties = state.calculated.bounties + (bountyId -> newBounty))
+
+    DataState(newOnChainState, newCalculatedState)
+  }
+
+  def combineNewModel(
+    update: NewModel,
+    state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
+    author: Address
+  ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
+    // Todo: Introduce global model counter to avoid collisions when models are removed.
+    val modelId = state.onChain.models.size.toLong + 1
+    val endogenousVariables = update.endogenousVariables.map(ev => EndogenousVariableLabel(ev.label) -> EndogenousVariableEquation(ev.equation)).toMap
+    val newModel = Model(modelId, author, update.exogenousVariables, endogenousVariables, update.target)
+
+    val newOnChainState = state.onChain.copy(models = state.onChain.models + (modelId -> newModel))
+    val newCalculatedState = state.calculated.copy(models = state.calculated.models + (modelId -> newModel))
+
+    DataState(newOnChainState, newCalculatedState)
+  }
+
+  def combineNewSample(
+    update: NewSample,
+    state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
+    contributor: Address
+  ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
+    state.calculated.models
+      .get(update.modelId)
+      .fold(state) { model =>
+        val newSolution = Solution(update.solution.endogenousValues)
+
+        // Todo: Make solution have an effect on the models total surprise score.
+        // Todo: Keep track of all sample contributors so they get paid if this model becomes the consensus model.
+
+        val newOnChainState = state.onChain.copy(models = state.onChain.models.updated(update.modelId, model.copy(endogenousVariables = model.endogenousVariables)))
+        val newCalculatedState = state.calculated.copy(models = state.calculated.models.updated(update.modelId, model.copy(endogenousVariables = model.endogenousVariables)))
+
+        DataState(newOnChainState, newCalculatedState)
+      }
+  }
+}

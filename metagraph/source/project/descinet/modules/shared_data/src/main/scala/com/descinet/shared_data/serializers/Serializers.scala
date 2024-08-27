@@ -32,6 +32,11 @@ object Serializers {
     completeString.getBytes(StandardCharsets.UTF_8)
   }
 
+  def serializeVariableKey(
+    variableKey: ExogenousVariableKey
+  ): Array[Byte] =
+    variableKey.asJson.deepDropNullValues.noSpaces.getBytes(StandardCharsets.UTF_8)
+
   def serializeState(
     state: DeSciNetOnChainState
   ): Array[Byte] =

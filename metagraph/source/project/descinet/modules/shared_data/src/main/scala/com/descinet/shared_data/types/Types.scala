@@ -13,8 +13,14 @@ object Types {
    */
 
   @derive(decoder, encoder)
+  case class ExogenousVariableKey(
+    sourceMetagraph        : Address,
+    dataApplicationUrlPath : String,
+  )
+
+  @derive(decoder, encoder)
   case class ExogenousVariableId(
-    identity: String // Hash of (sourceMetagraph * dataApplicationUrlPath)
+    identity: Hash[ExogenousVariableKey]
   )
 
   @derive(decoder, encoder)
@@ -120,7 +126,6 @@ object Types {
   @derive(decoder, encoder)
   case class NewSample(
     modelId   : Long,
-    submitter : Address,
     solution  : Solution
   ) extends DeSciNetUpdate
 
