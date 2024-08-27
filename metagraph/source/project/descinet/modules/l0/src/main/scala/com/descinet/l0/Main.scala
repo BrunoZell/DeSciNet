@@ -135,4 +135,19 @@ object Main
 
   override def dataApplication: Option[Resource[IO, BaseDataApplicationL0Service[IO]]] =
     makeL0Service.asResource.some
+
+  // Todo: Add a custom reward function to distribute model and sample rewards in $DESCI. Examples:
+  // https://github.com/Constellation-Labs/elpaca-metagraph/blob/main/modules/l0/src/main/scala/org/elpaca_metagraph/l0/Main.scala
+  // https://github.com/Constellation-Labs/dor-metagraph/blob/main/metagraph/modules/l0/src/main/scala/com/my/dor_metagraph/l0/Main.scala
+  // override def rewards(implicit sp: SecurityProvider[IO]): Option[Rewards[IO, CurrencySnapshotStateProof, CurrencyIncrementalSnapshot, CurrencySnapshotEvent]] = {
+  //   val dailyBountyRewards = new DailyBountyRewards[IO]
+  //   val analyticsBountyRewards = new AnalyticsBountyRewards[IO]
+  //   val validatorNodes = new ValidatorNodesAPI[IO]
+
+  //   DorRewards.make[IO](
+  //     dailyBountyRewards,
+  //     analyticsBountyRewards,
+  //     validatorNodes
+  //   ).some
+  // }
 }
