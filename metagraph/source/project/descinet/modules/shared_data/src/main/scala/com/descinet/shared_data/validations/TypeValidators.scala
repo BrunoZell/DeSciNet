@@ -8,6 +8,7 @@ import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 import org.tessellation.schema.address.Address
 import org.tessellation.security.hash.Hash
+import org.tessellation.schema.snapshot.SnapshotOrdinal
 
 object TypeValidators {
   def validateExogenousVariableName(

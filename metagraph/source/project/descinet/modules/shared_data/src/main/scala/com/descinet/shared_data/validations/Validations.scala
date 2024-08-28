@@ -8,6 +8,7 @@ import com.descinet.shared_data.validations.TypeValidators._
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 import org.tessellation.schema.address.Address
+import org.tessellation.schema.snapshot.SnapshotOrdinal
 
 object Validations {
   def newVariableValidations(

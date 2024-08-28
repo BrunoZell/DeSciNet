@@ -5,6 +5,7 @@ import derevo.derive
 import org.tessellation.currency.dataApplication.{DataCalculatedState, DataOnChainState, DataUpdate}
 import org.tessellation.schema.address.Address
 import org.tessellation.schema.SnapshotOrdinal
+import org.tessellation.security.hash.Hash
 
 object Types {
   /**
