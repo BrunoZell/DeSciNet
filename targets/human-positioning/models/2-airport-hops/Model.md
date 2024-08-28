@@ -53,3 +53,50 @@ In this model, we assume that when a person is near an airport, the probability 
    - $t_{\text{latest}}$ is the time of the latest measurement.
    - $A_{\text{latitude}}(t_{\text{jump}})$ is the latitude of the destination airport at the time of the jump.
    - $P_{\text{jump}}$ is the probability of jumping to another airport.
+
+### Proof of Implementation of Partial Model
+
+The partial model specifies:
+$$
+H_{\text{longitude}}(t) = M_{\text{longitude}}(t)
+$$
+$$
+H_{\text{latitude}}(t) = M_{\text{latitude}}(t)
+$$
+where $M_{\text{longitude}}(t)$ and $M_{\text{latitude}}(t)$ are only known at sparse measurable points in time.
+
+When $t = t_{\text{latest}}$, the equations in this model reduce to:
+$$
+H_{\text{longitude}}(t_{\text{latest}}) = 
+\begin{cases} 
+A_{\text{longitude}}(t_{\text{jump}}) & \text{with probability } P_{\text{jump}} \\
+M_{\text{longitude}}(t_{\text{latest}}) + \epsilon \cdot \sqrt{t_{\text{latest}} - t_{\text{latest}}} & \text{otherwise}
+\end{cases}
+= 
+\begin{cases} 
+A_{\text{longitude}}(t_{\text{jump}}) & \text{with probability } P_{\text{jump}} \\
+M_{\text{longitude}}(t_{\text{latest}}) & \text{otherwise}
+\end{cases}
+$$
+$$
+H_{\text{latitude}}(t_{\text{latest}}) = 
+\begin{cases} 
+A_{\text{latitude}}(t_{\text{jump}}) & \text{with probability } P_{\text{jump}} \\
+M_{\text{latitude}}(t_{\text{latest}}) + \epsilon \cdot \sqrt{t_{\text{latest}} - t_{\text{latest}}} & \text{otherwise}
+\end{cases}
+= 
+\begin{cases} 
+A_{\text{latitude}}(t_{\text{jump}}) & \text{with probability } P_{\text{jump}} \\
+M_{\text{latitude}}(t_{\text{latest}}) & \text{otherwise}
+\end{cases}
+$$
+
+Since $P_{\text{jump}}$ is the probability of jumping to another airport, and assuming that at the exact time of measurement, the jump does not occur (i.e., $P_{\text{jump}} = 0$ at $t_{\text{latest}}$):
+$$
+H_{\text{longitude}}(t_{\text{latest}}) = M_{\text{longitude}}(t_{\text{latest}})
+$$
+$$
+H_{\text{latitude}}(t_{\text{latest}}) = M_{\text{latitude}}(t_{\text{latest}})
+$$
+
+Thus, at the times when measurements are available, this model reduces to the partial model.

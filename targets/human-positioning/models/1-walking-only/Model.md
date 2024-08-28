@@ -38,3 +38,24 @@ In this simple model, we assume that human movement follows a normal distributio
    - $\epsilon$ is a parameter controlling the magnitude of the change.
    - $t$ is the current time.
    - $t_{\text{latest}}$ is the time of the latest measurement.
+
+### Proof of Implementation of Partial Model
+
+The partial model specifies:
+$$
+H_{\text{longitude}}(t) = M_{\text{longitude}}(t)
+$$
+$$
+H_{\text{latitude}}(t) = M_{\text{latitude}}(t)
+$$
+where $M_{\text{longitude}}(t)$ and $M_{\text{latitude}}(t)$ are only known at sparse measurable points in time.
+
+When $t = t_{\text{latest}}$, the equations in this model reduce to:
+$$
+H_{\text{longitude}}(t_{\text{latest}}) = M_{\text{longitude}}(t_{\text{latest}}) + \epsilon \cdot \sqrt{t_{\text{latest}} - t_{\text{latest}}} = M_{\text{longitude}}(t_{\text{latest}})
+$$
+$$
+H_{\text{latitude}}(t_{\text{latest}}) = M_{\text{latitude}}(t_{\text{latest}}) + \epsilon \cdot \sqrt{t_{\text{latest}} - t_{\text{latest}}} = M_{\text{latitude}}(t_{\text{latest}})
+$$
+
+Thus, at the times when measurements are available, this model reduces to the partial model.

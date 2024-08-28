@@ -42,3 +42,32 @@ In this model, we assume that human movement is constrained by street layouts. P
    - $t$ is the current time.
    - $t_{\text{latest}}$ is the time of the latest measurement.
    - $\text{snap}$ is a function that snaps the position to the nearest street latitude $S_{\text{latitude}}$.
+
+### Proof of Implementation of Partial Model
+
+The partial model specifies:
+$$
+H_{\text{longitude}}(t) = M_{\text{longitude}}(t)
+$$
+$$
+H_{\text{latitude}}(t) = M_{\text{latitude}}(t)
+$$
+where $M_{\text{longitude}}(t)$ and $M_{\text{latitude}}(t)$ are only known at sparse measurable points in time.
+
+When $t = t_{\text{latest}}$, the equations in this model reduce to:
+$$
+H_{\text{longitude}}(t_{\text{latest}}) = \text{snap}(M_{\text{longitude}}(t_{\text{latest}}) + \epsilon \cdot \sqrt{t_{\text{latest}} - t_{\text{latest}}}, S_{\text{longitude}}) = \text{snap}(M_{\text{longitude}}(t_{\text{latest}}), S_{\text{longitude}})
+$$
+$$
+H_{\text{latitude}}(t_{\text{latest}}) = \text{snap}(M_{\text{latitude}}(t_{\text{latest}}) + \epsilon \cdot \sqrt{t_{\text{latest}} - t_{\text{latest}}}, S_{\text{latitude}}) = \text{snap}(M_{\text{latitude}}(t_{\text{latest}}), S_{\text{latitude}})
+$$
+
+Assuming the snap function returns the original value when it is already on the street layout:
+$$
+\text{snap}(M_{\text{longitude}}(t_{\text{latest}}), S_{\text{longitude}}) = M_{\text{longitude}}(t_{\text{latest}})
+$$
+$$
+\text{snap}(M_{\text{latitude}}(t_{\text{latest}}), S_{\text{latitude}}) = M_{\text{latitude}}(t_{\text{latest}})
+$$
+
+Thus, at the times when measurements are available, this model reduces to the partial model.
