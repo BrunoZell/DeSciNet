@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 
 // Define the TypeScript type for the stakeholder data
 type TargetOutcome = {
+    targetId: string;
     name: string;
     stake: number;
     exogenousVariables: string[];
@@ -11,9 +12,9 @@ type TargetOutcome = {
 
 // Define the constant with the stakeholder data
 const targetOutcomes: TargetOutcome[] = [
-    { name: 'Target 1', stake: 16500, exogenousVariables: ['x', 'y'] },
-    { name: 'Target 2', stake: 4000, exogenousVariables: ['a', 'b'] },
-    { name: 'Target 3', stake: 4000, exogenousVariables: ['c', 'd'] }
+    { targetId: '1', name: 'Target 1', stake: 16500, exogenousVariables: ['x', 'y'] },
+    { targetId: '2', name: 'Target 2', stake: 4000, exogenousVariables: ['a', 'b'] },
+    { targetId: '3', name: 'Target 3', stake: 4000, exogenousVariables: ['c', 'd'] }
 ];
 
 export const TargetOutcomesTable = () => {
