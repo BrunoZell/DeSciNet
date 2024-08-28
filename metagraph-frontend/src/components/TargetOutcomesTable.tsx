@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Paper, Table, Tooltip, Grid, Title } from '@mantine/core';
+import { Paper, Table, Tooltip, Grid, Title, Text } from '@mantine/core';
 import * as d3 from 'd3';
-import './StakeholdersTable.css'; // Import the CSS file
 
 // Define the TypeScript type for the stakeholder data
 type TargetOutcome = {
@@ -20,7 +19,12 @@ const targetOutcomes: TargetOutcome[] = [
 export const TargetOutcomesTable = () => {
     return (
         <Paper p="md" className="stakeholders-table">
-            <Title order={3} mb="sm">Stakeholders</Title>
+            <Title order={3} mb="sm">Target Outcomes</Title>
+            <Text mb="md">
+                Target outcomes represent specific goals or objectives that are influenced by various exogenous variables.
+                <br />
+                Each target has a stake value indicating its importance or priority.
+            </Text>
             <Table>
                 <thead>
                     <tr>

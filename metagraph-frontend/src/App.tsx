@@ -7,12 +7,8 @@ import { BaseColor } from 'src/common/consts';
 import { Header } from 'src/common/components';
 
 import { AboutText } from 'src/components/AboutText';
-import { Registration } from 'src/components/Registration';
-import { Documents } from 'src/components/Documents';
 import { WalletConnect } from 'src/components/WalletConnect';
-import { StakeholdersTable } from 'src/components/StakeholdersTable';
-import { ExpensesTable } from 'src/components/ExpensesTable';
-
+import { TargetOutcomesTable } from 'src/components/TargetOutcomesTable';
 import styles from './App.module.scss';
 import { STARGAZER_CHAINS } from './common/consts/constants';
 
@@ -38,7 +34,7 @@ function App() {
           }}
         >
           <NetworkContext.Provider value={initialValue as any}>
-            <Container my="md" size="100%" px="xs">
+            <Container my="md" px="xs">
               <SimpleGrid cols={2} spacing="md" breakpoints={[
                 { maxWidth: 'sm', cols: 1 },
                 { maxWidth: 'xs', cols: 1 }
