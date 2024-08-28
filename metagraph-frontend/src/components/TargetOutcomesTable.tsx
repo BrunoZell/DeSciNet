@@ -27,9 +27,10 @@ export const TargetOutcomesTable = () => {
             const data = targetOutcomes.map(d => d.stake);
             const maxStake = d3.max(data) || 0;
 
-            const margin = { top: 0, right: 30, bottom: 30, left: 0 };
+            const margin = { top: 30, right: 30, bottom: 0, left: 0 };
             const width = 400 - margin.left - margin.right;
             const rowHeight = 40; // Adjusted height for each row to match table row height
+            const headerHeight = 40; // Height of the table header
 
             const x = d3.scaleLinear()
                 .domain([0, maxStake])
@@ -38,9 +39,13 @@ export const TargetOutcomesTable = () => {
             const svg = d3.select(chartRef.current)
                 .append('svg')
                 .attr('width', width + margin.left + margin.right)
-                .attr('height', rowHeight * data.length + margin.top + margin.bottom)
+                .attr('height', rowHeight * data.length + headerHeight + margin.top + margin.bottom)
                 .append('g')
                 .attr('transform', `translate(${margin.left},${margin.top})`);
+
+            svg.append('g')
+                .attr('transform', 'translate(0,0)')
+                .call(d3.axisTop(x));
 
             svg.selectAll('.bar')
                 .data(data)
@@ -48,14 +53,10 @@ export const TargetOutcomesTable = () => {
                 .append('rect')
                 .attr('class', 'bar')
                 .attr('x', 0)
-                .attr('y', (d, i) => i * rowHeight)
+                .attr('y', (d, i) => i * rowHeight + headerHeight)
                 .attr('width', d => x(d))
-                .attr('height', rowHeight - 1)
+                .attr('height', rowHeight - 10) // Adjusted height to fit within row
                 .attr('fill', 'steelblue');
-
-            svg.append('g')
-                .attr('transform', `translate(0,${rowHeight * data.length})`)
-                .call(d3.axisBottom(x));
         }
     }, []);
 
