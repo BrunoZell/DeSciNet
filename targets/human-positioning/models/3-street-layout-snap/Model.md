@@ -1,6 +1,6 @@
-# Human Movement Model 1: Assumption of Normal Movement
+# Human Movement Model 3: Street Layout Snapping
 
-In this simple model, we assume that human movement follows a normal distribution centered around the latest measured value with a standard deviation that increases with the square root of the time difference. This means that short travels are more likely, and far travels in a short amount of time are less likely, but as time increases, larger changes become more probable.
+In this model, we assume that human movement is constrained by street layouts. Positions are snapped to the nearest street, and movement follows the street network.
 
 ## Structural Causal Model Specification
 
@@ -14,6 +14,8 @@ In this simple model, we assume that human movement follows a normal distributio
 - **Exogenous Variables (J)**:
   - $M_{\text{longitude}}$: Measured longitude
   - $M_{\text{latitude}}$: Measured latitude
+  - $S_{\text{longitude}}$: Street longitude
+  - $S_{\text{latitude}}$: Street latitude
 
 ### Structured Equations
 
@@ -21,20 +23,22 @@ In this simple model, we assume that human movement follows a normal distributio
 
 1. **H-longitude**:
    $$
-   H_{\text{longitude}}(t) = M_{\text{longitude}}(t_{\text{latest}}) + \epsilon \cdot \sqrt{t - t_{\text{latest}}}
+   H_{\text{longitude}}(t) = \text{snap}(M_{\text{longitude}}(t_{\text{latest}}) + \epsilon \cdot \sqrt{t - t_{\text{latest}}}, S_{\text{longitude}})
    $$
    where:
    - $M_{\text{longitude}}(t_{\text{latest}})$ is the latest measurement of longitude.
    - $\epsilon$ is a parameter controlling the magnitude of the change.
    - $t$ is the current time.
    - $t_{\text{latest}}$ is the time of the latest measurement.
+   - $\text{snap}$ is a function that snaps the position to the nearest street longitude $S_{\text{longitude}}$.
 
 2. **H-latitude**:
    $$
-   H_{\text{latitude}}(t) = M_{\text{latitude}}(t_{\text{latest}}) + \epsilon \cdot \sqrt{t - t_{\text{latest}}}
+   H_{\text{latitude}}(t) = \text{snap}(M_{\text{latitude}}(t_{\text{latest}}) + \epsilon \cdot \sqrt{t - t_{\text{latest}}}, S_{\text{latitude}})
    $$
    where:
    - $M_{\text{latitude}}(t_{\text{latest}})$ is the latest measurement of latitude.
    - $\epsilon$ is a parameter controlling the magnitude of the change.
    - $t$ is the current time.
    - $t_{\text{latest}}$ is the time of the latest measurement.
+   - $\text{snap}$ is a function that snaps the position to the nearest street latitude $S_{\text{latitude}}$.
