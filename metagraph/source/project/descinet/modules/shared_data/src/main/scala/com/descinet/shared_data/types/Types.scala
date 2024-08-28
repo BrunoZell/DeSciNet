@@ -33,12 +33,6 @@ object Types {
   )
 
   @derive(decoder, encoder)
-  case class Measurement(
-    timestamp  : SnapshotOrdinal,
-    value      : Double,
-  )
-
-  @derive(decoder, encoder)
   case class Target(
     id                   : Long,
     exogenousVariables   : List[ExogenousVariableId],
@@ -51,6 +45,13 @@ object Types {
     grantee              : Address,
     originalAmount       : Long, // in DESCI
     remainingAmount      : Long, // in DESCI
+  )
+
+  @derive(decoder, encoder)
+  case class MeasurementChain(
+    timestamp  : SnapshotOrdinal,
+    value      : Double,
+    previous   : Option[Hash[MeasurementChain]],
   )
 
   @derive(decoder, encoder)
@@ -111,6 +112,12 @@ object Types {
   ) extends DeSciNetUpdate
 
   @derive(decoder, encoder)
+  case class NewMeasurement(
+    exogenousVariableId: ExogenousVariableId,
+    value: Double,
+  ) extends DeSciNetUpdate
+
+  @derive(decoder, encoder)
   case class NewBounty( 
     target: Target,
     amount: Long, // in DESCI
@@ -138,7 +145,7 @@ object Types {
   @derive(decoder, encoder)
   case class DeSciNetOnChainState(
     exogenousVariables: Set[ExogenousVariableId],
-    measurements: Map[ExogenousVariableId, MeasurementSequence],
+    measurements: Map[ExogenousVariableId, Hash[MeasurementChain]],
     models: Map[Long, Model],
     targets: Map[Long, Target],
     bounties: Map[Long, Bounty],
@@ -154,7 +161,7 @@ object Types {
   @derive(decoder, encoder)
   case class DeSciNetCalculatedState(
     exogenousVariables: Map[ExogenousVariableId, ExogenousVariable],
-    measurements: Map[ExogenousVariableId, Measurement],
+    measurements: Map[ExogenousVariableId, MeasurementChain],
     models: Map[Long, Model],
     targets: Map[Long, Target],
     bounties: Map[Long, Bounty],

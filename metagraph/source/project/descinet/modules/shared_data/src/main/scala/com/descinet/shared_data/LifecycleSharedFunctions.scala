@@ -31,6 +31,8 @@ object LifecycleSharedFunctions {
         newModelValidations(newModel, None)
       case newSample: NewSample =>
         newSampleValidations(newSample, None)
+      case newMeasurement: NewMeasurement =>
+        newMeasurementValidations(newMeasurement, state)
     }
   }
 
@@ -54,6 +56,8 @@ object LifecycleSharedFunctions {
                 newModelValidations(newModel, state.some)
               case newSample: NewSample =>
                 newSampleValidations(newSample, state.some)
+              case newMeasurement: NewMeasurement =>
+                newMeasurementValidations(newMeasurement, state)
             }
           }
         }
@@ -71,22 +75,35 @@ object LifecycleSharedFunctions {
     } else {
       implicit val sp: SecurityProvider[F] = context.securityProvider
       newStateF.flatMap(newState => {
-        updates.foldLeftM(newState) { (acc, signedUpdate) => {
-          getFirstAddressFromProofs(signedUpdate.proofs).flatMap { author =>
-            signedUpdate.value match {
-              case newVariable: NewVariable =>
+        val (measurementUpdates, otherUpdates) = updates.partition(_.value.isInstanceOf[NewMeasurement])
+
+        otherUpdates.foldLeftM(newState) { (acc, signedUpdate) => {
+          signedUpdate.value match {
+            case newVariable: NewVariable =>
+              getFirstAddressFromProofs(signedUpdate.proofs).flatMap { author =>
                 combineNewVariable(newVariable, acc, author).pure[F]
-              case newTarget: NewTarget =>
-                combineNewTarget(newTarget, acc).pure[F]
-              case newBounty: NewBounty =>
+              }
+            case newTarget: NewTarget =>
+              combineNewTarget(newTarget, acc).pure[F]
+            case newBounty: NewBounty =>
+              getFirstAddressFromProofs(signedUpdate.proofs).flatMap { author =>
                 combineNewBounty(newBounty, acc, author).pure[F]
-              case newModel: NewModel =>
+              }
+            case newModel: NewModel =>
+              getFirstAddressFromProofs(signedUpdate.proofs).flatMap { author =>
                 combineNewModel(newModel, acc, author).pure[F]
-              case newSample: NewSample =>
+              }
+            case newSample: NewSample =>
+              getFirstAddressFromProofs(signedUpdate.proofs).flatMap { author =>
                 combineNewSample(newSample, acc, author).pure[F]
-            }
+              }
+            case _: NewMeasurement =>
+              acc.pure[F] // Skip for now, will process later
           }
         }
+        }.flatMap { updatedState =>
+          val newMeasurements = measurementUpdates.map(_.value.asInstanceOf[NewMeasurement])
+          combineNewMeasurement(newMeasurements, updatedState).pure[F]
         }
       })
     }

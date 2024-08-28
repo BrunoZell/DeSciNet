@@ -72,4 +72,15 @@ object Validations {
       case None =>
         validateSolutionEndogenousValues(update)
     }
+
+  def newMeasurementValidations(
+    update: NewMeasurement,
+    state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
+  ): DataApplicationValidationErrorOr[Unit] = {
+    state.onChain.measurements.get(update.exogenousVariableId) match {
+      case Some(chainHead) if update.snapshotOrdinal <= chainHead.timestamp =>
+        SnapshotOrdinalTooLow.invalid
+      case _ => valid
+    }
+  }
 }
