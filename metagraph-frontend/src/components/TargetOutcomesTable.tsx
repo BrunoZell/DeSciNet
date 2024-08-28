@@ -17,6 +17,48 @@ const targetOutcomes: TargetOutcome[] = [
 ];
 
 export const TargetOutcomesTable = () => {
+    const chartRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (chartRef.current) {
+            // Clear any existing chart
+            d3.select(chartRef.current).selectAll('*').remove();
+
+            const data = targetOutcomes.map(d => d.stake);
+            const maxStake = d3.max(data) || 0;
+
+            const margin = { top: 0, right: 30, bottom: 30, left: 0 };
+            const width = 400 - margin.left - margin.right;
+            const rowHeight = 40; // Adjusted height for each row to match table row height
+
+            const x = d3.scaleLinear()
+                .domain([0, maxStake])
+                .range([0, width]);
+
+            const svg = d3.select(chartRef.current)
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', rowHeight * data.length + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+
+            svg.selectAll('.bar')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('class', 'bar')
+                .attr('x', 0)
+                .attr('y', (d, i) => i * rowHeight)
+                .attr('width', d => x(d))
+                .attr('height', rowHeight - 1)
+                .attr('fill', 'steelblue');
+
+            svg.append('g')
+                .attr('transform', `translate(0,${rowHeight * data.length})`)
+                .call(d3.axisBottom(x));
+        }
+    }, []);
+
     return (
         <Paper p="md" className="stakeholders-table">
             <Title order={3} mb="sm">Target Outcomes</Title>
@@ -25,22 +67,29 @@ export const TargetOutcomesTable = () => {
                 <br />
                 Each target has a stake value indicating its importance or priority.
             </Text>
-            <Table>
-                <thead>
-                    <tr>
-                        <th>Model</th>
-                        <th>Stake</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {targetOutcomes.map((targetOutcome, index) => (
-                        <tr key={index}>
-                            <td>{targetOutcome.name}</td>
-                            <td>{targetOutcome.stake.toLocaleString()}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
+            <Grid>
+                <Grid.Col span={6}>
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>Stake</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {targetOutcomes.map((targetOutcome, index) => (
+                                <tr key={index}>
+                                    <td>{targetOutcome.name}</td>
+                                    <td>{targetOutcome.stake.toLocaleString()}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </Grid.Col>
+                <Grid.Col span={6}>
+                    <div ref={chartRef}></div>
+                </Grid.Col>
+            </Grid>
         </Paper>
     );
 };
