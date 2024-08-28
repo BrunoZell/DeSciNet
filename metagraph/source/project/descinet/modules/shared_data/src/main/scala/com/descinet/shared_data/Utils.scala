@@ -2,6 +2,9 @@ package com.descinet.shared_data
 
 import cats.data.NonEmptySet
 import cats.effect.Async
+import com.descinet.shared_data.app.ApplicationConfig
+import org.tessellation.env.env.{KeyAlias, Password, StorePath}
+import org.tessellation.keytool.KeyStoreUtils
 import cats.syntax.foldable.toFoldableOps
 import cats.syntax.traverse.toTraverseOps
 import org.tessellation.schema.address.Address
@@ -27,5 +30,31 @@ object Utils {
     proofs: NonEmptySet[SignatureProof]
   ): F[Address] =
     proofs.head.id.toAddress[F]
-}
 
+  def loadKeyPair[F[_] : Async : SecurityProvider](config: ApplicationConfig): F[KeyPair] = {
+    val keyStore = StorePath(config.nodeKey.keystore)
+    val alias = KeyAlias(config.nodeKey.alias)
+    val password = Password(config.nodeKey.password)
+
+    KeyStoreUtils
+      .readKeyPairFromStore[F](
+        keyStore.value.toString,
+        alias.value.value,
+        password.value.value.toCharArray,
+        password.value.value.toCharArray
+      )
+  }
+
+  def loadKeyPair[F[_] : Async : SecurityProvider](
+    keyStore: StorePath,
+    alias   : KeyAlias,
+    password: Password
+  ): F[KeyPair] =
+    KeyStoreUtils
+      .readKeyPairFromStore[F](
+        keyStore.value.toString,
+        alias.value.value,
+        password.value.value.toCharArray,
+        password.value.value.toCharArray
+      )
+}

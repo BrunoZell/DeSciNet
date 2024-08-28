@@ -130,6 +130,14 @@ object Main
   private def makeL1Service: IO[BaseDataApplicationL1Service[IO]] =
     CalculatedStateService.make[IO].map(makeBaseDataApplicationL1Service)
 
-  override def dataApplication: Option[Resource[IO, BaseDataApplicationL1Service[IO]]] =
-    makeL1Service.asResource.some
+  override def dataApplication: Option[Resource[IO, BaseDataApplicationL1Service[IO]]] = (for {
+    implicit0(supervisor: Supervisor[IO]) <- Supervisor[IO]
+    implicit0(sp: SecurityProvider[IO]) <- SecurityProvider.forAsync[IO]
+    implicit0(json2bin: JsonSerializer[IO]) <- JsonBinaryCodec.forSync[IO].asResource
+
+    config <- ApplicationConfigOps.readDefault[IO].asResource
+    keyPair <- loadKeyPair[IO](config).asResource
+    _ <- DaemonApis.make[IO](config, keyPair).spawnL1Daemons.asResource
+    l1Service <- makeL1Service.asResource
+  } yield l1Service).some
 }

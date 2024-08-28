@@ -133,8 +133,17 @@ object Main
   private def makeL0Service: IO[BaseDataApplicationL0Service[IO]] =
     CalculatedStateService.make[IO].map(makeBaseDataApplicationL0Service)
 
-  override def dataApplication: Option[Resource[IO, BaseDataApplicationL0Service[IO]]] =
-    makeL0Service.asResource.some
+  override def dataApplication: Option[Resource[IO, BaseDataApplicationL0Service[IO]]] = (for {
+    implicit0(supervisor: Supervisor[IO]) <- Supervisor[IO]
+    implicit0(sp: SecurityProvider[IO]) <- SecurityProvider.forAsync[IO]
+    implicit0(json2bin: JsonSerializer[IO]) <- JsonBinaryCodec.forSync[IO].asResource
+
+    config <- ApplicationConfigOps.readDefault[IO].asResource
+    keyPair <- loadKeyPair[IO](config).asResource
+    calculatedStateService <- CalculatedStateService.make[IO].asResource
+    _ <- DaemonApis.make[IO](config, keyPair).spawnL0Daemons(calculatedStateService).asResource
+    l0Service <- makeL0Service.asResource
+  } yield l0Service).some
 
   // Todo: Add a custom reward function to distribute model and sample rewards in $DESCI. Examples:
   // https://github.com/Constellation-Labs/elpaca-metagraph/blob/main/modules/l0/src/main/scala/org/elpaca_metagraph/l0/Main.scala
