@@ -25,7 +25,13 @@ lazy val sharedData = (project in file("modules/shared_data"))
   .enablePlugins(JavaAppPackaging)
   .settings(
     name := "descinet-shared_data",
-    scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info", "-language:reflectiveCalls"),
+    scalacOptions ++= List(
+      "-Ymacro-annotations",
+      "-Yrangepos",
+      "-Wconf:cat=unused:silent", // Silence all unused warnings
+      "-Wconf:cat=unused-nowarn:silent", // Silence unused warnings with @nowarn
+      "-language:reflectiveCalls"
+    ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
     buildInfoPackage := "com.descinet.shared_data",
     resolvers += Resolver.mavenLocal,
@@ -38,13 +44,20 @@ lazy val sharedData = (project in file("modules/shared_data"))
       Libraries.tessellationNodeShared
     )
   )
+
 lazy val currencyL1 = (project in file("modules/l1"))
   .enablePlugins(AshScriptPlugin)
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(JavaAppPackaging)
   .settings(
     name := "descinet-currency-l1",
-    scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info", "-language:reflectiveCalls"),
+    scalacOptions ++= List(
+      "-Ymacro-annotations",
+      "-Yrangepos",
+      "-Wconf:cat=unused:silent", // Silence all unused warnings
+      "-Wconf:cat=unused-nowarn:silent", // Silence unused warnings with @nowarn
+      "-language:reflectiveCalls"
+    ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
     buildInfoPackage := "com.descinet.l1",
     resolvers += Resolver.mavenLocal,
@@ -65,7 +78,13 @@ lazy val currencyL0 = (project in file("modules/l0"))
   .dependsOn(sharedData)
   .settings(
     name := "descinet-currency-l0",
-    scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info", "-language:reflectiveCalls"),
+    scalacOptions ++= List(
+      "-Ymacro-annotations",
+      "-Yrangepos",
+      "-Wconf:cat=unused:silent", // Silence all unused warnings
+      "-Wconf:cat=unused-nowarn:silent", // Silence unused warnings with @nowarn
+      "-language:reflectiveCalls"
+    ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
     buildInfoPackage := "com.descinet.l0",
     resolvers += Resolver.mavenLocal,
@@ -89,7 +108,13 @@ lazy val dataL1 = (project in file("modules/data_l1"))
   .dependsOn(sharedData)
   .settings(
     name := "descinet-data_l1",
-    scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info", "-language:reflectiveCalls"),
+    scalacOptions ++= List(
+      "-Ymacro-annotations",
+      "-Yrangepos",
+      "-Wconf:cat=unused:silent", // Silence all unused warnings
+      "-Wconf:cat=unused-nowarn:silent", // Silence unused warnings with @nowarn
+      "-language:reflectiveCalls"
+    ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
     buildInfoPackage := "com.descinet.data_l1",
     resolvers += Resolver.mavenLocal,
