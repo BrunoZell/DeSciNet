@@ -1,5 +1,12 @@
 # Building
 
+## Metagraph Frontend
+
+```bash
+yarn install
+yarn start-frontend
+```
+
 ## Metagraph
 
 ### Install Development Dependencies
