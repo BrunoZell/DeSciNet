@@ -27,7 +27,7 @@ export const TargetOutcomesTable = () => {
             const data = targetOutcomes.map(d => d.stake);
             const maxStake = d3.max(data) || 0;
 
-            const margin = { top: 30, right: 30, bottom: 0, left: 0 };
+            const margin = { top: 20, right: 30, bottom: 0, left: 0 };
             const width = 400 - margin.left - margin.right;
             const rowHeight = 40; // Adjusted height for each row to match table row height
             const headerHeight = 40; // Height of the table header
@@ -53,9 +53,9 @@ export const TargetOutcomesTable = () => {
                 .append('rect')
                 .attr('class', 'bar')
                 .attr('x', 0)
-                .attr('y', (d, i) => i * rowHeight + headerHeight)
+                .attr('y', (d, i) => i * rowHeight + headerHeight - rowHeight + 13) // Adjusted y position
                 .attr('width', d => x(d))
-                .attr('height', rowHeight - 10) // Adjusted height to fit within row
+                .attr('height', rowHeight - 3) // Adjusted height to fit within row with minimal padding
                 .attr('fill', 'steelblue');
         }
     }, []);
