@@ -1,0 +1,30 @@
+{
+  "I": [
+    ["H-longitude", "float"],
+    ["H-latitude", "float"],
+    ["epsilon", "float"]
+  ],
+  "J": [
+    ["M-longitude", "float"],
+    ["M-latitude", "float"],
+    ["S-longitude", "float"],
+    ["S-latitude", "float"]
+  ],
+  "f": [
+    {
+      "output": "H-longitude",
+      "inputs": ["M-longitude", "epsilon", "t", "t-latest", "S-longitude"],
+      "expression": "snap(M-longitude + epsilon * sqrt(t - t-latest), S-longitude)"
+    },
+    {
+      "output": "H-latitude",
+      "inputs": ["M-latitude", "epsilon", "t", "t-latest", "S-latitude"],
+      "expression": "snap(M-latitude + epsilon * sqrt(t - t-latest), S-latitude)"
+    },
+    {
+      "output": "epsilon",
+      "inputs": [],
+      "expression": "1.0"
+    }
+  ]
+}

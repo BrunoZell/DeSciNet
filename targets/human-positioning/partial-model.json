@@ -1,0 +1,22 @@
+{
+  "I": [
+    ["H-longitude", "float"],
+    ["H-latitude", "float"]
+  ],
+  "J": [
+    ["M-longitude", "float"],
+    ["M-latitude", "float"]
+  ],
+  "f": [
+    {
+      "output": "H-longitude",
+      "inputs": ["M-longitude"],
+      "expression": "M-longitude"
+    },
+    {
+      "output": "H-latitude",
+      "inputs": ["M-latitude"],
+      "expression": "M-latitude"
+    }
+  ]
+}

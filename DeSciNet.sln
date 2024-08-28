@@ -7,9 +7,11 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Node", "node\Node.fsproj", 
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "SCM", "scm\SCM.fsproj", "{C1481CAB-1ADD-4DD0-B11F-7064AD373ED0}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Google.Timeline", "google-timeline\Google.Timeline.fsproj", "{C9EAF104-DB6B-498E-B48E-B1C35A68F7D2}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Google.Timeline", "targets\human-positioning\observables\google-timeline\fsharp\Google.Timeline.fsproj", "{17634E8E-B4C7-476F-82CE-D77EF2F551E7}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Model1", "model-1\Model1.fsproj", "{76925212-3539-407C-8016-742A9F7A11A2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "human-positioning", "human-positioning", "{1D9CB475-F367-4A0B-8A86-0F2E14A557A4}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "HumanPositioning.WalkOnly", "targets\human-positioning\models\1-walking-only\HumanPositioning.WalkOnly.fsproj", "{EC309F82-87DC-4398-871D-E5562D6EAC59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,17 +27,21 @@ Global
 		{C1481CAB-1ADD-4DD0-B11F-7064AD373ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1481CAB-1ADD-4DD0-B11F-7064AD373ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1481CAB-1ADD-4DD0-B11F-7064AD373ED0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9EAF104-DB6B-498E-B48E-B1C35A68F7D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9EAF104-DB6B-498E-B48E-B1C35A68F7D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9EAF104-DB6B-498E-B48E-B1C35A68F7D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9EAF104-DB6B-498E-B48E-B1C35A68F7D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76925212-3539-407C-8016-742A9F7A11A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76925212-3539-407C-8016-742A9F7A11A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76925212-3539-407C-8016-742A9F7A11A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76925212-3539-407C-8016-742A9F7A11A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17634E8E-B4C7-476F-82CE-D77EF2F551E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17634E8E-B4C7-476F-82CE-D77EF2F551E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17634E8E-B4C7-476F-82CE-D77EF2F551E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17634E8E-B4C7-476F-82CE-D77EF2F551E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC309F82-87DC-4398-871D-E5562D6EAC59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC309F82-87DC-4398-871D-E5562D6EAC59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC309F82-87DC-4398-871D-E5562D6EAC59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC309F82-87DC-4398-871D-E5562D6EAC59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{17634E8E-B4C7-476F-82CE-D77EF2F551E7} = {1D9CB475-F367-4A0B-8A86-0F2E14A557A4}
+		{EC309F82-87DC-4398-871D-E5562D6EAC59} = {1D9CB475-F367-4A0B-8A86-0F2E14A557A4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {223D27B1-C805-4BD1-91FE-FD4ACE66FF11}

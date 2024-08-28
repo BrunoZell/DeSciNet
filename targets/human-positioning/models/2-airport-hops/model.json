@@ -1,0 +1,36 @@
+{
+  "I": [
+    ["H-longitude", "float"],
+    ["H-latitude", "float"],
+    ["epsilon", "float"],
+    ["P-jump", "float"]
+  ],
+  "J": [
+    ["M-longitude", "float"],
+    ["M-latitude", "float"],
+    ["A-longitude", "float"],
+    ["A-latitude", "float"]
+  ],
+  "f": [
+    {
+      "output": "H-longitude",
+      "inputs": ["M-longitude", "epsilon", "t", "t-latest", "A-longitude", "P-jump"],
+      "expression": "if (rand() < P-jump) { A-longitude } else { M-longitude + epsilon * sqrt(t - t-latest) }"
+    },
+    {
+      "output": "H-latitude",
+      "inputs": ["M-latitude", "epsilon", "t", "t-latest", "A-latitude", "P-jump"],
+      "expression": "if (rand() < P-jump) { A-latitude } else { M-latitude + epsilon * sqrt(t - t-latest) }"
+    },
+    {
+      "output": "epsilon",
+      "inputs": [],
+      "expression": "1.0"
+    },
+    {
+      "output": "P-jump",
+      "inputs": [],
+      "expression": "0.1"
+    }
+  ]
+}

@@ -10,14 +10,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\google-timeline\Google.Timeline.fsproj" />
-    <ProjectReference Include="..\model-1\Model1.fsproj" />
+    <ProjectReference Include="..\targets\human-positioning\observables\google-timeline\fsharp\Google.Timeline.fsproj" />
     <ProjectReference Include="..\scm\SCM.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Giraffe" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

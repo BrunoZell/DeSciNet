@@ -7,7 +7,6 @@ open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Microsoft.AspNetCore.Cors.Infrastructure
-open MathNet.Numerics.Distributions
 open SCM
 
 let calculateSurprises (observations: seq<Google.Timeline.GoogleLocationObservation>) =

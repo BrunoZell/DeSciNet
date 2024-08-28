@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\google-timeline\Google.Timeline.fsproj" />
-    <ProjectReference Include="..\scm\SCM.fsproj" />
+    <ProjectReference Include="..\..\observables\google-timeline\fsharp\Google.Timeline.fsproj" />
+    <ProjectReference Include="..\..\..\..\scm\SCM.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

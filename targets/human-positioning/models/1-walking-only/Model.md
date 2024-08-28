@@ -2,7 +2,7 @@
 
 In this simple model, we assume that human movement follows a normal distribution centered around the latest measured value with a standard deviation that increases with the square root of the time difference. This means that short travels are more likely, and far travels in a short amount of time are less likely, but as time increases, larger changes become more probable.
 
-## Structural Causal Model (SCM)
+## Structural Causal Model Specification
 
 ### Variables
 
@@ -15,7 +15,7 @@ In this simple model, we assume that human movement follows a normal distributio
   - $M_{\text{longitude}}$: Measured longitude
   - $M_{\text{latitude}}$: Measured latitude
 
-### Mathematical Equations
+### Structured Equations
 
 #### Endogenous Variables
 
