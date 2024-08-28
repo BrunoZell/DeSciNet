@@ -53,6 +53,52 @@ We have the options `start-genesis` and `start-rollback` to start the containers
 ./hydra start-rollback   
 ```
 
+After the end of `start-genesis`, you should see something like this:
+
+```bash
+######################### METAGRAPH INFO #########################
+
+Metagraph ID: :your_metagraph_id
+
+
+Container metagraph-node-1 URLs
+Global L0: http://localhost:9000/node/info
+Metagraph L0: http://localhost:9200/node/info
+Currency L1: http://localhost:9300/node/info
+Data L1: http://localhost:9400/node/info
+
+
+Container metagraph-node-2 URLs
+Metagraph L0: http://localhost:9210/node/info
+Currency L1: http://localhost:9310/node/info
+Data L1: http://localhost:9410/node/info
+
+
+Container metagraph-node-3 URLs
+Metagraph L0: http://localhost:9220/node/info
+Currency L1: http://localhost:9320/node/info
+Data L1: http://localhost:9420/node/info
+
+
+Clusters URLs
+Global L0: http://localhost:9000/cluster/info
+Metagraph L0: http://localhost:9200/cluster/info
+Currency L1: http://localhost:9300/cluster/info
+Data L1: http://localhost:9400/cluster/info
+
+####################################################################
+```
+
+You can now access the URLs and see that your containers are working properly
+
+#### Status
+
+We have the option `status` to show the containers status. You can call the option this way:
+
+```bash
+./hydra status   
+```
+
 #### Stopping
 
 We have the option `stop` to stop the containers. You can call the option this way:
@@ -73,14 +119,6 @@ We also have the `purge` option to destroy the containers and clean all images
 
 ```bash
 ./hydra purge   
-```
-
-#### Status
-
-We have the option `status` to show the containers status. You can call the option this way:
-
-```bash
-./hydra status   
 ```
 
 #### Logs
