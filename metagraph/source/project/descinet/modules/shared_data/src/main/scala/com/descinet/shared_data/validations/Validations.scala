@@ -79,7 +79,7 @@ object Validations {
   ): DataApplicationValidationErrorOr[Unit] = {
     state match {
       case Some(state) =>
-        state.onChain.measurements.get(update.exogenousVariableId) match {
+        state.onChain.measurements.get(update.exogenousVariableId.identity) match {
           // case Some(chainHead) if update.snapshotOrdinal <= chainHead.timestamp =>
           //   SnapshotOrdinalTooLow.invalid
           case _ => valid

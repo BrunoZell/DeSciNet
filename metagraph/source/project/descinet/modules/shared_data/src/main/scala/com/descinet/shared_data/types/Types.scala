@@ -5,7 +5,6 @@ import derevo.derive
 import org.tessellation.currency.dataApplication.{DataCalculatedState, DataOnChainState, DataUpdate}
 import org.tessellation.schema.address.Address
 import org.tessellation.schema.SnapshotOrdinal
-import org.tessellation.security.hash.Hash
 
 object Types {
   /**
@@ -21,7 +20,7 @@ object Types {
 
   @derive(decoder, encoder)
   case class ExogenousVariableId(
-    identity: Hash // Hash[ExogenousVariableKey]
+    identity: String // Hash[ExogenousVariableKey]
   )
 
   @derive(decoder, encoder)
@@ -52,7 +51,7 @@ object Types {
   case class MeasurementChain(
     timestamp  : SnapshotOrdinal,
     value      : Double,
-    previous   : Option[Hash], // Hash[MeasurementChain]
+    previous   : Option[String], // Hash[MeasurementChain]
   )
 
   @derive(decoder, encoder)
@@ -76,7 +75,7 @@ object Types {
     id                   : Long,
     author               : Address,
     exogenousVariables   : List[ExogenousVariableId],
-    endogenousVariables  : Map[EndogenousVariableLabel, EndogenousVariableEquation],
+    endogenousVariables  : Map[String, EndogenousVariableEquation], // TKey: EndogenousVariableLabel
     target               : Target,
   )
 
@@ -129,7 +128,7 @@ object Types {
     author               : Address,
     target               : Target,
     exogenousVariables   : List[ExogenousVariableId],
-    endogenousVariables  : List[EndogenousVariable],
+    endogenousVariables  : Map[String, String], // TKey: Label; TValue: Equation
   ) extends DeSciNetUpdate
 
   @derive(decoder, encoder)
@@ -147,7 +146,7 @@ object Types {
   @derive(decoder, encoder)
   case class DeSciNetOnChainState(
     exogenousVariables: Set[ExogenousVariableId],
-    measurements: Map[ExogenousVariableId, Hash], // Hash[MeasurementChain]
+    measurements: Map[String, String], // TKey: Hash[ExogenousVariableKey; TValue: Hash[MeasurementChain]
     models: Map[Long, Model],
     targets: Map[Long, Target],
     bounties: Map[Long, Bounty],
@@ -162,8 +161,8 @@ object Types {
 
   @derive(decoder, encoder)
   case class DeSciNetCalculatedState(
-    exogenousVariables: Map[ExogenousVariableId, ExogenousVariable],
-    measurements: Map[ExogenousVariableId, MeasurementChain],
+    exogenousVariables: Map[String, ExogenousVariable], // TKey: Hash[ExogenousVariableKey]
+    measurements: Map[String, MeasurementChain], // TKey: Hash[ExogenousVariableKey]
     models: Map[Long, Model],
     targets: Map[Long, Target],
     bounties: Map[Long, Bounty],

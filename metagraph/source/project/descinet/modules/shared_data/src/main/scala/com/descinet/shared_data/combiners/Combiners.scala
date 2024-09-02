@@ -14,11 +14,12 @@ object Combiners {
     author: Address
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
     val variableKey = ExogenousVariableKey(update.sourceMetagraph, update.dataApplicationUrlPath)
-    val variableId = ExogenousVariableId(Hash.fromBytes(Serializers.serializeVariableKey(variableKey)))
+    val variableId = ExogenousVariableId(Hash.fromBytes(Serializers.serializeVariableKey(variableKey)).toString)
     @unused val newVariable = ExogenousVariable(update.name, author, update.sourceMetagraph, update.dataApplicationUrlPath, update.l0NodeUrls)
 
     val newOnChainState = state.onChain.copy(exogenousVariables = state.onChain.exogenousVariables + variableId)
-    val newCalculatedState = state.calculated.copy(exogenousVariables = state.calculated.exogenousVariables + (variableId -> newVariable))
+    // Convert variableId to String
+    val newCalculatedState = state.calculated.copy(exogenousVariables = state.calculated.exogenousVariables + (variableId.identity -> newVariable))
 
     DataState(newOnChainState, newCalculatedState)
   }
@@ -59,7 +60,10 @@ object Combiners {
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
     // Todo: Introduce global model counter to avoid collisions when models are removed.
     val modelId = state.onChain.models.size.toLong + 1
-    val endogenousVariables = update.endogenousVariables.map(ev => EndogenousVariableLabel(ev.label) -> EndogenousVariableEquation(ev.equation)).toMap
+    // Ensure update.endogenousVariables is a Map[String, EndogenousVariableEquation]
+    val endogenousVariables: Map[String, EndogenousVariableEquation] = update.endogenousVariables.map {
+      case (key, value) => key -> EndogenousVariableEquation(value)
+    }
     val newModel = Model(modelId, author, update.exogenousVariables, endogenousVariables, update.target)
 
     val newOnChainState = state.onChain.copy(models = state.onChain.models + (modelId -> newModel))

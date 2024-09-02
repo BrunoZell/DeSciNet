@@ -6,7 +6,6 @@ import com.descinet.shared_data.types.Types._
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 import org.tessellation.schema.SnapshotOrdinal
-import cats.implicits._
 import scala.annotation.unused
 
 object TypeValidators {

@@ -13,7 +13,6 @@ import org.tessellation.security.SecurityProvider
 import org.tessellation.security.signature.Signed
 import org.typelevel.log4cats.SelfAwareStructuredLogger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
-import scala.annotation.unused
 
 object LifecycleSharedFunctions {
   private def logger[F[_] : Async]: SelfAwareStructuredLogger[F] = Slf4jLogger.getLoggerFromName[F]("ClusterApi")
@@ -40,8 +39,8 @@ object LifecycleSharedFunctions {
   def validateData[F[_] : Async](
     state  : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
     updates: NonEmptyList[Signed[DeSciNetUpdate]]
-  )(implicit context: L0NodeContext[F]): F[DataApplicationValidationErrorOr[Unit]] = {
-    implicit val sp: SecurityProvider[F] = context.securityProvider
+  )/*(implicit context: L0NodeContext[F])*/: F[DataApplicationValidationErrorOr[Unit]] = {
+    // implicit val sp: SecurityProvider[F] = context.securityProvider
     updates.traverse { signedUpdate =>
       // getAllAddressesFromProofs(signedUpdate.proofs)
       //   .flatMap { addresses =>
