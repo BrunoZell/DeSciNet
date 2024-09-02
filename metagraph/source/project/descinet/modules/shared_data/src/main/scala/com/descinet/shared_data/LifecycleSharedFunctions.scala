@@ -32,7 +32,7 @@ object LifecycleSharedFunctions {
       case newSample: NewSample =>
         newSampleValidations(newSample, None)
       case newMeasurement: NewMeasurement =>
-        newMeasurementValidations(newMeasurement, state)
+        newMeasurementValidations(newMeasurement, None)
     }
   }
 

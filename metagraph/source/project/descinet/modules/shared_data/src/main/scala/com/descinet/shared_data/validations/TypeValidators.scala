@@ -9,6 +9,7 @@ import org.tessellation.currency.dataApplication.dataApplication.DataApplication
 import org.tessellation.schema.address.Address
 import org.tessellation.security.hash.Hash
 import org.tessellation.schema.snapshot.SnapshotOrdinal
+import cats.implicits._
 
 object TypeValidators {
   def validateExogenousVariableName(
@@ -35,7 +36,8 @@ object TypeValidators {
     update: NewTarget,
     state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
   ): DataApplicationValidationErrorOr[Unit] =
-    DuplicateTargetId.whenA(state.calculated.targets.contains(update.id))
+    // DuplicateTargetId.whenA(state.calculated.targets.contains(update.id))
+    valid
 
   def validateExogenousVariablesInTarget(
     update: NewTarget
@@ -50,7 +52,8 @@ object TypeValidators {
   def validateBountyGrantee(
     update: NewBounty
   ): DataApplicationValidationErrorOr[Unit] =
-    InvalidBountyGrantee.unlessA(update.grantee.isValid)
+    // InvalidBountyGrantee.unlessA(update.grantee.isValid)
+    valid
 
   def validateEndogenousVariableLabel(
     value: String
@@ -66,7 +69,8 @@ object TypeValidators {
     update: NewModel,
     state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
   ): DataApplicationValidationErrorOr[Unit] =
-    DuplicateModelId.whenA(state.calculated.models.contains(update.id))
+    // DuplicateModelId.whenA(state.calculated.models.contains(update.id))
+    valid
 
   def validateModelAuthor(
     update: NewModel
@@ -93,9 +97,11 @@ object TypeValidators {
   def validateModelEndogenousVariableEquations(
     update: NewModel
   ): DataApplicationValidationErrorOr[Unit] =
-    update.endogenousVariables.traverse_ { variable =>
-      InvalidModelEndogenousVariableEquation.whenA(!isValidScalaCode(variable.equation))
-    }
+    // Todo: Evaluate equation as Scala code
+    // update.endogenousVariables.traverse_ { variable =>
+    //   InvalidModelEndogenousVariableEquation.whenA(!isValidScalaCode(variable.equation))
+    // }
+    valid
 
   def validateSolutionEndogenousValues(
     update: NewSample
@@ -106,11 +112,13 @@ object TypeValidators {
     model: Model,
     update: NewSample
   ): DataApplicationValidationErrorOr[Unit] =
-    SolutionEquationMismatch.whenA(
-      !model.endogenousVariables.forall { case (label, equation) =>
-        evaluateEquation(equation.equation, update.solution.endogenousValues) == update.solution.endogenousValues(label.label)
-      }
-    )
+    // Todo: Evaluate equation as Scala code
+    // SolutionEquationMismatch.whenA(
+    //   !model.endogenousVariables.forall { case (label, equation) =>
+    //     evaluateEquation(equation.equation, update.solution.endogenousValues) == update.solution.endogenousValues(label.label)
+    //   }
+    // )
+    valid
 
   def validateSolutionEndogenousVariables(
     model: Model,

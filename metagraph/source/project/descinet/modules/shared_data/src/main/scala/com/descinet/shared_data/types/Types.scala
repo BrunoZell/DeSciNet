@@ -2,6 +2,8 @@ package com.descinet.shared_data.types
 
 import derevo.circe.magnolia.{decoder, encoder}
 import derevo.derive
+import io.circe.{Decoder, Encoder}
+import io.circe.generic.semiauto._
 import org.tessellation.currency.dataApplication.{DataCalculatedState, DataOnChainState, DataUpdate}
 import org.tessellation.schema.address.Address
 import org.tessellation.schema.SnapshotOrdinal
@@ -21,7 +23,7 @@ object Types {
 
   @derive(decoder, encoder)
   case class ExogenousVariableId(
-    identity: Hash[ExogenousVariableKey]
+    identity: String // Hash[ExogenousVariableKey]
   )
 
   @derive(decoder, encoder)
@@ -52,7 +54,7 @@ object Types {
   case class MeasurementChain(
     timestamp  : SnapshotOrdinal,
     value      : Double,
-    previous   : Option[Hash[MeasurementChain]],
+    previous   : Option[String], // Hash[MeasurementChain]
   )
 
   @derive(decoder, encoder)
@@ -126,6 +128,7 @@ object Types {
 
   @derive(decoder, encoder)
   case class NewModel(
+    author               : Address,
     target               : Target,
     exogenousVariables   : List[ExogenousVariableId],
     endogenousVariables  : List[EndogenousVariable],
@@ -146,7 +149,7 @@ object Types {
   @derive(decoder, encoder)
   case class DeSciNetOnChainState(
     exogenousVariables: Set[ExogenousVariableId],
-    measurements: Map[ExogenousVariableId, Hash[MeasurementChain]],
+    measurements: Map[ExogenousVariableId, String], // Hash[MeasurementChain]
     models: Map[Long, Model],
     targets: Map[Long, Target],
     bounties: Map[Long, Bounty],
