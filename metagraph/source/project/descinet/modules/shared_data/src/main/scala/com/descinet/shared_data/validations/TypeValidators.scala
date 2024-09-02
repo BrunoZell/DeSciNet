@@ -21,14 +21,16 @@ object TypeValidators {
     InvalidExogenousVariableUrl.unlessA(isValidURL(update.dataApplicationUrlPath))
 
   def validateExogenousVariableL0NodeUrls(
-    update: NewVariable
+    @unused update: NewVariable
   ): DataApplicationValidationErrorOr[Unit] =
-    InvalidExogenousVariableL0NodeUrls.whenA(update.l0NodeUrls.isEmpty || update.l0NodeUrls.exists(!isValidURL(_)))
+    // InvalidExogenousVariableL0NodeUrls.whenA(update.l0NodeUrls.isEmpty || update.l0NodeUrls.exists(!isValidURL(_)))
+    valid
 
   def validateMeasurementTimestamp(
-    value: SnapshotOrdinal
+    @unused value: SnapshotOrdinal
   ): DataApplicationValidationErrorOr[Unit] =
-    InvalidMeasurementTimestamp.whenA(value > SnapshotOrdinal.now)
+    // InvalidMeasurementTimestamp.whenA(value > SnapshotOrdinal.now)
+    valid
 
   def validateTargetId(
     @unused update: NewTarget,
@@ -66,9 +68,10 @@ object TypeValidators {
     valid
 
   def validateModelAuthor(
-    update: NewModel
+    @unused update: NewModel
   ): DataApplicationValidationErrorOr[Unit] =
-    InvalidModelAuthor.unlessA(update.author.isValid)
+    // InvalidModelAuthor.unlessA(update.author.isValid)
+    valid
 
   def validateModelExogenousVariables(
     update: NewModel
