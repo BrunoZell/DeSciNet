@@ -30,6 +30,7 @@ lazy val sharedData = (project in file("modules/shared_data"))
       "-Yrangepos",
       "-Wconf:cat=unused:silent", // Silence all unused warnings
       "-Wconf:cat=unused-nowarn:silent", // Silence unused warnings with @nowarn
+      "-Wconf:cat=dead-code:silent", // Silence dead code warnings
       "-language:reflectiveCalls"
     ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
@@ -56,6 +57,7 @@ lazy val currencyL1 = (project in file("modules/l1"))
       "-Yrangepos",
       "-Wconf:cat=unused:silent", // Silence all unused warnings
       "-Wconf:cat=unused-nowarn:silent", // Silence unused warnings with @nowarn
+      "-Wconf:cat=dead-code:silent", // Silence dead code warnings
       "-language:reflectiveCalls"
     ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
@@ -83,6 +85,7 @@ lazy val currencyL0 = (project in file("modules/l0"))
       "-Yrangepos",
       "-Wconf:cat=unused:silent", // Silence all unused warnings
       "-Wconf:cat=unused-nowarn:silent", // Silence unused warnings with @nowarn
+      "-Wconf:cat=dead-code:silent", // Silence dead code warnings
       "-language:reflectiveCalls"
     ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
@@ -113,6 +116,7 @@ lazy val dataL1 = (project in file("modules/data_l1"))
       "-Yrangepos",
       "-Wconf:cat=unused:silent", // Silence all unused warnings
       "-Wconf:cat=unused-nowarn:silent", // Silence unused warnings with @nowarn
+      "-Wconf:cat=dead-code:silent", // Silence dead code warnings
       "-language:reflectiveCalls"
     ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
