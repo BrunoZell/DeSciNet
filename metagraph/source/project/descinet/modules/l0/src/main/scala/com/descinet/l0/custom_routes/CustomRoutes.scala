@@ -7,7 +7,6 @@ import com.descinet.shared_data.calculated_state.CalculatedStateService
 import com.descinet.shared_data.types.Types._
 import eu.timepit.refined.auto._
 import org.http4s._
-import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.middleware.CORS
 import org.tessellation.ext.http4s.AddressVar
@@ -27,8 +26,8 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
 
   private def getAllModelsGroupedByTarget: F[Response[F]] = {
     getState.flatMap { state =>
-      val groupedModels = state.models.groupBy(_.targetVariableGroup).map {
-        case (group, models) => group -> models.sortBy(-_.totalSurprise)
+      val groupedModels = state.models.groupBy(_._2.targetVariableGroup).map {
+        case (group, models) => group -> models.sortBy(-_._2.totalSurprise)
       }
       Ok(groupedModels)
     }
@@ -39,7 +38,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
   ): F[Response[F]] = {
     getState.flatMap { state =>
       val addressModels = state.models.filter { model =>
-        model.owner == address
+        model._2.owner == address
       }
       Ok(addressModels)
     }
@@ -49,7 +48,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
     modelId: String
   ): F[Response[F]] = {
     getState.flatMap { state =>
-      state.models.get(modelId).map { model =>
+      state.models.get(modelId.toLong).map { model =>
         Ok(model.equations)
       }.getOrElse(NotFound())
     }
@@ -59,7 +58,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
     modelId: String
   ): F[Response[F]] = {
     getState.flatMap { state =>
-      state.models.get(modelId).map { model =>
+      state.models.get(modelId.toLong).map { model =>
         val totalSurpriseData = model.backtest.map { measurement =>
           measurement.timestamp -> measurement.totalSurprise
         }

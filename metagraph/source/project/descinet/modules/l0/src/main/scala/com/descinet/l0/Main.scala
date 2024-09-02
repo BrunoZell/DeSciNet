@@ -39,7 +39,24 @@ object Main
     calculatedStateService: CalculatedStateService[IO]
   ): BaseDataApplicationL0Service[IO] = BaseDataApplicationL0Service(new DataApplicationL0Service[IO, DeSciNetUpdate, DeSciNetOnChainState, DeSciNetCalculatedState] {
     override def genesis: DataState[DeSciNetOnChainState, DeSciNetCalculatedState] =
-      DataState(DeSciNetOnChainState(List.empty), DeSciNetCalculatedState(Map.empty))
+      DataState(
+        DeSciNetOnChainState(
+          exogenousVariables = Set.empty,
+          measurements = Map.empty,
+          models = Map.empty,
+          targets = Map.empty,
+          bounties = Map.empty,
+          scores = Map.empty
+        ),
+        DeSciNetCalculatedState(
+          exogenousVariables = Map.empty,
+          measurements = Map.empty,
+          models = Map.empty,
+          targets = Map.empty,
+          bounties = Map.empty,
+          scores = Map.empty
+        )
+      )
 
     override def validateData(
       state  : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
