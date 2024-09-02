@@ -4,7 +4,8 @@ import com.descinet.shared_data.serializers.Serializers
 import com.descinet.shared_data.types.Types._
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.schema.address.Address
-import org.tessellation.security.hash.hash
+import org.tessellation.security.hash.Hash
+import scala.annotation.unused
 
 object Combiners {
   def combineNewVariable(
@@ -14,7 +15,7 @@ object Combiners {
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
     val variableKey = ExogenousVariableKey(update.sourceMetagraph, update.dataApplicationUrlPath)
     val variableId = ExogenousVariableId(Hash.fromBytes(Serializers.serializeVariableKey(variableKey)))
-    val newVariable = ExogenousVariable(update.name, author, update.sourceMetagraph, update.dataApplicationUrlPath, update.l0NodeUrls)
+    @unused val newVariable = ExogenousVariable(update.name, author, update.sourceMetagraph, update.dataApplicationUrlPath, update.l0NodeUrls)
 
     val newOnChainState = state.onChain.copy(exogenousVariables = state.onChain.exogenousVariables + variableId)
     val newCalculatedState = state.calculated.copy(exogenousVariables = state.calculated.exogenousVariables + (variableId -> newVariable))
@@ -70,12 +71,12 @@ object Combiners {
   def combineNewSample(
     update: NewSample,
     state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
-    contributor: Address
+    @unused contributor: Address
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
     state.calculated.models
       .get(update.modelId)
       .fold(state) { model =>
-        val newSolution = Solution(update.solution.endogenousValues)
+        @unused val newSolution = Solution(update.solution.endogenousValues)
 
         // Todo: Make solution have an effect on the models total surprise score.
         // Todo: Keep track of all sample contributors so they get paid if this model becomes the consensus model.
@@ -88,7 +89,7 @@ object Combiners {
   }
 
   def combineNewMeasurement(
-    updates: List[NewMeasurement],
+    @unused updates: List[NewMeasurement],
     state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
     // Validations.scala:newMeasurementValidations ensures all NewMeasurements snapshotOrdinals are greater than the states chainHead timestamp.

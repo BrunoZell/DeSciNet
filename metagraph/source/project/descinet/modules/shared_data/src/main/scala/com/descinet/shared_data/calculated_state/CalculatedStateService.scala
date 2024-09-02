@@ -7,7 +7,6 @@ import com.descinet.shared_data.types.Types._
 import io.circe.Json
 import io.circe.syntax.EncoderOps
 import org.tessellation.schema.SnapshotOrdinal
-import org.tessellation.security.hash.Hash
 
 import java.nio.charset.StandardCharsets
 
