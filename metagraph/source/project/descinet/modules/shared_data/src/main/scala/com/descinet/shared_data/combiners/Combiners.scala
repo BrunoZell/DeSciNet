@@ -2,11 +2,9 @@ package com.descinet.shared_data.combiners
 
 import com.descinet.shared_data.serializers.Serializers
 import com.descinet.shared_data.types.Types._
-import monocle.Monocle.toAppliedFocusOps
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.schema.address.Address
-import org.tessellation.security.hash.Hash
-import org.tessellation.schema.SnapshotOrdinal
+import org.tessellation.security.hash.hash
 
 object Combiners {
   def combineNewVariable(
@@ -94,23 +92,24 @@ object Combiners {
     state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
     // Validations.scala:newMeasurementValidations ensures all NewMeasurements snapshotOrdinals are greater than the states chainHead timestamp.
-    val groupedByOrdinal = updates.groupBy(_.snapshotOrdinal)
+    // val groupedByOrdinal = updates.groupBy(_.snapshotOrdinal)
 
-    val newMeasurements = groupedByOrdinal.flatMap { case (ordinal, measurements) =>
-      val values = measurements.map(_.value).distinct
-      if (values.size == 1) {
-        val previousHash = state.onChain.measurements.get(measurements.head.exogenousVariableId).map(Hash.fromBytes)
-        Some(measurements.head.exogenousVariableId -> MeasurementChain(ordinal, values.head, previousHash))
-      } else {
-        // Log consensus error
-        println(s"Consensus error at snapshot ordinal $ordinal for exogenous variable ${measurements.head.exogenousVariableId}")
-        None
-      }
-    }
+    // val newMeasurements = groupedByOrdinal.flatMap { case (ordinal, measurements) =>
+    //   val values = measurements.map(_.value).distinct
+    //   if (values.size == 1) {
+    //     val previousHash = state.onChain.measurements.get(measurements.head.exogenousVariableId)
+    //     Some(measurements.head.exogenousVariableId -> MeasurementChain(ordinal, values.head, previousHash))
+    //   } else {
+    //     // Log consensus error
+    //     println(s"Consensus error at snapshot ordinal $ordinal for exogenous variable ${measurements.head.exogenousVariableId}")
+    //     None
+    //   }
+    // }
 
-    val newOnChainState = state.onChain.copy(measurements = state.onChain.measurements ++ newMeasurements)
-    val newCalculatedState = state.calculated.copy(measurements = state.calculated.measurements ++ newMeasurements)
+    // val newOnChainState = state.onChain.copy(measurements = state.onChain.measurements ++ newMeasurements)
+    // val newCalculatedState = state.calculated.copy(measurements = state.calculated.measurements ++ newMeasurements)
 
-    DataState(newOnChainState, newCalculatedState)
+    // DataState(newOnChainState, newCalculatedState)
+    state
   }
 }

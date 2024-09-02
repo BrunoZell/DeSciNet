@@ -2,8 +2,6 @@ package com.descinet.shared_data.types
 
 import derevo.circe.magnolia.{decoder, encoder}
 import derevo.derive
-import io.circe.{Decoder, Encoder}
-import io.circe.generic.semiauto._
 import org.tessellation.currency.dataApplication.{DataCalculatedState, DataOnChainState, DataUpdate}
 import org.tessellation.schema.address.Address
 import org.tessellation.schema.SnapshotOrdinal

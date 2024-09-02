@@ -1,14 +1,13 @@
 package com.descinet.shared_data.validations
 
 import cats.syntax.all._
-import cats.syntax.option.catsSyntaxOptionId
 import com.descinet.shared_data.errors.Errors.valid
+import com.descinet.shared_data.errors.Errors._
+import com.descinet.shared_data.errors.Errors.ModelNotFound // Add this import
 import com.descinet.shared_data.types.Types._
 import com.descinet.shared_data.validations.TypeValidators._
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
-import org.tessellation.schema.address.Address
-import org.tessellation.schema.SnapshotOrdinal
 
 object Validations {
   def newVariableValidations(
@@ -68,7 +67,7 @@ object Validations {
               .productR(validateSolutionEquations(model, update))
               .productR(validateSolutionEndogenousVariables(model, update))
           case None =>
-            ModelNotFound.invalid
+            ModelNotFound.invalid // This will now be found
         }
       case None =>
         validateSolutionEndogenousValues(update)
@@ -76,12 +75,16 @@ object Validations {
 
   def newMeasurementValidations(
     update: NewMeasurement,
-    state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
+    state: Option[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]]
   ): DataApplicationValidationErrorOr[Unit] = {
-    state.onChain.measurements.get(update.exogenousVariableId) match {
-      // case Some(chainHead) if update.snapshotOrdinal <= chainHead.timestamp =>
-      //   SnapshotOrdinalTooLow.invalid
-      case _ => valid
+    state match {
+      case Some(state) =>
+        state.onChain.measurements.get(update.exogenousVariableId) match {
+          // case Some(chainHead) if update.snapshotOrdinal <= chainHead.timestamp =>
+          //   SnapshotOrdinalTooLow.invalid
+          case _ => valid
+        }
+      case None => valid
     }
   }
 }
