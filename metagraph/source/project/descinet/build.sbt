@@ -31,6 +31,8 @@ lazy val sharedData = (project in file("modules/shared_data"))
       "-Wconf:cat=unused:silent", // Silence all unused warnings
       "-Wconf:cat=unused-nowarn:silent", // Silence unused warnings with @nowarn
       "-Wconf:cat=dead-code:silent", // Silence dead code warnings
+      "-Wconf:msg=parameter value update in method validateModelId is never used:silent", // Silence specific unused parameter warning
+      "-Wconf:cat=unused-imports:silent", // Silence unused import warnings
       "-language:reflectiveCalls"
     ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
@@ -58,6 +60,8 @@ lazy val currencyL1 = (project in file("modules/l1"))
       "-Wconf:cat=unused:silent", // Silence all unused warnings
       "-Wconf:cat=unused-nowarn:silent", // Silence unused warnings with @nowarn
       "-Wconf:cat=dead-code:silent", // Silence dead code warnings
+      "-Wconf:msg=parameter value update in method validateModelId is never used:silent", // Silence specific unused parameter warning
+      "-Wconf:cat=unused-imports:silent", // Silence unused import warnings
       "-language:reflectiveCalls"
     ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
@@ -86,6 +90,8 @@ lazy val currencyL0 = (project in file("modules/l0"))
       "-Wconf:cat=unused:silent", // Silence all unused warnings
       "-Wconf:cat=unused-nowarn:silent", // Silence unused warnings with @nowarn
       "-Wconf:cat=dead-code:silent", // Silence dead code warnings
+      "-Wconf:msg=parameter value update in method validateModelId is never used:silent", // Silence specific unused parameter warning
+      "-Wconf:cat=unused-imports:silent", // Silence unused import warnings
       "-language:reflectiveCalls"
     ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
@@ -117,6 +123,8 @@ lazy val dataL1 = (project in file("modules/data_l1"))
       "-Wconf:cat=unused:silent", // Silence all unused warnings
       "-Wconf:cat=unused-nowarn:silent", // Silence unused warnings with @nowarn
       "-Wconf:cat=dead-code:silent", // Silence dead code warnings
+      "-Wconf:msg=parameter value update in method validateModelId is never used:silent", // Silence specific unused parameter warning
+      "-Wconf:cat=unused-imports:silent", // Silence unused import warnings
       "-language:reflectiveCalls"
     ),
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
