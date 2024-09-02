@@ -2,14 +2,12 @@ package com.descinet.shared_data.validations
 
 import com.descinet.shared_data.Utils.isValidURL
 import com.descinet.shared_data.errors.Errors._
-import com.descinet.shared_data.serializers.Serializers
 import com.descinet.shared_data.types.Types._
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
-import org.tessellation.schema.address.Address
-import org.tessellation.security.hash.Hash
 import org.tessellation.schema.SnapshotOrdinal
 import cats.implicits._
+import scala.annotation.unused
 
 object TypeValidators {
   def validateExogenousVariableName(
@@ -33,8 +31,8 @@ object TypeValidators {
     InvalidMeasurementTimestamp.whenA(value > SnapshotOrdinal.now)
 
   def validateTargetId(
-    update: NewTarget,
-    state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
+    @unused update: NewTarget,
+    @unused state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
   ): DataApplicationValidationErrorOr[Unit] =
     // DuplicateTargetId.whenA(state.calculated.targets.contains(update.id))
     valid
@@ -50,7 +48,7 @@ object TypeValidators {
     InvalidBountyAmount.whenA(update.amount <= 0)
 
   def validateBountyGrantee(
-    update: NewBounty
+    @unused update: NewBounty
   ): DataApplicationValidationErrorOr[Unit] =
     // InvalidBountyGrantee.unlessA(update.grantee.isValid)
     valid
@@ -61,8 +59,8 @@ object TypeValidators {
     InvalidEndogenousVariableLabel.whenA(value.isEmpty || value.length > 64)
 
   def validateModelId(
-    update: NewModel,
-    state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
+    @unused update: NewModel,
+    @unused state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
   ): DataApplicationValidationErrorOr[Unit] =
     // DuplicateModelId.whenA(state.calculated.models.contains(update.id))
     valid
@@ -90,7 +88,7 @@ object TypeValidators {
     )
 
   def validateModelEndogenousVariableEquations(
-    update: NewModel
+    @unused update: NewModel
   ): DataApplicationValidationErrorOr[Unit] =
     // Todo: Evaluate equation as Scala code
     // update.endogenousVariables.traverse_ { variable =>
@@ -104,8 +102,8 @@ object TypeValidators {
     EmptySolutionEndogenousValues.whenA(update.solution.endogenousValues.isEmpty)
 
   def validateSolutionEquations(
-    model: Model,
-    update: NewSample
+    @unused model: Model,
+    @unused update: NewSample
   ): DataApplicationValidationErrorOr[Unit] =
     // Todo: Evaluate equation as Scala code
     // SolutionEquationMismatch.whenA(
