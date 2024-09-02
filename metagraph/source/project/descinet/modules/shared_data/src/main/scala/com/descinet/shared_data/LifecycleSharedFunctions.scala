@@ -58,7 +58,7 @@ object LifecycleSharedFunctions {
               case newSample: NewSample =>
                 newSampleValidations(newSample, state.some)
               case newMeasurement: NewMeasurement =>
-                newMeasurementValidations(newMeasurement, state)
+                newMeasurementValidations(newMeasurement, state.some)
             }
           }
         // }
