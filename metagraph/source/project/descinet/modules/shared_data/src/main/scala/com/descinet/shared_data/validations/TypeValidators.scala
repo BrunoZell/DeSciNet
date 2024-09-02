@@ -120,6 +120,6 @@ object TypeValidators {
     update: NewSample
   ): DataApplicationValidationErrorOr[Unit] =
     MissingEndogenousVariableValues.whenA(
-      !model.endogenousVariables.keys.forall(label => update.solution.endogenousValues.contains(label.label))
+      !model.endogenousVariables.keys.forall(label => update.solution.endogenousValues.contains(label))
     )
 }
