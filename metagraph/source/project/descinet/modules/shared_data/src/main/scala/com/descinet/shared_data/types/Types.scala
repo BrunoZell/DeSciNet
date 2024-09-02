@@ -23,7 +23,7 @@ object Types {
 
   @derive(decoder, encoder)
   case class ExogenousVariableId(
-    identity: String // Hash[ExogenousVariableKey]
+    identity: Hash // Hash[ExogenousVariableKey]
   )
 
   @derive(decoder, encoder)
@@ -54,7 +54,7 @@ object Types {
   case class MeasurementChain(
     timestamp  : SnapshotOrdinal,
     value      : Double,
-    previous   : Option[String], // Hash[MeasurementChain]
+    previous   : Option[Hash], // Hash[MeasurementChain]
   )
 
   @derive(decoder, encoder)
@@ -149,7 +149,7 @@ object Types {
   @derive(decoder, encoder)
   case class DeSciNetOnChainState(
     exogenousVariables: Set[ExogenousVariableId],
-    measurements: Map[ExogenousVariableId, String], // Hash[MeasurementChain]
+    measurements: Map[ExogenousVariableId, Hash], // Hash[MeasurementChain]
     models: Map[Long, Model],
     targets: Map[Long, Target],
     bounties: Map[Long, Bounty],

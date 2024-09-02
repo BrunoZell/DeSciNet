@@ -60,11 +60,6 @@ object TypeValidators {
   ): DataApplicationValidationErrorOr[Unit] =
     InvalidEndogenousVariableLabel.whenA(value.isEmpty || value.length > 64)
 
-  def validateEndogenousVariableEquation(
-    value: String
-  ): DataApplicationValidationErrorOr[Unit] =
-    InvalidEndogenousVariableEquation.whenA(value.isEmpty || !isValidScalaCode(value))
-
   def validateModelId(
     update: NewModel,
     state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]

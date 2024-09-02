@@ -108,4 +108,12 @@ object Errors {
   case class InvalidFieldSize(fieldName: String, maxSize: Long) extends DataApplicationValidationError {
     val message = s"Invalid field size: $fieldName, maxSize: $maxSize"
   }
+
+  case object SnapshotOrdinalTooLow extends DataApplicationValidationError {
+    val message = "Snapshot ordinal is too low."
+  }
+
+  case object ModelNotFound extends DataApplicationValidationError {
+    val message = "Model not found."
+  }
 }
