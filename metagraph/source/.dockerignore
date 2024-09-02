@@ -1,0 +1,19 @@
+# Ignore node_modules and yarn cache
+**/node_modules/
+
+**/target/scala-2.13/
+**/target/streams/
+
+**/.bloop/
+**/.bsp/
+
+# Ignore build outputs
+build/
+dist/
+.next/
+out/
+
+# Ignore temporary files
+*.swp
+*.bak
+*.tmp
