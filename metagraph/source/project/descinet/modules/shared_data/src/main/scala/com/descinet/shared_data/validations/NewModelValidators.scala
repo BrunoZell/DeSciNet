@@ -1,6 +1,7 @@
 package com.descinet.shared_data.validations
 
-import com.descinet.shared_data.Utils.isValidURL
+import org.tessellation.schema.address.Address
+import org.tessellation.security.hash.Hash
 import com.descinet.shared_data.errors.Errors._
 import com.descinet.shared_data.types.Types._
 import io.circe.syntax._

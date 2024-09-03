@@ -27,7 +27,7 @@ object Combiners {
   }
 
   def advanceMeasurementSequence(
-    updates: List[AdvanceMeasurementSequence],
+    @unused updates: List[AdvanceMeasurementSequence],
     state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
     // Validations.scala:newMeasurementValidations ensures all NewMeasurements snapshotOrdinals are greater than the states chainHead timestamp.
@@ -106,7 +106,7 @@ object Combiners {
   }
 
   def combineNewSample(
-    update: NewSample,
+    @unused update: NewSample,
     state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
     @unused contributor: Address
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {

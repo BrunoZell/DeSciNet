@@ -1,5 +1,6 @@
 package com.descinet.shared_data.validations
 
+import org.tessellation.schema.address.Address
 import com.descinet.shared_data.errors.Errors._
 import com.descinet.shared_data.types.Types._
 import org.tessellation.currency.dataApplication.DataState
