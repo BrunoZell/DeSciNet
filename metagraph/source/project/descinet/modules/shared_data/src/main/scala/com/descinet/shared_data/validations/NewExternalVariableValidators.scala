@@ -1,14 +1,12 @@
 package com.descinet.shared_data.validations
 
 import cats.syntax.all._
-import com.descinet.shared_data.Utils.isValidURL
 import com.descinet.shared_data.errors.Errors._
 import com.descinet.shared_data.types.Types._
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 import org.tessellation.security.hash.Hash
 import com.descinet.shared_data.serializers.Serializers
-import scala.annotation.unused
 
 object NewExternalVariableValidators {
   def validateExternalVariableUpdate(
@@ -32,7 +30,7 @@ object NewExternalVariableValidators {
     update: NewExternalVariable,
     state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
   ): DataApplicationValidationErrorOr[Unit] = {
-    val externalVariable = ExternalVariable(update.uniqueName, authority)
+    val externalVariable = ExternalVariable(update.uniqueName, update.authority)
     val externalVariableId = Hash.fromBytes(Serializers.serializeExternalVariable(externalVariable)).toString
     DuplicateExternalVariableId.whenA(state.onChain.externalVariables.contains(externalVariableId))
   }

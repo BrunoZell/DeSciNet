@@ -1,7 +1,6 @@
 package com.descinet.shared_data.validations
 
 import cats.syntax.all._
-import com.descinet.shared_data.Utils.isValidURL
 import com.descinet.shared_data.errors.Errors._
 import com.descinet.shared_data.types.Types._
 import org.tessellation.currency.dataApplication.DataState
