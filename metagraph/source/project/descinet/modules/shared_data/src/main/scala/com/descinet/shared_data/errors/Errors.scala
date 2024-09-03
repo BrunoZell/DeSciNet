@@ -41,6 +41,10 @@ object Errors {
     val message = "Measurement timestamp is in the future."
   }
 
+  case object DuplicateExternalVariableId extends DataApplicationValidationError {
+    val message = "External variable already exists. Try a different unique name."
+  }
+
   case object DuplicateTargetId extends DataApplicationValidationError {
     val message = "Target ID already exists."
   }

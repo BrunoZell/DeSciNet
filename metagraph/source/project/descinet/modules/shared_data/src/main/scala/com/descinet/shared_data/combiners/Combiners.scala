@@ -11,15 +11,17 @@ object Combiners {
   def combineNewExternalVariable(
     update: NewExternalVariable,
     state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
-    author: Address
+    authority: Address
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
-    val variableKey = ExogenousVariableKey(update.sourceMetagraph, update.dataApplicationUrlPath)
-    val variableId = ExogenousVariableId(Hash.fromBytes(Serializers.serializeVariableKey(variableKey)).toString)
-    @unused val newExternalVariable = ExogenousVariable(update.name, author, update.sourceMetagraph, update.dataApplicationUrlPath, update.l0NodeUrls)
+    // Construct new L0 type and derive ID as an UTF8-JSON Hash thereof
+    val externalVariable = ExternalVariable(update.uniqueName, authority)
+    val externalVariableId = Hash.fromBytes(Serializers.serializeVariableKey(variableKey)).toString
 
-    val newOnChainState = state.onChain.copy(exogenousVariables = state.onChain.exogenousVariables + variableId)
-    // Convert variableId to String
-    val newCalculatedState = state.calculated.copy(exogenousVariables = state.calculated.exogenousVariables + (variableId.identity -> newExternalVariable))
+    // Add external variable ID to onChain state
+    val newOnChainState = state.onChain.copy(externalVariables = state.onChain.externalVariables + externalVariableId)
+
+    // Add external variable to calculated state, indexed by ID
+    val newCalculatedState = state.calculated.copy(externalVariables = state.calculated.externalVariables + (externalVariableId -> externalVariable))
 
     DataState(newOnChainState, newCalculatedState)
   }

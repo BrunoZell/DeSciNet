@@ -6,17 +6,11 @@ import com.descinet.shared_data.errors.Errors._
 import com.descinet.shared_data.errors.Errors.ModelNotFound // Add this import
 import com.descinet.shared_data.types.Types._
 import com.descinet.shared_data.validations.TypeValidators._
+import com.descinet.shared_data.validations.NewExternalVariableValidator._
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 
 object Validations {
-  def newExternalVariableValidations(
-    update: NewExternalVariable
-  ): DataApplicationValidationErrorOr[Unit] =
-    validateExogenousVariableName(update)
-      .productR(validateExogenousVariableUrl(update))
-      .productR(validateExogenousVariableL0NodeUrls(update))
-
   def newTargetValidations(
     update: NewTarget,
     maybeState: Option[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]]

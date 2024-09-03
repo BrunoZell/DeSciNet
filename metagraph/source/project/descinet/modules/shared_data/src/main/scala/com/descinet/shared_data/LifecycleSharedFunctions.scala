@@ -22,7 +22,7 @@ object LifecycleSharedFunctions {
   ): F[DataApplicationValidationErrorOr[Unit]] = Async[F].delay {
     update match {
       case newExternalVariable: NewExternalVariable =>
-        newExternalVariableValidations(newExternalVariable)
+        validateExternalVariableUpdate(newExternalVariable, None)
       case newTarget: NewTarget =>
         newTargetValidations(newTarget, None)
       case newBounty: NewBounty =>
@@ -47,7 +47,7 @@ object LifecycleSharedFunctions {
           Async[F].delay {
             signedUpdate.value match {
               case newExternalVariable: NewExternalVariable =>
-                newExternalVariableValidations(newExternalVariable)
+                validateExternalVariableUpdate(newExternalVariable, state.some)
               case newTarget: NewTarget =>
                 newTargetValidations(newTarget, state.some)
               case newBounty: NewBounty =>

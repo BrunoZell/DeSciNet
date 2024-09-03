@@ -99,7 +99,7 @@ object Types {
 
   @derive(decoder, encoder)
   case class NewTarget(
-    exogenousVariables   : List[ExogenousVariableId],
+    externalVariables   : List[String], // 'Value : Hash[ExternalVariable]
   ) extends DeSciNetUpdate
 
   @derive(decoder, encoder)
@@ -136,8 +136,8 @@ object Types {
 
   @derive(decoder, encoder)
   case class DeSciNetOnChainState(
-    exogenousVariables: Set[ExogenousVariableId],
-    measurements: Map[String, String], // TKey: Hash[ExogenousVariableKey; TValue: Hash[MeasurementChain]
+    externalVariables: Set[String], // 'Value : Hash[ExternalVariable]
+    measurements: Map[String, String], // 'Key : Hash[ExogenousVariable]; 'Value : Hash[MeasurementChain]
     models: Map[Long, Model],
     targets: Map[Long, Target],
     bounties: Map[Long, Bounty],
@@ -152,8 +152,8 @@ object Types {
 
   @derive(decoder, encoder)
   case class DeSciNetCalculatedState(
-    exogenousVariables: Map[String, ExogenousVariable], // TKey: Hash[ExogenousVariableKey]
-    measurements: Map[String, MeasurementChain], // TKey: Hash[ExogenousVariableKey]
+    externalVariables: Map[String, ExternalVariable], // 'Key: Hash[ExogenousVariable]
+    measurements: Map[String, MeasurementChain], // 'Key: Hash[ExogenousVariable]
     models: Map[Long, Model],
     targets: Map[Long, Target],
     bounties: Map[Long, Bounty],

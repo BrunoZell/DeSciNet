@@ -9,28 +9,6 @@ import org.tessellation.schema.SnapshotOrdinal
 import scala.annotation.unused
 
 object TypeValidators {
-  def validateExogenousVariableName(
-    update: NewExternalVariable
-  ): DataApplicationValidationErrorOr[Unit] =
-    InvalidExogenousVariableName.whenA(update.name.isEmpty || update.name.length > 64)
-
-  def validateExogenousVariableUrl(
-    update: NewExternalVariable
-  ): DataApplicationValidationErrorOr[Unit] =
-    InvalidExogenousVariableUrl.unlessA(isValidURL(update.dataApplicationUrlPath))
-
-  def validateExogenousVariableL0NodeUrls(
-    @unused update: NewExternalVariable
-  ): DataApplicationValidationErrorOr[Unit] =
-    // InvalidExogenousVariableL0NodeUrls.whenA(update.l0NodeUrls.isEmpty || update.l0NodeUrls.exists(!isValidURL(_)))
-    valid
-
-  def validateMeasurementTimestamp(
-    @unused value: SnapshotOrdinal
-  ): DataApplicationValidationErrorOr[Unit] =
-    // InvalidMeasurementTimestamp.whenA(value > SnapshotOrdinal.now)
-    valid
-
   def validateTargetId(
     @unused update: NewTarget,
     @unused state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]

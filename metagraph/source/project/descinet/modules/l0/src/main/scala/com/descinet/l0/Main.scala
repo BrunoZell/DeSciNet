@@ -41,7 +41,7 @@ object Main
     override def genesis: DataState[DeSciNetOnChainState, DeSciNetCalculatedState] =
       DataState(
         DeSciNetOnChainState(
-          exogenousVariables = Set.empty,
+          externalVariables = Set.empty,
           measurements = Map.empty,
           models = Map.empty,
           targets = Map.empty,
@@ -49,7 +49,7 @@ object Main
           scores = Map.empty
         ),
         DeSciNetCalculatedState(
-          exogenousVariables = Map.empty,
+          externalVariables = Map.empty,
           measurements = Map.empty,
           models = Map.empty,
           targets = Map.empty,

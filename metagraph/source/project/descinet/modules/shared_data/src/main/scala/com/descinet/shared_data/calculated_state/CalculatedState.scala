@@ -11,7 +11,7 @@ object CalculatedState {
     CalculatedState(
       SnapshotOrdinal(NonNegLong(0L)),
       DeSciNetCalculatedState(
-        exogenousVariables = Map.empty,
+        externalVariables = Map.empty,
         measurements = Map.empty,
         models = Map.empty,
         targets = Map.empty,
