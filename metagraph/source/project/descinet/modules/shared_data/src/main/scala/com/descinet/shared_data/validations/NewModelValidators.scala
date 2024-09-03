@@ -1,5 +1,6 @@
 package com.descinet.shared_data.validations
 
+import cats.syntax.all._
 import cats.syntax.traverse._
 import com.descinet.shared_data.serializers.Serializers
 import org.tessellation.schema.address.Address
