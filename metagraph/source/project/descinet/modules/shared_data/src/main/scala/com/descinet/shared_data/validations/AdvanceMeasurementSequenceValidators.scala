@@ -51,7 +51,7 @@ object AdvanceMeasurementSequenceValidators {
     state.onChain.externalMeasurementSequenceHeads.get(update.externalVariableId) match {
       case Some(headHash) =>
         // If a latest head exists in L0 state, check if the previous head in the update matches the key
-        InvalidPreviousHead.whenA(update.newHead.previous != headHash)
+        InvalidPreviousHead.whenA(update.newHead.previous != Some(headHash))
       case None =>
         // If no latest head exists in L0 state, check if the previous head in the update is None
         InvalidPreviousHead.whenA(update.newHead.previous.isDefined)

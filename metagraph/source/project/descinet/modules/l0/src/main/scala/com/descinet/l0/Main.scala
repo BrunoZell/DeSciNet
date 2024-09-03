@@ -45,7 +45,7 @@ object Main
           externalMeasurementSequenceHeads = Map.empty,
           // targets = Map.empty,
           // bounties = Map.empty,
-          models = Map.empty,
+          models = Set.empty,
           // scores = Map.empty
         ),
         DeSciNetCalculatedState(
