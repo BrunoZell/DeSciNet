@@ -6,11 +6,10 @@ import com.descinet.shared_data.types.Types._
 import io.circe.syntax._
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
-import org.tessellation.schema.SnapshotOrdinal
 import scala.annotation.unused
 import scala.util.matching.Regex
 
-object ModelValidators {
+object NewModelValidators {
   def validateNewModelUpdate(
     update: NewModel
   ): DataApplicationValidationErrorOr[Unit] = {
@@ -105,7 +104,7 @@ object ModelValidators {
     }
   }
 
-  private def isValidScalaCode(equation: String): Boolean = {
+  private def isValidScalaCode(@unused equation: String): Boolean = {
     // Placeholder for actual Scala code validation logic
     true
   }

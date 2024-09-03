@@ -110,18 +110,20 @@ object Combiners {
     state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
     @unused contributor: Address
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
-    state.calculated.models
-      .get(update.modelId)
-      .fold(state) { model =>
-        @unused val newSolution = Solution(update.solution.endogenousValues)
+    // state.calculated.models
+    //   .get(update.modelId)
+    //   .fold(state) { model =>
+    //     @unused val newSolution = Solution(update.solution.endogenousValues)
 
-        // Todo: Make solution have an effect on the models total surprise score.
-        // Todo: Keep track of all sample contributors so they get paid if this model becomes the consensus model.
+    //     // Todo: Make solution have an effect on the models total surprise score.
+    //     // Todo: Keep track of all sample contributors so they get paid if this model becomes the consensus model.
 
-        val newOnChainState = state.onChain.copy(models = state.onChain.models.updated(update.modelId, model.copy(endogenousVariables = model.endogenousVariables)))
-        val newCalculatedState = state.calculated.copy(models = state.calculated.models.updated(update.modelId, model.copy(endogenousVariables = model.endogenousVariables)))
+    //     val newOnChainState = state.onChain.copy(models = state.onChain.models.updated(update.modelId, model.copy(endogenousVariables = model.endogenousVariables)))
+    //     val newCalculatedState = state.calculated.copy(models = state.calculated.models.updated(update.modelId, model.copy(endogenousVariables = model.endogenousVariables)))
 
-        DataState(newOnChainState, newCalculatedState)
-      }
+    //     DataState(newOnChainState, newCalculatedState)
+    //   }
+
+    state
   }
 }

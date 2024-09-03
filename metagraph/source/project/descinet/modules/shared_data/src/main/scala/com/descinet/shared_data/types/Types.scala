@@ -79,11 +79,6 @@ object Types {
   )
 
   @derive(decoder, encoder)
-  case class Solution(
-    endogenousValues: Map[String, Double],
-  )
-
-  @derive(decoder, encoder)
   case class Score(
     totalSurprise: Double,
   )
@@ -128,8 +123,11 @@ object Types {
 
   @derive(decoder, encoder)
   case class NewSample(
-    modelId   : Long,
-    solution  : Solution
+    modelId            : String,
+    randomSeed         : Long,
+    observationCutoff  : Map[String, Int], // 'Key: Hash[ExternalVariable]; 'Value: n (X_j observation-index)
+    delay              : Long, // in milliseconds
+    solution           : Map[Int, Double], // 'Key: position index of model.internalVariables; 'Value: computed Y_i sample
   ) extends DeSciNetUpdate
 
   /**

@@ -8,7 +8,7 @@ import scala.annotation.unused
 
 object AdvanceMeasurementSequenceValidators {
   def validateAdvanceMeasurementSequence(
-    update: AdvanceMeasurementSequence
+    @unused update: AdvanceMeasurementSequence
   ): DataApplicationValidationErrorOr[Unit] =
     valid
 

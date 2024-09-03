@@ -5,7 +5,6 @@ import com.descinet.shared_data.errors.Errors._
 import com.descinet.shared_data.types.Types._
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
-import org.tessellation.schema.SnapshotOrdinal
 import scala.annotation.unused
 
 object NewExternalVariableValidators {

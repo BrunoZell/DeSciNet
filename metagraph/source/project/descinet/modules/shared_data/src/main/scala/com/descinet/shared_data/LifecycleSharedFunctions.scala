@@ -6,10 +6,11 @@ import cats.syntax.all._
 import com.descinet.shared_data.Utils._
 import com.descinet.shared_data.combiners.Combiners._
 import com.descinet.shared_data.types.Types._
-import com.descinet.shared_data.validations.Validations._
+// import com.descinet.shared_data.validations.Validations._
 import com.descinet.shared_data.validations.NewExternalVariableValidators._
 import com.descinet.shared_data.validations.AdvanceMeasurementSequenceValidators._
-import com.descinet.shared_data.validations.ModelValidators._
+import com.descinet.shared_data.validations.NewModelValidators._
+import com.descinet.shared_data.validations.NewSampleValidators._
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 import org.tessellation.currency.dataApplication.{DataState, L0NodeContext}
 import org.tessellation.security.SecurityProvider
@@ -35,7 +36,7 @@ object LifecycleSharedFunctions {
       case newModel: NewModel =>
         validateNewModelUpdate(newModel)
       case newSample: NewSample =>
-        newSampleValidations(newSample, None)
+        validateNewSampleUpdate(newSample, None)
     }
   }
 
@@ -61,7 +62,7 @@ object LifecycleSharedFunctions {
               case newModel: NewModel =>
                 validateNewModelUpdate(newModel, state.some, firstSigner)
               case newSample: NewSample =>
-                newSampleValidations(newSample, state.some)
+                validateNewSampleUpdate(newSample, state.some)
             }
           }
         }
