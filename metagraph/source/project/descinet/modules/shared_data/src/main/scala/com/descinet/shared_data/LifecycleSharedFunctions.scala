@@ -27,10 +27,10 @@ object LifecycleSharedFunctions {
         validateExternalVariableUpdate(newExternalVariable, None)
       case advanceMeasurementSequence: AdvanceMeasurementSequence =>
         validateAdvanceMeasurementSequence(advanceMeasurementSequence)
-      case newTarget: NewTarget =>
-        newTargetValidations(newTarget, None)
-      case newBounty: NewBounty =>
-        newBountyValidations(newBounty)
+      // case newTarget: NewTarget =>
+      //   newTargetValidations(newTarget, None)
+      // case newBounty: NewBounty =>
+      //   newBountyValidations(newBounty)
       case newModel: NewModel =>
         newModelValidations(newModel, None)
       case newSample: NewSample =>
@@ -53,10 +53,10 @@ object LifecycleSharedFunctions {
                 validateExternalVariableUpdate(newExternalVariable, state.some)
               case advanceMeasurementSequence: AdvanceMeasurementSequence =>
                 validateAdvanceMeasurementSequence(advanceMeasurementSequence, state.some, firstSigner)
-              case newTarget: NewTarget =>
-                newTargetValidations(newTarget, state.some)
-              case newBounty: NewBounty =>
-                newBountyValidations(newBounty)
+              // case newTarget: NewTarget =>
+              //   newTargetValidations(newTarget, state.some)
+              // case newBounty: NewBounty =>
+              //   newBountyValidations(newBounty)
               case newModel: NewModel =>
                 newModelValidations(newModel, state.some)
               case newSample: NewSample =>
@@ -86,12 +86,12 @@ object LifecycleSharedFunctions {
               getFirstAddressFromProofs(signedUpdate.proofs).flatMap { author =>
                 combineNewExternalVariable(newExternalVariable, acc, author).pure[F]
               }
-            case newTarget: NewTarget =>
-              combineNewTarget(newTarget, acc).pure[F]
-            case newBounty: NewBounty =>
-              getFirstAddressFromProofs(signedUpdate.proofs).flatMap { author =>
-                combineNewBounty(newBounty, acc, author).pure[F]
-              }
+            // case newTarget: NewTarget =>
+            //   combineNewTarget(newTarget, acc).pure[F]
+            // case newBounty: NewBounty =>
+            //   getFirstAddressFromProofs(signedUpdate.proofs).flatMap { author =>
+            //     combineNewBounty(newBounty, acc, author).pure[F]
+            //   }
             case newModel: NewModel =>
               getFirstAddressFromProofs(signedUpdate.proofs).flatMap { author =>
                 combineNewModel(newModel, acc, author).pure[F]
