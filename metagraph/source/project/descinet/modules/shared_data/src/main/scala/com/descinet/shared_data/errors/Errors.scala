@@ -34,6 +34,19 @@ object Errors {
     val message = "External variable already exists. Try a different unique name."
   }
 
+  // AdvanceMeasurementSequence Errors
+  case object InvalidExternalVariableId extends DataApplicationValidationError {
+    val message = "External variable ID is invalid."
+  }
+  
+  case object ExternalVariableUpdateAuthorIsNotVariableAuthority extends DataApplicationValidationError {
+    val message = "The update author is not the variable authority."
+  }
+  
+  case object InvalidPreviousHead extends DataApplicationValidationError {
+    val message = "The previous head is invalid."
+  }
+
   // Target Errors
   // case object DuplicateTargetId extends DataApplicationValidationError {
   //   val message = "Target ID already exists."
@@ -71,6 +84,10 @@ object Errors {
 
   case object InvalidInternalVariableIndex extends DataApplicationValidationError {
     val message = "Internal variable index is out of bounds."
+  }
+
+  case object InvalidModelEndogenousVariableEquation extends DataApplicationValidationError {
+    val message = "The model endogenous variable equation is invalid."
   }
 
   // Solution Errors
