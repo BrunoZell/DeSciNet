@@ -110,23 +110,23 @@ object Types {
   ) extends DeSciNetUpdate
 
   @derive(decoder, encoder)
-  case class NewTarget(
-    externalVariables   : List[String], // 'Value : Hash[ExternalVariable]
-  ) extends DeSciNetUpdate
-
-  @derive(decoder, encoder)
-  case class NewBounty( 
-    target: Target,
-    amount: Long, // in DESCI
-  ) extends DeSciNetUpdate
-
-  @derive(decoder, encoder)
   case class NewModel(
     author               : Address,
     target               : Target,
     exogenousVariables   : List[ExogenousVariableId],
     endogenousVariables  : Map[String, String], // TKey: Label; TValue: Equation
   ) extends DeSciNetUpdate
+
+  // @derive(decoder, encoder)
+  // case class NewTarget(
+  //   externalVariables   : List[String], // 'Value : Hash[ExternalVariable]
+  // ) extends DeSciNetUpdate
+
+  // @derive(decoder, encoder)
+  // case class NewBounty( 
+  //   target: Target,
+  //   amount: Long, // in DESCI
+  // ) extends DeSciNetUpdate
 
   @derive(decoder, encoder)
   case class NewSample(
@@ -145,9 +145,9 @@ object Types {
     externalVariables: Set[String], // 'Value : Hash[ExternalVariable]
     externalMeasurementSequenceHeads: Map[String, String], // 'Key : Hash[ExternalVariable]; 'Value : Hash[MeasurementSequenceHead]
     models: Map[Long, Model],
-    targets: Map[Long, Target],
-    bounties: Map[Long, Bounty],
-    scores: Map[Long, Score],
+    // targets: Map[Long, Target],
+    // bounties: Map[Long, Bounty],
+    // scores: Map[Long, Score],
   ) extends DataOnChainState
 
   /**
@@ -163,8 +163,8 @@ object Types {
     // allExternalMeasurements: Map[String, List[MeasurementChain]], // 'Key : Hash[ExternalVariable], 'Value : all MeasurementChain from traversed externalMeasurementSequenceHeads[key]
     // externalMeasurementValues: Map[String, List[MeasurementValue]], // 'Key : Hash[ExternalVariable], 'Value : tuple(Double, Timestamp)
     models: Map[Long, Model],
-    targets: Map[Long, Target],
-    bounties: Map[Long, Bounty],
-    scores: Map[Long, Score],
+    // targets: Map[Long, Target],
+    // bounties: Map[Long, Bounty],
+    // scores: Map[Long, Score],
   ) extends DataCalculatedState
 }
