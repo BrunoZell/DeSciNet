@@ -32,7 +32,7 @@ object NewExternalVariableValidators {
     state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
   ): DataApplicationValidationErrorOr[Unit] = {
     val externalVariable = ExternalVariable(update.uniqueName, authority)
-    val externalVariableId = Hash.fromBytes(Serializers.serializeVariableKey(variableKey)).toString
+    val externalVariableId = Hash.fromBytes(Serializers.serializeExternalVariable(externalVariable)).toString
     DuplicateExternalVariableId.whenA(state.onChain.externalVariables.contains(externalVariableId))
   }
 }

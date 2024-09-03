@@ -16,7 +16,7 @@ object Types {
   case class ExternalVariable(
     uniqueName       : String,
     authority        : Address,
-    valueMap         : String => Double
+    // valueMap         : String => Double
   )
 
   // vNext:
@@ -155,9 +155,8 @@ object Types {
   @derive(decoder, encoder)
   case class DeSciNetCalculatedState(
     externalVariables: Map[String, ExternalVariable], // 'Key: Hash[ExogenousVariable]
-    externalMeasurementSequenceHeads: Map[String, MeasurementChain], // 'Key : Hash[ExternalVariable]
-    // allExternalMeasurements: Map[String, List[MeasurementChain]], // 'Key : Hash[ExternalVariable], 'Value : all MeasurementChain from traversed externalMeasurementSequenceHeads[key]
-    // externalMeasurementValues: Map[String, List[MeasurementValue]], // 'Key : Hash[ExternalVariable], 'Value : tuple(Double, Timestamp)
+    externalMeasurementSequenceHeads: Map[String, MeasurementSequenceHead], // 'Key : Hash[ExternalVariable]
+    // allExternalMeasurements: Map[String, List[Measurement]], // 'Key : Hash[ExternalVariable], 'Value : all Measurement from traversed externalMeasurementSequenceHeads[key]
     // targets: Map[Long, Target],
     // bounties: Map[Long, Bounty],
     models: Map[String, Model], // 'Key : Hash[Model]

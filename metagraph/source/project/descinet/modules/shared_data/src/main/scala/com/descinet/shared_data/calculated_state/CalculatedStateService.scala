@@ -36,15 +36,11 @@ object CalculatedStateService {
           stateRef.update { currentState =>
             val currentVoteCalculatedState = currentState.state
 
-            val updatedExogenousVariables = state.exogenousVariables.foldLeft(currentVoteCalculatedState.exogenousVariables) {
+            val updatedExogenousVariables = state.externalVariables.foldLeft(currentVoteCalculatedState.externalVariables) {
               case (acc, (key, value)) => acc.updated(key, value)
             }
 
             val updatedMeasurements = state.externalMeasurementSequenceHeads.foldLeft(currentVoteCalculatedState.externalMeasurementSequenceHeads) {
-              case (acc, (key, value)) => acc.updated(key, value)
-            }
-
-            val updatedModels = state.models.foldLeft(currentVoteCalculatedState.models) {
               case (acc, (key, value)) => acc.updated(key, value)
             }
 
@@ -56,6 +52,10 @@ object CalculatedStateService {
             //   case (acc, (key, value)) => acc.updated(key, value)
             // }
 
+            val updatedModels = state.models.foldLeft(currentVoteCalculatedState.models) {
+              case (acc, (key, value)) => acc.updated(key, value)
+            }
+
             // val updatedScores = state.scores.foldLeft(currentVoteCalculatedState.scores) {
             //   case (acc, (key, value)) => acc.updated(key, value)
             // }
@@ -65,9 +65,9 @@ object CalculatedStateService {
               DeSciNetCalculatedState(
                 updatedExogenousVariables,
                 updatedMeasurements,
-                updatedModels
                 // updatedTargets,
                 // updatedBounties,
+                updatedModels
                 // updatedScores
               )
             )

@@ -15,7 +15,7 @@ object Combiners {
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
     // Construct new L0 type and derive ID as an UTF8-JSON Hash thereof
     val externalVariable = ExternalVariable(update.uniqueName, authority)
-    val externalVariableId = Hash.fromBytes(Serializers.serializeVariableKey(variableKey)).toString
+    val externalVariableId = Hash.fromBytes(Serializers.serializeExternalVariable(externalVariable)).toString
 
     // Add external variable ID to onChain state
     val newOnChainState = state.onChain.copy(externalVariables = state.onChain.externalVariables + externalVariableId)

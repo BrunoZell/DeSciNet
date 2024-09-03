@@ -12,10 +12,10 @@ object CalculatedState {
       SnapshotOrdinal(NonNegLong(0L)),
       DeSciNetCalculatedState(
         externalVariables = Map.empty,
-        measurements = Map.empty,
-        models = Map.empty,
+        externalMeasurementSequenceHeads = Map.empty,
         // targets = Map.empty,
         // bounties = Map.empty,
+        models = Map.empty,
         // scores = Map.empty
       )
     )

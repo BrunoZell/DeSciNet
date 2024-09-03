@@ -32,10 +32,10 @@ object Serializers {
     completeString.getBytes(StandardCharsets.UTF_8)
   }
 
-  def serializeVariableKey(
-    variableKey: ExogenousVariableKey
+  def serializeExternalVariable(
+    externalVariable: ExternalVariable
   ): Array[Byte] =
-    variableKey.asJson.deepDropNullValues.noSpaces.getBytes(StandardCharsets.UTF_8)
+    externalVariable.asJson.deepDropNullValues.noSpaces.getBytes(StandardCharsets.UTF_8)
 
   def serializeState(
     state: DeSciNetOnChainState

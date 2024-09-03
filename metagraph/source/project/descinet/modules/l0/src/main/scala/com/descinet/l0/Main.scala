@@ -42,18 +42,18 @@ object Main
       DataState(
         DeSciNetOnChainState(
           externalVariables = Set.empty,
-          measurements = Map.empty,
-          models = Map.empty,
+          externalMeasurementSequenceHeads = Map.empty,
           // targets = Map.empty,
           // bounties = Map.empty,
+          models = Map.empty,
           // scores = Map.empty
         ),
         DeSciNetCalculatedState(
           externalVariables = Map.empty,
-          measurements = Map.empty,
-          models = Map.empty,
+          externalMeasurementSequenceHeads = Map.empty,
           // targets = Map.empty,
           // bounties = Map.empty,
+          models = Map.empty,
           // scores = Map.empty
         )
       )

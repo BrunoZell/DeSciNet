@@ -74,7 +74,7 @@ object LifecycleSharedFunctions {
     state  : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
     updates: List[Signed[DeSciNetUpdate]]
   )(implicit context: L0NodeContext[F]): F[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]] = {
-    val newStateF = DataState(DeSciNetOnChainState(Set.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty), state.calculated).pure[F]
+    val newStateF = DataState(DeSciNetOnChainState(Set.empty, Map.empty, Set.empty), state.calculated).pure[F]
 
     if (updates.isEmpty) {
       logger.info("Snapshot without any updates, updating the state to empty updates") >> newStateF
