@@ -53,36 +53,20 @@ object Errors {
   // }
 
   // Model Errors
-  case object InvalidEndogenousVariableLabel extends DataApplicationValidationError {
-    val message = "Endogenous variable label is invalid."
-  }
-
-  case object InvalidEndogenousVariableEquation extends DataApplicationValidationError {
-    val message = "Endogenous variable equation is invalid."
-  }
-
   case object DuplicateModelId extends DataApplicationValidationError {
     val message = "Model ID already exists."
   }
 
-  case object InvalidModelAuthor extends DataApplicationValidationError {
-    val message = "Model author address is invalid."
+  case object DuplicateParameterLabels extends DataApplicationValidationError {
+    val message = "Parameter labels are not unique across external and internal parameter labels."
   }
 
-  case object EmptyModelExogenousVariables extends DataApplicationValidationError {
-    val message = "Exogenous variables list in model is empty."
+  case object InvalidParameterLabel extends DataApplicationValidationError {
+    val message = "Parameter label contains invalid characters."
   }
 
-  case object EmptyModelEndogenousVariables extends DataApplicationValidationError {
-    val message = "Endogenous variables map in model is empty."
-  }
-
-  case object ModelTargetExogenousVariablesMismatch extends DataApplicationValidationError {
-    val message = "Not all exogenous variables in the target are linked in the model."
-  }
-
-  case object InvalidModelEndogenousVariableEquation extends DataApplicationValidationError {
-    val message = "Endogenous variable equation does not compile as Scala code."
+  case object InvalidInternalVariableIndex extends DataApplicationValidationError {
+    val message = "Internal variable index is out of bounds."
   }
 
   // Solution Errors

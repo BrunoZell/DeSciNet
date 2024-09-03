@@ -54,28 +54,28 @@ object Types {
   // )
 
   @derive(decoder, encoder)
-  case class EndogenousVariable(
-    label                  : String,
-    equation               : String,
-  )
-
-  @derive(decoder, encoder)
-  case class EndogenousVariableLabel(
-    label    : String,
-  )
-
-  @derive(decoder, encoder)
-  case class EndogenousVariableEquation(
+  case class InternalVariable(
+    /// Scala code to be run within Model Sampling Environment.
+    /// Valid symbols:
+    /// now: virtual timestamp t of sample evaliation as passed to Y(t)
+    /// PAY.[internalVariableLabel](p)(t) : value of endogenous variable of type Y_{internalVariableLabel(p)} at time t
+    /// PAX.[externalVariableLabel](p).value(n) : value of nth observation of type X_{externalVariableLabel(p)}
+    /// PAX.[externalVariableLabel](p).latest : Highest observed n of type X_{externalVariableLabel(p)}
+    /// PAX.[externalVariableLabel](p).d(n) : Elapsed time since previous observation of type X_{externalVariableLabel(p)}
     equation : String,
   )
 
   @derive(decoder, encoder)
   case class Model(
-    id                   : Long,
-    author               : Address,
-    exogenousVariables   : List[ExogenousVariableId],
-    endogenousVariables  : Map[String, EndogenousVariableEquation], // TKey: EndogenousVariableLabel
-    target               : Target,
+    /// Implicitly this model defines:
+    /// I : index-set of endogenous variables (=all equations over all possible parameters)
+    /// J : index-set of exogenous variables, as a subset of the global J made of all ExternalVariables of the DeSciNet Metagraph
+    /// PA_x(i) : { j in J } for each i in I : direct exogenous parents of the i-th endogenous variable
+    /// PA_y(i) : { i in I }for each i in I : direct endogenous parents of the i-th endogenous variable
+    author                  : Address,
+    externalParameterLabels : Map[String, String], // 'Key: equation-label; 'Value: Hash[ExternalVariable]
+    internalParameterLabels : Map[String, Int], // 'Key: equation-label; 'Value: position index in this.internalVariables
+    internalVariables       : List[InternalVariable],
   )
 
   @derive(decoder, encoder)
@@ -111,10 +111,8 @@ object Types {
 
   @derive(decoder, encoder)
   case class NewModel(
-    author               : Address,
-    target               : Target,
-    exogenousVariables   : List[ExogenousVariableId],
-    endogenousVariables  : Map[String, String], // TKey: Label; TValue: Equation
+    model                : Model,
+    // target               : Target,
   ) extends DeSciNetUpdate
 
   // @derive(decoder, encoder)
