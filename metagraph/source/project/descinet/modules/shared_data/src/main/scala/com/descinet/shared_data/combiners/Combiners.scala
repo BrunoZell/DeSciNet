@@ -26,6 +26,32 @@ object Combiners {
     DataState(newOnChainState, newCalculatedState)
   }
 
+  def advanceMeasurementSequence(
+    updates: List[AdvanceMeasurementSequence],
+    state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
+  ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
+    // Validations.scala:newMeasurementValidations ensures all NewMeasurements snapshotOrdinals are greater than the states chainHead timestamp.
+    // val groupedByOrdinal = updates.groupBy(_.snapshotOrdinal)
+
+    // val newMeasurements = groupedByOrdinal.flatMap { case (ordinal, measurements) =>
+    //   val values = measurements.map(_.value).distinct
+    //   if (values.size == 1) {
+    //     val previousHash = state.onChain.measurements.get(measurements.head.exogenousVariableId)
+    //     Some(measurements.head.exogenousVariableId -> MeasurementChain(ordinal, values.head, previousHash))
+    //   } else {
+    //     // Log consensus error
+    //     println(s"Consensus error at snapshot ordinal $ordinal for exogenous variable ${measurements.head.exogenousVariableId}")
+    //     None
+    //   }
+    // }
+
+    // val newOnChainState = state.onChain.copy(measurements = state.onChain.measurements ++ newMeasurements)
+    // val newCalculatedState = state.calculated.copy(measurements = state.calculated.measurements ++ newMeasurements)
+
+    // DataState(newOnChainState, newCalculatedState)
+    state
+  }
+
   def combineNewTarget(
     update: NewTarget,
     state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
@@ -92,31 +118,5 @@ object Combiners {
 
         DataState(newOnChainState, newCalculatedState)
       }
-  }
-
-  def combineNewMeasurement(
-    @unused updates: List[NewMeasurement],
-    state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
-  ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
-    // Validations.scala:newMeasurementValidations ensures all NewMeasurements snapshotOrdinals are greater than the states chainHead timestamp.
-    // val groupedByOrdinal = updates.groupBy(_.snapshotOrdinal)
-
-    // val newMeasurements = groupedByOrdinal.flatMap { case (ordinal, measurements) =>
-    //   val values = measurements.map(_.value).distinct
-    //   if (values.size == 1) {
-    //     val previousHash = state.onChain.measurements.get(measurements.head.exogenousVariableId)
-    //     Some(measurements.head.exogenousVariableId -> MeasurementChain(ordinal, values.head, previousHash))
-    //   } else {
-    //     // Log consensus error
-    //     println(s"Consensus error at snapshot ordinal $ordinal for exogenous variable ${measurements.head.exogenousVariableId}")
-    //     None
-    //   }
-    // }
-
-    // val newOnChainState = state.onChain.copy(measurements = state.onChain.measurements ++ newMeasurements)
-    // val newCalculatedState = state.calculated.copy(measurements = state.calculated.measurements ++ newMeasurements)
-
-    // DataState(newOnChainState, newCalculatedState)
-    state
   }
 }

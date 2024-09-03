@@ -27,6 +27,19 @@ object Types {
   // )
 
   @derive(decoder, encoder)
+  case class MeasurementSequenceHead(
+    externalVariableId  : String,          /// Hash[ExternalVariable]
+    measurement         : Measurement,     /// Newly measured data
+    previous            : Option[String],  /// previously measured value as: Option[Hash[MeasurementSequenceHead]]
+  )
+
+  @derive(decoder, encoder)
+  case class Measurement(
+    elapsed   : Long,     /// elapsed time in milliseconds since last measurement
+    value     : Double,   /// measurement value
+  )
+
+  @derive(decoder, encoder)
   case class Target(
     externalVariables : List[String], // 'Value : Hash[ExternalVariable]
   )
@@ -38,13 +51,6 @@ object Types {
     grantee              : Address,
     originalAmount       : Long, // in DESCI
     remainingAmount      : Long, // in DESCI
-  )
-
-  @derive(decoder, encoder)
-  case class MeasurementChain(
-    timestamp  : SnapshotOrdinal,
-    value      : Double,
-    previous   : Option[String], // Hash[MeasurementChain]
   )
 
   @derive(decoder, encoder)
@@ -98,14 +104,14 @@ object Types {
   ) extends DeSciNetUpdate
 
   @derive(decoder, encoder)
-  case class NewTarget(
-    externalVariables   : List[String], // 'Value : Hash[ExternalVariable]
+  case class AdvanceMeasurementSequence(
+    externalVariableId: String,
+    newHead: MeasurementSequenceHead,
   ) extends DeSciNetUpdate
 
   @derive(decoder, encoder)
-  case class NewMeasurement(
-    exogenousVariableId: ExogenousVariableId,
-    value: Double,
+  case class NewTarget(
+    externalVariables   : List[String], // 'Value : Hash[ExternalVariable]
   ) extends DeSciNetUpdate
 
   @derive(decoder, encoder)
@@ -137,7 +143,7 @@ object Types {
   @derive(decoder, encoder)
   case class DeSciNetOnChainState(
     externalVariables: Set[String], // 'Value : Hash[ExternalVariable]
-    measurements: Map[String, String], // 'Key : Hash[ExogenousVariable]; 'Value : Hash[MeasurementChain]
+    externalMeasurementSequenceHeads: Map[String, String], // 'Key : Hash[ExternalVariable]; 'Value : Hash[MeasurementSequenceHead]
     models: Map[Long, Model],
     targets: Map[Long, Target],
     bounties: Map[Long, Bounty],
@@ -153,7 +159,9 @@ object Types {
   @derive(decoder, encoder)
   case class DeSciNetCalculatedState(
     externalVariables: Map[String, ExternalVariable], // 'Key: Hash[ExogenousVariable]
-    measurements: Map[String, MeasurementChain], // 'Key: Hash[ExogenousVariable]
+    externalMeasurementSequenceHeads: Map[String, MeasurementChain], // 'Key : Hash[ExternalVariable]
+    // allExternalMeasurements: Map[String, List[MeasurementChain]], // 'Key : Hash[ExternalVariable], 'Value : all MeasurementChain from traversed externalMeasurementSequenceHeads[key]
+    // externalMeasurementValues: Map[String, List[MeasurementValue]], // 'Key : Hash[ExternalVariable], 'Value : tuple(Double, Timestamp)
     models: Map[Long, Model],
     targets: Map[Long, Target],
     bounties: Map[Long, Bounty],

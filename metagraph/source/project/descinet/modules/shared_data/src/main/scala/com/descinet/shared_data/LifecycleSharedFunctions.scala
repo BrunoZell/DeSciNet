@@ -7,6 +7,8 @@ import com.descinet.shared_data.Utils._
 import com.descinet.shared_data.combiners.Combiners._
 import com.descinet.shared_data.types.Types._
 import com.descinet.shared_data.validations.Validations._
+import com.descinet.shared_data.validations.NewExternalVariableValidators._
+import com.descinet.shared_data.validations.AdvanceMeasurementSequenceValidators._
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 import org.tessellation.currency.dataApplication.{DataState, L0NodeContext}
 import org.tessellation.security.SecurityProvider
@@ -23,6 +25,8 @@ object LifecycleSharedFunctions {
     update match {
       case newExternalVariable: NewExternalVariable =>
         validateExternalVariableUpdate(newExternalVariable, None)
+      case advanceMeasurementSequence: AdvanceMeasurementSequence =>
+        validateAdvanceMeasurementSequence(advanceMeasurementSequence)
       case newTarget: NewTarget =>
         newTargetValidations(newTarget, None)
       case newBounty: NewBounty =>
@@ -31,23 +35,24 @@ object LifecycleSharedFunctions {
         newModelValidations(newModel, None)
       case newSample: NewSample =>
         newSampleValidations(newSample, None)
-      case newMeasurement: NewMeasurement =>
-        newMeasurementValidations(newMeasurement, None)
     }
   }
 
   def validateData[F[_] : Async](
     state  : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
     updates: NonEmptyList[Signed[DeSciNetUpdate]]
-  )/*(implicit context: L0NodeContext[F])*/: F[DataApplicationValidationErrorOr[Unit]] = {
-    // implicit val sp: SecurityProvider[F] = context.securityProvider
+  )(implicit context: L0NodeContext[F]): F[DataApplicationValidationErrorOr[Unit]] = {
+    implicit val sp: SecurityProvider[F] = context.securityProvider
+
     updates.traverse { signedUpdate =>
-      // getAllAddressesFromProofs(signedUpdate.proofs)
-      //   .flatMap { addresses =>
+        getFirstAddressFromProofs(signedUpdate.proofs)
+        .flatMap { firstSigner =>
           Async[F].delay {
             signedUpdate.value match {
               case newExternalVariable: NewExternalVariable =>
                 validateExternalVariableUpdate(newExternalVariable, state.some)
+              case advanceMeasurementSequence: AdvanceMeasurementSequence =>
+                validateAdvanceMeasurementSequence(advanceMeasurementSequence, state.some, firstSigner)
               case newTarget: NewTarget =>
                 newTargetValidations(newTarget, state.some)
               case newBounty: NewBounty =>
@@ -56,11 +61,9 @@ object LifecycleSharedFunctions {
                 newModelValidations(newModel, state.some)
               case newSample: NewSample =>
                 newSampleValidations(newSample, state.some)
-              case newMeasurement: NewMeasurement =>
-                newMeasurementValidations(newMeasurement, state.some)
             }
           }
-        // }
+        }
     }.map(_.reduce)
   }
 
@@ -75,7 +78,7 @@ object LifecycleSharedFunctions {
     } else {
       implicit val sp: SecurityProvider[F] = context.securityProvider
       newStateF.flatMap(newState => {
-        val (measurementUpdates, otherUpdates) = updates.partition(_.value.isInstanceOf[NewMeasurement])
+        val (measurementUpdates, otherUpdates) = updates.partition(_.value.isInstanceOf[AdvanceMeasurementSequence])
 
         otherUpdates.foldLeftM(newState) { (acc, signedUpdate) => {
           signedUpdate.value match {
@@ -97,13 +100,13 @@ object LifecycleSharedFunctions {
               getFirstAddressFromProofs(signedUpdate.proofs).flatMap { author =>
                 combineNewSample(newSample, acc, author).pure[F]
               }
-            case _: NewMeasurement =>
+            case _: AdvanceMeasurementSequence =>
               acc.pure[F] // Skip for now, will process later
           }
         }
         }.flatMap { updatedState =>
-          val newMeasurements = measurementUpdates.map(_.value.asInstanceOf[NewMeasurement])
-          combineNewMeasurement(newMeasurements, updatedState).pure[F]
+          val advanceMeasurementSequences = measurementUpdates.map(_.value.asInstanceOf[AdvanceMeasurementSequence])
+          advanceMeasurementSequence(advanceMeasurementSequences, updatedState).pure[F]
         }
       })
     }
