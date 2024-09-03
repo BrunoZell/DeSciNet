@@ -8,18 +8,18 @@ import org.tessellation.security.hash.Hash
 import scala.annotation.unused
 
 object Combiners {
-  def combineNewVariable(
-    update: NewVariable,
+  def combineNewExternalVariable(
+    update: NewExternalVariable,
     state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
     author: Address
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
     val variableKey = ExogenousVariableKey(update.sourceMetagraph, update.dataApplicationUrlPath)
     val variableId = ExogenousVariableId(Hash.fromBytes(Serializers.serializeVariableKey(variableKey)).toString)
-    @unused val newVariable = ExogenousVariable(update.name, author, update.sourceMetagraph, update.dataApplicationUrlPath, update.l0NodeUrls)
+    @unused val newExternalVariable = ExogenousVariable(update.name, author, update.sourceMetagraph, update.dataApplicationUrlPath, update.l0NodeUrls)
 
     val newOnChainState = state.onChain.copy(exogenousVariables = state.onChain.exogenousVariables + variableId)
     // Convert variableId to String
-    val newCalculatedState = state.calculated.copy(exogenousVariables = state.calculated.exogenousVariables + (variableId.identity -> newVariable))
+    val newCalculatedState = state.calculated.copy(exogenousVariables = state.calculated.exogenousVariables + (variableId.identity -> newExternalVariable))
 
     DataState(newOnChainState, newCalculatedState)
   }

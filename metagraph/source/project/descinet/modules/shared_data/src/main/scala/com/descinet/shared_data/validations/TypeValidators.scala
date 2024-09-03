@@ -10,17 +10,17 @@ import scala.annotation.unused
 
 object TypeValidators {
   def validateExogenousVariableName(
-    update: NewVariable
+    update: NewExternalVariable
   ): DataApplicationValidationErrorOr[Unit] =
     InvalidExogenousVariableName.whenA(update.name.isEmpty || update.name.length > 64)
 
   def validateExogenousVariableUrl(
-    update: NewVariable
+    update: NewExternalVariable
   ): DataApplicationValidationErrorOr[Unit] =
     InvalidExogenousVariableUrl.unlessA(isValidURL(update.dataApplicationUrlPath))
 
   def validateExogenousVariableL0NodeUrls(
-    @unused update: NewVariable
+    @unused update: NewExternalVariable
   ): DataApplicationValidationErrorOr[Unit] =
     // InvalidExogenousVariableL0NodeUrls.whenA(update.l0NodeUrls.isEmpty || update.l0NodeUrls.exists(!isValidURL(_)))
     valid

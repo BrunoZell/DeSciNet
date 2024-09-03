@@ -13,29 +13,22 @@ object Types {
    */
 
   @derive(decoder, encoder)
-  case class ExogenousVariableKey(
-    sourceMetagraph        : Address,
-    dataApplicationUrlPath : String,
+  case class ExternalVariable(
+    uniqueName       : String,
+    authority        : Address,
+    valueMap         : String => Double
   )
 
-  @derive(decoder, encoder)
-  case class ExogenousVariableId(
-    identity: String // Hash[ExogenousVariableKey]
-  )
-
-  @derive(decoder, encoder)
-  case class ExogenousVariable(
-    name                   : String,
-    proposer               : Address,
-    sourceMetagraph        : Address,
-    dataApplicationUrlPath : String,
-    l0NodeUrls             : List[String],
-  )
+  // vNext:
+  // @derive(decoder, encoder)
+  // case class ExternalVariableV2[ValueType](
+  //   metagraph     : Address,
+  //   valueMap      : DataState => ValueType
+  // )
 
   @derive(decoder, encoder)
   case class Target(
-    id                   : Long,
-    exogenousVariables   : List[ExogenousVariableId],
+    externalVariables : List[String], // 'Value : Hash[ExternalVariable]
   )
 
   @derive(decoder, encoder)
@@ -99,11 +92,9 @@ object Types {
   sealed trait DeSciNetUpdate extends DataUpdate
 
   @derive(decoder, encoder)
-  case class NewVariable(
-    name                   : String,
-    sourceMetagraph        : Address,
-    dataApplicationUrlPath : String,
-    l0NodeUrls             : List[String],
+  case class NewExternalVariable(
+    uniqueName             : String,
+    authority              : Address,
   ) extends DeSciNetUpdate
 
   @derive(decoder, encoder)

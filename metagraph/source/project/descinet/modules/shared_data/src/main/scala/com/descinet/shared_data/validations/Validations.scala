@@ -10,8 +10,8 @@ import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 
 object Validations {
-  def newVariableValidations(
-    update: NewVariable
+  def newExternalVariableValidations(
+    update: NewExternalVariable
   ): DataApplicationValidationErrorOr[Unit] =
     validateExogenousVariableName(update)
       .productR(validateExogenousVariableUrl(update))

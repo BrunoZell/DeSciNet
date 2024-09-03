@@ -21,8 +21,8 @@ object LifecycleSharedFunctions {
     update: DeSciNetUpdate
   ): F[DataApplicationValidationErrorOr[Unit]] = Async[F].delay {
     update match {
-      case newVariable: NewVariable =>
-        newVariableValidations(newVariable)
+      case newExternalVariable: NewExternalVariable =>
+        newExternalVariableValidations(newExternalVariable)
       case newTarget: NewTarget =>
         newTargetValidations(newTarget, None)
       case newBounty: NewBounty =>
@@ -46,8 +46,8 @@ object LifecycleSharedFunctions {
       //   .flatMap { addresses =>
           Async[F].delay {
             signedUpdate.value match {
-              case newVariable: NewVariable =>
-                newVariableValidations(newVariable)
+              case newExternalVariable: NewExternalVariable =>
+                newExternalVariableValidations(newExternalVariable)
               case newTarget: NewTarget =>
                 newTargetValidations(newTarget, state.some)
               case newBounty: NewBounty =>
@@ -79,9 +79,9 @@ object LifecycleSharedFunctions {
 
         otherUpdates.foldLeftM(newState) { (acc, signedUpdate) => {
           signedUpdate.value match {
-            case newVariable: NewVariable =>
+            case newExternalVariable: NewExternalVariable =>
               getFirstAddressFromProofs(signedUpdate.proofs).flatMap { author =>
-                combineNewVariable(newVariable, acc, author).pure[F]
+                combineNewExternalVariable(newExternalVariable, acc, author).pure[F]
               }
             case newTarget: NewTarget =>
               combineNewTarget(newTarget, acc).pure[F]
