@@ -9,6 +9,7 @@ import com.descinet.shared_data.types.Types._
 import com.descinet.shared_data.validations.Validations._
 import com.descinet.shared_data.validations.NewExternalVariableValidators._
 import com.descinet.shared_data.validations.AdvanceMeasurementSequenceValidators._
+import com.descinet.shared_data.validations.ModelValidators._
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 import org.tessellation.currency.dataApplication.{DataState, L0NodeContext}
 import org.tessellation.security.SecurityProvider
@@ -32,7 +33,7 @@ object LifecycleSharedFunctions {
       // case newBounty: NewBounty =>
       //   newBountyValidations(newBounty)
       case newModel: NewModel =>
-        newModelValidations(newModel, None)
+        validateNewModelUpdate(newModel)
       case newSample: NewSample =>
         newSampleValidations(newSample, None)
     }
@@ -58,7 +59,7 @@ object LifecycleSharedFunctions {
               // case newBounty: NewBounty =>
               //   newBountyValidations(newBounty)
               case newModel: NewModel =>
-                newModelValidations(newModel, state.some)
+                validateNewModelUpdate(newModel, state.some, firstSigner)
               case newSample: NewSample =>
                 newSampleValidations(newSample, state.some)
             }

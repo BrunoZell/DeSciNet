@@ -86,15 +86,20 @@ object Combiners {
     state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
     author: Address
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
-    // Todo: Introduce global model counter to avoid collisions when models are removed.
-    val modelId = state.onChain.models.size.toLong + 1
-    // Ensure update.endogenousVariables is a Map[String, EndogenousVariableEquation]
-    val endogenousVariables: Map[String, EndogenousVariableEquation] = update.endogenousVariables.map {
-      case (key, value) => key -> EndogenousVariableEquation(value)
-    }
-    val newModel = Model(modelId, author, update.exogenousVariables, endogenousVariables, update.target)
+    val modelId = Hash.fromBytes(update.model.asJson.noSpaces.getBytes).toString
 
-    val newOnChainState = state.onChain.copy(models = state.onChain.models + (modelId -> newModel))
+    // Create the new model using the updated Model type
+    val newModel = Model(
+      author = author,
+      externalParameterLabels = update.model.externalParameterLabels,
+      internalParameterLabels = update.model.internalParameterLabels,
+      internalVariables = update.model.internalVariables
+    )
+
+    // Update the onChain state with the new model
+    val newOnChainState = state.onChain.copy(models = state.onChain.models + modelId)
+    
+    // Update the calculated state with the new model
     val newCalculatedState = state.calculated.copy(models = state.calculated.models + (modelId -> newModel))
 
     DataState(newOnChainState, newCalculatedState)

@@ -11,25 +11,34 @@ import scala.annotation.unused
 import scala.util.matching.Regex
 
 object ModelValidators {
-  def validateNewModel(
+  def validateNewModelUpdate(
+    update: NewModel
+  ): DataApplicationValidationErrorOr[Unit] = {
+    // Validate that parameter labels are unique and valid
+    validateParameterLabels(update)
+      // Validate that internal variable indices are valid
+      .productR(validateInternalVariableIndices(update))
+      // Validate that internal variable equations are valid Scala code
+      .productR(validateInternalVariableEquations(update))
+  }
+
+  def validateNewModelUpdate(
     update: NewModel,
-    state: Option[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]]
+    state: Option[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]],
+    proofAddress: Address
   ): DataApplicationValidationErrorOr[Unit] =
     state match {
       case Some(s) =>
         // Validate that the model's hash id is unique
         validateModelUniqueId(update, s)
-          // Validate that parameter labels are unique and valid
-          .productR(validateParameterLabels(update))
-          // Validate that internal variable indices are valid
-          .productR(validateInternalVariableIndices(update))
-          // Validate that internal variable equations are valid Scala code
-          .productR(validateInternalVariableEquations(update))
+          // Validate that the proof address matches the model author
+          .productR(validateModelAuthor(update, proofAddress))
+          // Perform state-independent validations
+          .productR(validateNewModelUpdate(update))
       case None =>
         // If no state is provided, still perform the same validations except for uniqueness
-        validateParameterLabels(update)
-          .productR(validateInternalVariableIndices(update))
-          .productR(validateInternalVariableEquations(update))
+        validateModelAuthor(update, proofAddress)
+          .productR(validateNewModelUpdate(update))
     }
 
   private def validateModelUniqueId(
@@ -40,6 +49,14 @@ object ModelValidators {
     val modelId = Hash.fromBytes(update.model.asJson.noSpaces.getBytes).toString
     // Check if the model ID already exists in the state
     DuplicateModelId.whenA(state.onChain.models.contains(modelId))
+  }
+
+  private def validateModelAuthor(
+    update: NewModel,
+    proofAddress: Address
+  ): DataApplicationValidationErrorOr[Unit] = {
+    // Check if the proof address matches the model author
+    InvalidModelAuthor.whenA(update.model.author != proofAddress)
   }
 
   private def validateParameterLabels(

@@ -99,20 +99,14 @@ object Types {
 
   @derive(decoder, encoder)
   case class NewExternalVariable(
-    uniqueName             : String,
-    authority              : Address,
+    uniqueName          : String,
+    authority           : Address,
   ) extends DeSciNetUpdate
 
   @derive(decoder, encoder)
   case class AdvanceMeasurementSequence(
-    externalVariableId: String,
-    newHead: MeasurementSequenceHead,
-  ) extends DeSciNetUpdate
-
-  @derive(decoder, encoder)
-  case class NewModel(
-    model                : Model,
-    // target               : Target,
+    externalVariableId  : String,
+    newHead             : MeasurementSequenceHead,
   ) extends DeSciNetUpdate
 
   // @derive(decoder, encoder)
@@ -125,6 +119,12 @@ object Types {
   //   target: Target,
   //   amount: Long, // in DESCI
   // ) extends DeSciNetUpdate
+
+  @derive(decoder, encoder)
+  case class NewModel(
+    model   : Model,  /// Explicit causal assumptions
+    //target  : Target, /// Target variables the model aims to explain
+  ) extends DeSciNetUpdate
 
   @derive(decoder, encoder)
   case class NewSample(
@@ -142,9 +142,9 @@ object Types {
   case class DeSciNetOnChainState(
     externalVariables: Set[String], // 'Value : Hash[ExternalVariable]
     externalMeasurementSequenceHeads: Map[String, String], // 'Key : Hash[ExternalVariable]; 'Value : Hash[MeasurementSequenceHead]
-    models: Map[Long, Model],
     // targets: Map[Long, Target],
     // bounties: Map[Long, Bounty],
+    models: Set[String], // 'Value : Hash[Model]
     // scores: Map[Long, Score],
   ) extends DataOnChainState
 
@@ -160,9 +160,9 @@ object Types {
     externalMeasurementSequenceHeads: Map[String, MeasurementChain], // 'Key : Hash[ExternalVariable]
     // allExternalMeasurements: Map[String, List[MeasurementChain]], // 'Key : Hash[ExternalVariable], 'Value : all MeasurementChain from traversed externalMeasurementSequenceHeads[key]
     // externalMeasurementValues: Map[String, List[MeasurementValue]], // 'Key : Hash[ExternalVariable], 'Value : tuple(Double, Timestamp)
-    models: Map[Long, Model],
     // targets: Map[Long, Target],
     // bounties: Map[Long, Bounty],
+    models: Map[String, Model], // 'Key : Hash[Model]
     // scores: Map[Long, Score],
   ) extends DataCalculatedState
 }

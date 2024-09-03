@@ -57,6 +57,10 @@ object Errors {
     val message = "Model ID already exists."
   }
 
+  case object InvalidModelAuthor extends DataApplicationValidationError {
+    val message = "The proof address does not match the model author."
+  }
+
   case object DuplicateParameterLabels extends DataApplicationValidationError {
     val message = "Parameter labels are not unique across external and internal parameter labels."
   }
