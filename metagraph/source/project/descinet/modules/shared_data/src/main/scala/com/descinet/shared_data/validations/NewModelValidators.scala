@@ -1,10 +1,11 @@
 package com.descinet.shared_data.validations
 
+import cats.syntax.traverse._
+import com.descinet.shared_data.serializers.Serializers
 import org.tessellation.schema.address.Address
 import org.tessellation.security.hash.Hash
 import com.descinet.shared_data.errors.Errors._
 import com.descinet.shared_data.types.Types._
-import io.circe.syntax._
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 import scala.annotation.unused
@@ -46,7 +47,7 @@ object NewModelValidators {
     state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
   ): DataApplicationValidationErrorOr[Unit] = {
     // Compute the model ID by hashing the JSON representation of the model
-    val modelId = Hash.fromBytes(update.model.asJson.noSpaces.getBytes).toString
+    val modelId = Hash.fromBytes(Serializers.serializeModel(update.model)).toString
     // Check if the model ID already exists in the state
     DuplicateModelId.whenA(state.onChain.models.contains(modelId))
   }

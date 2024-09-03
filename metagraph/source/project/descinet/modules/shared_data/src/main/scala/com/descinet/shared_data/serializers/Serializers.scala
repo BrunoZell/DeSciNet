@@ -37,6 +37,11 @@ object Serializers {
   ): Array[Byte] =
     externalVariable.asJson.deepDropNullValues.noSpaces.getBytes(StandardCharsets.UTF_8)
 
+  def serializeModel(
+    model: Model
+  ): Array[Byte] =
+    model.asJson.deepDropNullValues.noSpaces.getBytes(StandardCharsets.UTF_8)
+
   def serializeState(
     state: DeSciNetOnChainState
   ): Array[Byte] =

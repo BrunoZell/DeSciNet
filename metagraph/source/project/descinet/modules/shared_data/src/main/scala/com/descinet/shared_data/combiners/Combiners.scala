@@ -86,7 +86,7 @@ object Combiners {
     state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
     author: Address
   ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
-    val modelId = Hash.fromBytes(update.model.asJson.noSpaces.getBytes).toString
+    val modelId = Hash.fromBytes(Serializers.serializeModel(update.model)).toString
 
     // Create the new model using the updated Model type
     val newModel = Model(
