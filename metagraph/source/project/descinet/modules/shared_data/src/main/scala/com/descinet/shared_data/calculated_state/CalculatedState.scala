@@ -14,9 +14,9 @@ object CalculatedState {
         externalVariables = Map.empty,
         measurements = Map.empty,
         models = Map.empty,
-        targets = Map.empty,
-        bounties = Map.empty,
-        scores = Map.empty
+        // targets = Map.empty,
+        // bounties = Map.empty,
+        // scores = Map.empty
       )
     )
 }

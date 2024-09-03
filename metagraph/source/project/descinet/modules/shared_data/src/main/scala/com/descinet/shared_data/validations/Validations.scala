@@ -11,23 +11,23 @@ import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 
 object Validations {
-  def newTargetValidations(
-    update: NewTarget,
-    maybeState: Option[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]]
-  ): DataApplicationValidationErrorOr[Unit] =
-    maybeState match {
-      case Some(state) =>
-        validateTargetId(update, state)
-          .productR(validateExogenousVariablesInTarget(update))
-      case None =>
-        validateExogenousVariablesInTarget(update)
-    }
+  // def newTargetValidations(
+  //   update: NewTarget,
+  //   maybeState: Option[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]]
+  // ): DataApplicationValidationErrorOr[Unit] =
+  //   maybeState match {
+  //     case Some(state) =>
+  //       validateTargetId(update, state)
+  //         .productR(validateExogenousVariablesInTarget(update))
+  //     case None =>
+  //       validateExogenousVariablesInTarget(update)
+  //   }
 
-  def newBountyValidations(
-    update: NewBounty
-  ): DataApplicationValidationErrorOr[Unit] =
-    validateBountyAmount(update)
-      .productR(validateBountyGrantee(update))
+  // def newBountyValidations(
+  //   update: NewBounty
+  // ): DataApplicationValidationErrorOr[Unit] =
+  //   validateBountyAmount(update)
+  //     .productR(validateBountyGrantee(update))
 
   def newModelValidations(
     update: NewModel,
@@ -66,19 +66,4 @@ object Validations {
       case None =>
         validateSolutionEndogenousValues(update)
     }
-
-  def newMeasurementValidations(
-    update: NewMeasurement,
-    state: Option[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]]
-  ): DataApplicationValidationErrorOr[Unit] = {
-    state match {
-      case Some(state) =>
-        state.onChain.measurements.get(update.exogenousVariableId.identity) match {
-          // case Some(chainHead) if update.snapshotOrdinal <= chainHead.timestamp =>
-          //   SnapshotOrdinalTooLow.invalid
-          case _ => valid
-        }
-      case None => valid
-    }
-  }
 }

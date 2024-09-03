@@ -9,28 +9,28 @@ import org.tessellation.schema.SnapshotOrdinal
 import scala.annotation.unused
 
 object TypeValidators {
-  def validateTargetId(
-    @unused update: NewTarget,
-    @unused state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
-  ): DataApplicationValidationErrorOr[Unit] =
-    // DuplicateTargetId.whenA(state.calculated.targets.contains(update.id))
-    valid
+  // def validateTargetId(
+  //   @unused update: NewTarget,
+  //   @unused state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
+  // ): DataApplicationValidationErrorOr[Unit] =
+  //   // DuplicateTargetId.whenA(state.calculated.targets.contains(update.id))
+  //   valid
 
-  def validateExogenousVariablesInTarget(
-    update: NewTarget
-  ): DataApplicationValidationErrorOr[Unit] =
-    EmptyExogenousVariablesInTarget.whenA(update.exogenousVariables.isEmpty)
+  // def validateExogenousVariablesInTarget(
+  //   update: NewTarget
+  // ): DataApplicationValidationErrorOr[Unit] =
+  //   EmptyExogenousVariablesInTarget.whenA(update.exogenousVariables.isEmpty)
 
-  def validateBountyAmount(
-    update: NewBounty
-  ): DataApplicationValidationErrorOr[Unit] =
-    InvalidBountyAmount.whenA(update.amount <= 0)
+  // def validateBountyAmount(
+  //   update: NewBounty
+  // ): DataApplicationValidationErrorOr[Unit] =
+  //   InvalidBountyAmount.whenA(update.amount <= 0)
 
-  def validateBountyGrantee(
-    @unused update: NewBounty
-  ): DataApplicationValidationErrorOr[Unit] =
-    // InvalidBountyGrantee.unlessA(update.grantee.isValid)
-    valid
+  // def validateBountyGrantee(
+  //   @unused update: NewBounty
+  // ): DataApplicationValidationErrorOr[Unit] =
+  //   // InvalidBountyGrantee.unlessA(update.grantee.isValid)
+  //   valid
 
   def validateEndogenousVariableLabel(
     value: String

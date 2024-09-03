@@ -52,34 +52,34 @@ object Combiners {
     state
   }
 
-  def combineNewTarget(
-    update: NewTarget,
-    state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
-  ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
-    // Todo: Introduce global target counter to avoid collisions when targets are removed.
-    val targetId = state.onChain.targets.size.toLong + 1
-    val newTarget = Target(targetId, update.exogenousVariables)
+  // def combineNewTarget(
+  //   update: NewTarget,
+  //   state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
+  // ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
+  //   // Todo: Introduce global target counter to avoid collisions when targets are removed.
+  //   val targetId = state.onChain.targets.size.toLong + 1
+  //   val newTarget = Target(targetId, update.exogenousVariables)
 
-    val newOnChainState = state.onChain.copy(targets = state.onChain.targets + (targetId -> newTarget))
-    val newCalculatedState = state.calculated.copy(targets = state.calculated.targets + (targetId -> newTarget))
+  //   val newOnChainState = state.onChain.copy(targets = state.onChain.targets + (targetId -> newTarget))
+  //   val newCalculatedState = state.calculated.copy(targets = state.calculated.targets + (targetId -> newTarget))
 
-    DataState(newOnChainState, newCalculatedState)
-  }
+  //   DataState(newOnChainState, newCalculatedState)
+  // }
 
-  def combineNewBounty(
-    update: NewBounty,
-    state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
-    author: Address
-  ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
-    // Todo: Introduce functional bounty key avoid collisions when bounties are removed.
-    val bountyId = state.onChain.bounties.size.toLong + 1
-    val newBounty = Bounty(bountyId, update.target, author, update.amount, update.amount)
+  // def combineNewBounty(
+  //   update: NewBounty,
+  //   state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
+  //   author: Address
+  // ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
+  //   // Todo: Introduce functional bounty key avoid collisions when bounties are removed.
+  //   val bountyId = state.onChain.bounties.size.toLong + 1
+  //   val newBounty = Bounty(bountyId, update.target, author, update.amount, update.amount)
 
-    val newOnChainState = state.onChain.copy(bounties = state.onChain.bounties + (bountyId -> newBounty))
-    val newCalculatedState = state.calculated.copy(bounties = state.calculated.bounties + (bountyId -> newBounty))
+  //   val newOnChainState = state.onChain.copy(bounties = state.onChain.bounties + (bountyId -> newBounty))
+  //   val newCalculatedState = state.calculated.copy(bounties = state.calculated.bounties + (bountyId -> newBounty))
 
-    DataState(newOnChainState, newCalculatedState)
-  }
+  //   DataState(newOnChainState, newCalculatedState)
+  // }
 
   def combineNewModel(
     update: NewModel,

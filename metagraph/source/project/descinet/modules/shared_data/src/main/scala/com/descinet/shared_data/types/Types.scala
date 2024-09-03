@@ -39,19 +39,19 @@ object Types {
     value     : Double,   /// measurement value
   )
 
-  @derive(decoder, encoder)
-  case class Target(
-    externalVariables : List[String], // 'Value : Hash[ExternalVariable]
-  )
+  // @derive(decoder, encoder)
+  // case class Target(
+  //   externalVariables : List[String], // 'Value : Hash[ExternalVariable]
+  // )
 
-  @derive(decoder, encoder)
-  case class Bounty(
-    id                   : Long,
-    target               : Target,
-    grantee              : Address,
-    originalAmount       : Long, // in DESCI
-    remainingAmount      : Long, // in DESCI
-  )
+  // @derive(decoder, encoder)
+  // case class Bounty(
+  //   id                   : Long,
+  //   target               : Target,
+  //   grantee              : Address,
+  //   originalAmount       : Long, // in DESCI
+  //   remainingAmount      : Long, // in DESCI
+  // )
 
   @derive(decoder, encoder)
   case class EndogenousVariable(

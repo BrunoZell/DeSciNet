@@ -40,7 +40,7 @@ object CalculatedStateService {
               case (acc, (key, value)) => acc.updated(key, value)
             }
 
-            val updatedMeasurements = state.measurements.foldLeft(currentVoteCalculatedState.measurements) {
+            val updatedMeasurements = state.externalMeasurementSequenceHeads.foldLeft(currentVoteCalculatedState.externalMeasurementSequenceHeads) {
               case (acc, (key, value)) => acc.updated(key, value)
             }
 
@@ -48,27 +48,27 @@ object CalculatedStateService {
               case (acc, (key, value)) => acc.updated(key, value)
             }
 
-            val updatedTargets = state.targets.foldLeft(currentVoteCalculatedState.targets) {
-              case (acc, (key, value)) => acc.updated(key, value)
-            }
+            // val updatedTargets = state.targets.foldLeft(currentVoteCalculatedState.targets) {
+            //   case (acc, (key, value)) => acc.updated(key, value)
+            // }
 
-            val updatedBounties = state.bounties.foldLeft(currentVoteCalculatedState.bounties) {
-              case (acc, (key, value)) => acc.updated(key, value)
-            }
+            // val updatedBounties = state.bounties.foldLeft(currentVoteCalculatedState.bounties) {
+            //   case (acc, (key, value)) => acc.updated(key, value)
+            // }
 
-            val updatedScores = state.scores.foldLeft(currentVoteCalculatedState.scores) {
-              case (acc, (key, value)) => acc.updated(key, value)
-            }
+            // val updatedScores = state.scores.foldLeft(currentVoteCalculatedState.scores) {
+            //   case (acc, (key, value)) => acc.updated(key, value)
+            // }
 
             CalculatedState(
               snapshotOrdinal,
               DeSciNetCalculatedState(
                 updatedExogenousVariables,
                 updatedMeasurements,
-                updatedModels,
-                updatedTargets,
-                updatedBounties,
-                updatedScores
+                updatedModels
+                // updatedTargets,
+                // updatedBounties,
+                // updatedScores
               )
             )
           }.as(true)
