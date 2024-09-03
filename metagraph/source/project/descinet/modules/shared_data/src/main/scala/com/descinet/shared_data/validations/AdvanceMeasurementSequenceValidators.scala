@@ -48,10 +48,10 @@ object AdvanceMeasurementSequenceValidators {
     update: AdvanceMeasurementSequence,
     state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState]
   ): DataApplicationValidationErrorOr[Unit] =
-    state.calculated.externalMeasurementSequenceHeads.get(update.externalVariableId) match {
-      case Some(head) =>
+    state.onChain.externalMeasurementSequenceHeads.get(update.externalVariableId) match {
+      case Some(headHash) =>
         // If a latest head exists in L0 state, check if the previous head in the update matches the key
-        InvalidPreviousHead.whenA(update.newHead.previous != head.key)
+        InvalidPreviousHead.whenA(update.newHead.previous != headHash)
       case None =>
         // If no latest head exists in L0 state, check if the previous head in the update is None
         InvalidPreviousHead.whenA(update.newHead.previous.isDefined)
