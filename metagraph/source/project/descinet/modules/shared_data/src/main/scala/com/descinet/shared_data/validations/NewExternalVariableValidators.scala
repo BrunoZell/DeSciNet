@@ -24,7 +24,7 @@ object NewExternalVariableValidators {
   private def validateExternalVariableName(
     update: NewExternalVariable
   ): DataApplicationValidationErrorOr[Unit] =
-    InvalidExogenousVariableName.whenA(update.uniqueName.isEmpty || update.uniqueName.length > 64)
+    InvalidExternalVariableName.whenA(update.uniqueName.isEmpty || update.uniqueName.length > 64)
 
   def externalVariableIdDoesNotExist(
     update: NewExternalVariable,

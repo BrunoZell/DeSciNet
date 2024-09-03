@@ -25,42 +25,34 @@ object Errors {
       if (cond) invalid else valid
   }
 
-  case object InvalidExogenousVariableName extends DataApplicationValidationError {
+  // NewExternalVariableValidators Errors
+  case object InvalidExternalVariableName extends DataApplicationValidationError {
     val message = "Exogenous variable name is invalid."
-  }
-
-  case object InvalidExogenousVariableUrl extends DataApplicationValidationError {
-    val message = "Exogenous variable URL is invalid."
-  }
-
-  case object InvalidExogenousVariableL0NodeUrls extends DataApplicationValidationError {
-    val message = "L0 node URLs are invalid."
-  }
-
-  case object InvalidMeasurementTimestamp extends DataApplicationValidationError {
-    val message = "Measurement timestamp is in the future."
   }
 
   case object DuplicateExternalVariableId extends DataApplicationValidationError {
     val message = "External variable already exists. Try a different unique name."
   }
 
-  case object DuplicateTargetId extends DataApplicationValidationError {
-    val message = "Target ID already exists."
-  }
+  // Target Errors
+  // case object DuplicateTargetId extends DataApplicationValidationError {
+  //   val message = "Target ID already exists."
+  // }
 
-  case object EmptyExogenousVariablesInTarget extends DataApplicationValidationError {
-    val message = "Exogenous variables list in target is empty."
-  }
+  // case object EmptyExogenousVariablesInTarget extends DataApplicationValidationError {
+  //   val message = "Exogenous variables list in target is empty."
+  // }
 
-  case object InvalidBountyAmount extends DataApplicationValidationError {
-    val message = "Bounty amount must be positive."
-  }
+  // Bounty Errors
+  // case object InvalidBountyAmount extends DataApplicationValidationError {
+  //   val message = "Bounty amount must be positive."
+  // }
 
-  case object InvalidBountyGrantee extends DataApplicationValidationError {
-    val message = "Bounty grantee address is invalid."
-  }
+  // case object InvalidBountyGrantee extends DataApplicationValidationError {
+  //   val message = "Bounty grantee address is invalid."
+  // }
 
+  // Model Errors
   case object InvalidEndogenousVariableLabel extends DataApplicationValidationError {
     val message = "Endogenous variable label is invalid."
   }
@@ -93,6 +85,7 @@ object Errors {
     val message = "Endogenous variable equation does not compile as Scala code."
   }
 
+  // Solution Errors
   case object EmptySolutionEndogenousValues extends DataApplicationValidationError {
     val message = "Endogenous values map in solution is empty."
   }
@@ -105,16 +98,9 @@ object Errors {
     val message = "Values for all endogenous variables are not provided."
   }
 
+  // General Errors
   case object InvalidAddress extends DataApplicationValidationError {
     val message = "Provided address different than proof"
-  }
-
-  case class InvalidFieldSize(fieldName: String, maxSize: Long) extends DataApplicationValidationError {
-    val message = s"Invalid field size: $fieldName, maxSize: $maxSize"
-  }
-
-  case object SnapshotOrdinalTooLow extends DataApplicationValidationError {
-    val message = "Snapshot ordinal is too low."
   }
 
   case object ModelNotFound extends DataApplicationValidationError {
