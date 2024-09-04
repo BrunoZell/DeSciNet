@@ -108,16 +108,18 @@ class ModelEvaluator(
   def evaluateEquation(equation: String, t: Long, externalLabels: Set[String]): Double = {
     val externalSymbols = externalLabels.map(label => s"val $label = \"$label\"").mkString("\n")
     val endogenousSymbols = model.internalParameterLabels.keys.map { label =>
-      s"def $label(t: Long): Double = env.evaluateEndogenous(\"$label\", t)"
+      s"def $label(t: Long): Double = environm€nt.evaluateEndogenous(\"$label\", t)"
     }.mkString("\n")
 
+    // using environm€nt as a symbol as special characters are not allowed as Causal Model variable labels
+    // but are valid Scala. So that environm€nt isn't directly available to the SCM equation.
     val code = s"""
-      |(env: com.descinet.l0.EvaluationContext) => {
+      |(environm€nt: com.descinet.l0.EvaluationContext) => {
       |  import scala.math._
-      |  def randomDouble(): Double = env.randomDouble() 
-      |  def randomGaussian(): Double = env.randomGaussian() 
-      |  def latest(exolabel: String, t: Long): Option[Double] = env.latest(exolabel, t) 
-      |  def latestTime(exolabel: String, t: Long): Option[Long] = env.latestTime(exolabel, t) 
+      |  def randomDouble(): Double = environm€nt.randomDouble() 
+      |  def randomGaussian(): Double = environm€nt.randomGaussian() 
+      |  def latest(exolabel: String, t: Long): Option[Double] = environm€nt.latest(exolabel, t) 
+      |  def latestTime(exolabel: String, t: Long): Option[Long] = environm€nt.latestTime(exolabel, t) 
       |  val t: Long = $t 
       |  $externalSymbols
       |  $endogenousSymbols
