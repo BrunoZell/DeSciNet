@@ -108,16 +108,17 @@ class ModelEvaluator(
   def evaluateEquation(equation: String, t: Long, externalLabels: Set[String]): Double = {
     val externalSymbols = externalLabels.map(label => s"val $label = \"$label\"").mkString("\n")
     val endogenousSymbols = model.internalParameterLabels.keys.map { label =>
-      s"def $label(t: Long): Double = evaluateEndogenous(\"$label\", t)"
+      s"def $label(t: Long): Double = env.evaluateEndogenous(\"$label\", t)"
     }.mkString("\n")
 
     val code = s"""
-      |(env: Any) => {
+      |(env: com.descinet.l0.EvaluationContext) => {
       |  import scala.math._
-      |  val context = env.asInstanceOf[EvaluationContext]
-      |  val randomDouble = () => context.randomDouble() 
-      |  val randomGaussian = () => context.randomGaussian() 
-      |  val t = $t 
+      |  def randomDouble(): Double = env.randomDouble() 
+      |  def randomGaussian(): Double = env.randomGaussian() 
+      |  def latest(exolabel: String, t: Long): Option[Double] = env.latest(exolabel, t) 
+      |  def latestTime(exolabel: String, t: Long): Option[Long] = env.latestTime(exolabel, t) 
+      |  val t: Long = $t 
       |  $externalSymbols
       |  $endogenousSymbols
       |  $equation
