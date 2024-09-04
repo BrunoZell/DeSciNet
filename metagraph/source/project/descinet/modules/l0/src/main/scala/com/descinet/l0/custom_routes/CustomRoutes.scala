@@ -145,9 +145,9 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
       state.models.get(modelId) match {
         case None => NotFound(s"Model with id $modelId not found.")
         case Some(model) =>
-          // Map externalParameterLabels to MeasurementSequenceHead
-          val externalMeasurements = model.externalParameterLabels.map { label =>
-            label -> state.externalMeasurementSequenceHeads.getOrElse(label, MeasurementSequenceHead()) // Ensure MeasurementSequenceHead() is a valid default
+          // Map externalParameterLabels to Option[MeasurementSequenceHead]
+          val externalMeasurements = model.externalParameterLabels.map { case (localLabel, externalVariableId) =>
+            localLabel -> state.externalMeasurementSequenceHeads.get(externalVariableId)
           }.toMap
 
           // Traverse each sequence head
@@ -155,7 +155,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
             @annotation.tailrec
             def loop(current: MeasurementSequenceHead, acc: List[Measurement]): List[Measurement] = {
               if ((hideLatest && current.measurement.timestamp < time) || (!hideLatest && current.measurement.timestamp <= time)) {
-                loop(current.previous.getOrElse(return acc), current.measurement :: acc)
+                loop(current.previous.flatMap(state.externalMeasurementSequenceHeads.get).getOrElse(return acc), current.measurement :: acc)
               } else {
                 acc
               }
@@ -163,8 +163,8 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
             loop(head, Nil)
           }
 
-          val traversedMeasurements = externalMeasurements.map { case (label, head) =>
-            label -> traverseSequenceHead(head)
+          val traversedMeasurements: Map[String, List[Measurement]] = externalMeasurements.collect {
+            case (localLabel, Some(head)) => localLabel -> traverseSequenceHead(head)
           }
 
           // Serialize to JSON and return
