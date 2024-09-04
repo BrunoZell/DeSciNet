@@ -73,10 +73,10 @@ Lets take the [`examples/human-positioning/models/1-walking-only/model-hgtp.json
     },
     "internalVariables": [
         {
-            "equation": "H_longitude = latest(M_longitude, t) + Normal.Sample(0, epsilon * sqrt(t - latestTime(M_longitude, t)))"
+            "equation": "latest(M_longitude, t) + randomGaussian() * epsilon * sqrt(t - latestTime(M_longitude, t))"
         },
         {
-            "equation": "H_latitude = latest(M_latitude, t) + Normal.Sample(0, epsilon * sqrt(t - latestTime(M_latitude, t)))"
+            "equation": "latest(M_latitude, t) + randomGaussian() * epsilon * sqrt(t - latestTime(M_latitude, t))"
         },
         {
             "equation": "epsilon = 1.0"
@@ -141,10 +141,10 @@ Sending Action Message:
         internalParameterLabels: { H_longitude: 0, H_latitude: 1, epsilon: 2 },
         internalVariables: [
           {
-            equation: 'H_longitude = latest(M_longitude, t) + Normal.Sample(0, epsilon * sqrt(t - latestTime(M_longitude, t)))'
+            equation: 'latest(M_longitude, t) + randomGaussian() * epsilon * sqrt(t - latestTime(M_longitude, t))'
           },
           {
-            equation: 'H_latitude = latest(M_latitude, t) + Normal.Sample(0, epsilon * sqrt(t - latestTime(M_latitude, t)))'
+            equation: 'latest(M_latitude, t) + randomGaussian() * epsilon * sqrt(t - latestTime(M_latitude, t))'
           },
           { equation: 'epsilon = 1.0' }
         ]
@@ -167,6 +167,18 @@ Response Data
 You can view the uploaded model in the causal model registry by visiting [data-l1://data-application/models](http://localhost:9200/data-application/models) in your browser.
 
 ## Evaluate the Model
+
+Each model has an ID. Lets say our model ID is `f36d44383a278fbd648c5659726d20dc2c39d151116409a78c4b46ba60f9ba6f`.
+
+Now you can query http://localhost:9200/data-application/environment/f36d44383a278fbd648c5659726d20dc2c39d151116409a78c4b46ba60f9ba6f/1725471294912, which should read in all observations of the models external variables up to UNIX millisecond timestamp `1725471294912`, and returns all measurements:
+
+```json
+
+```
+
+On it's own it doesn't do anything, but it is helpful to understand what data is available.
+
+Next, lets evaluate the model by calling 
 
 
 ## Run a backtest
