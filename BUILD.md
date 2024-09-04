@@ -147,6 +147,13 @@ We have the option `logs` to show the logs of nodes per container and layer. You
 ./hydra logs :container_name :layer_name   
 ```
 
+With frontend URLs pointing to the `metagraph-node-1` container, these are the relevant logs:
+
+```bash
+./hydra logs metagraph-node-1 data-l
+./hydra logs metagraph-node-1 metagraph-l0
+```
+
 #### Update
 
 We have the option `update` to update the Euclid. You can call the option this way:
