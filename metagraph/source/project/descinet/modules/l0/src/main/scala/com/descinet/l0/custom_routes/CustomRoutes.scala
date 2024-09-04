@@ -164,8 +164,9 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
           }
 
           // 'Key = ExternalVariable.label (model-local), 'Value = List[Measurement]
-          val traversedMeasurements: Map[String, List[Measurement]] = externalMeasurements.collect {
+          val traversedMeasurements: Map[String, List[Measurement]] = externalMeasurements.map {
             case (localLabel, Some(head)) => localLabel -> traverseSequenceHead(head)
+            case (localLabel, None) => localLabel -> List.empty[Measurement]
           }
 
           // Serialize to JSON and return
