@@ -153,6 +153,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
           def evaluateEquation(equation: String, t: Long): Double = {
             val code = s"""
               |{
+              |  import scala.math.{abs, acos, asin, atan, atan2, cbrt, ceil, cos, cosh, exp, floor, hypot, log, log10, max, min, pow, round, signum, sin, sinh, sqrt, tan, tanh}
               |  val randomDouble = () => ${env.randomDouble()} 
               |  val randomGaussian = () => ${env.randomGaussian()} 
               |  val t = $t 
