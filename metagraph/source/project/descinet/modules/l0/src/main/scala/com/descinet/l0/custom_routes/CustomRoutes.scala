@@ -17,6 +17,8 @@ import org.tessellation.routes.internal.{InternalUrlPrefix, PublicRoutes}
 import org.tessellation.schema.address.Address
 import scala.reflect.runtime.universe._
 import scala.tools.reflect.ToolBox
+import io.circe.syntax._
+import io.circe.generic.auto._
 
 object HideLatestVar {
   def unapply(str: String): Option[Boolean] = str.toLowerCase match {
@@ -105,10 +107,19 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
       state.models.get(modelId) match {
         case None => NotFound(s"Model with id $modelId not found.")
         case Some(model) =>
-          val externalMeasurements = collectExternalMeasurementsForModel(state, model, time, hideLatest)
-          val evaluator = new ModelEvaluator(externalMeasurements, model, time)
-          val results = evaluator.evaluate()
-          Ok(results)
+          try {
+            val externalMeasurements = collectExternalMeasurementsForModel(state, model, time, hideLatest)
+            val evaluator = new ModelEvaluator(externalMeasurements, model, time)
+            val results = evaluator.evaluate()
+            Ok(results)
+          } catch {
+            case e: Exception =>
+              val errorDetails = Map(
+                "error" -> e.getMessage,
+                "stackTrace" -> e.getStackTrace.map(_.toString).toList
+              )
+              InternalServerError(errorDetails.asJson)
+          }
       }
     }
   }
