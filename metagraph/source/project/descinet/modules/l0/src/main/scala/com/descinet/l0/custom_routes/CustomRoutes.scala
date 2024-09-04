@@ -14,13 +14,12 @@ import org.http4s.server.middleware.CORS
 import org.tessellation.ext.http4s.AddressVar
 import org.tessellation.routes.internal.{InternalUrlPrefix, PublicRoutes}
 import org.tessellation.schema.address.Address
-// import io.circe.syntax._
 
-object BoolVar {
+object HideLatestVar {
   def unapply(str: String): Option[Boolean] = str.toLowerCase match {
-    case "true"  => Some(true)
-    case "false" => Some(false)
-    case _       => None
+    case "hide" => Some(true)
+    case "show" => Some(false)
+    case _      => None
   }
 }
 
@@ -248,8 +247,10 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
   private val routes: HttpRoutes[F] = HttpRoutes.of[F] {
     case GET -> Root / "variables" => getAllVariables
     case GET -> Root / "models" => getAllModels
-    case GET -> Root / "environment" / modelId / LongVar(time) / BoolVar(hideLatest) => getEnvironment(modelId, time, hideLatest)
-    case GET -> Root / "evaluate" / modelId / LongVar(time) / BoolVar(hideLatest) => evaluateModel(modelId, time, hideLatest)
+    case GET -> Root / "environment" / modelId / LongVar(time) / HideLatestVar(hideLatest) => getEnvironment(modelId, time, hideLatest)
+    case GET -> Root / "environment" / modelId / LongVar(time) => getEnvironment(modelId, time, false) // Default hideLatest to false if parameter is absent
+    case GET -> Root / "evaluate" / modelId / LongVar(time) / HideLatestVar(hideLatest) => evaluateModel(modelId, time, hideLatest)
+    case GET -> Root / "evaluate" / modelId / LongVar(time) => evaluateModel(modelId, time, false) // Default hideLatest to false if parameter is absent
     // case GET -> Root / "models" / "grouped-by-target" => getAllModelsGroupedByTarget
     case GET -> Root / "models" / AddressVar(address) => getAllModelsByAddress(address)
     // case GET -> Root / "models" / modelId / "equations" => getModelEquationsById(modelId)
