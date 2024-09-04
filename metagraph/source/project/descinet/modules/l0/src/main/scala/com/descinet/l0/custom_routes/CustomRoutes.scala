@@ -110,8 +110,10 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
           // println(s"External Measurements: $externalMeasurements")
 
           // The EvaluationEnvironment contains all symbols available to structured equations.
-          class EvaluationEnvironment(externalMeasurements: Map[String, List[Measurement]]) {
+          class EvaluationEnvironment(externalMeasurements: Map[String, List[Measurement]], model: Model) {
             private val rng = new Random()
+            private var evaluatedCache: Map[String, Double] = Map()
+            private var evaluationStack: Set[String] = Set()
 
             // Helper functions for randomness
             def randomDouble(): Double = rng.nextDouble()
@@ -142,36 +144,55 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
                 measurements.find(_.timestamp <= time).map(_.timestamp)
               }
             }
+
+            // Evaluate an endogenous variable
+            def evaluateEndogenous(label: String, t: Long): Double = {
+              if (evaluationStack.contains(label)) {
+                throw new RuntimeException(s"Cyclic dependency detected for variable $label")
+              }
+
+              evaluatedCache.getOrElse(label, {
+                evaluationStack += label
+                val equation = model.internalVariables(model.internalParameterLabels(label)).equation
+                val result = evaluateEquation(equation, t, model.externalParameterLabels.keySet)
+                evaluatedCache += (label -> result)
+                evaluationStack -= label
+                result
+              })
+            }
+
+            // Parse and compile Scala code from string
+            def evaluateEquation(equation: String, t: Long, externalLabels: Set[String]): Double = {
+              // Generate Scala code to define symbols for each external label
+              val externalSymbols = externalLabels.map(label => s"val $label = \"$label\"").mkString("\n")
+
+              // Generate Scala code to define symbols for each endogenous variable
+              val endogenousSymbols = model.internalParameterLabels.keys.map { label =>
+                s"def $label(t: Long): Double = evaluateEndogenous(\"$label\", t)"
+              }.mkString("\n")
+
+              val code = s"""
+                |{
+                |  import scala.math.{abs, acos, asin, atan, atan2, cbrt, ceil, cos, cosh, exp, floor, hypot, log, log10, max, min, pow, round, signum, sin, sinh, sqrt, tan, tanh}
+                |  val randomDouble = () => ${randomDouble()} 
+                |  val randomGaussian = () => ${randomGaussian()} 
+                |  val t = $t 
+                |  $externalSymbols
+                |  $endogenousSymbols
+                |  $equation
+                |}
+              """.stripMargin
+
+              val tree = toolbox.parse(code)
+              toolbox.eval(tree).asInstanceOf[Double]
+            }
           }
 
-          val env = new EvaluationEnvironment(externalMeasurements)
+          val env = new EvaluationEnvironment(externalMeasurements, model)
 
-          // Prepare an evaluation context with available random functions
-          val toolbox = runtimeMirror(getClass.getClassLoader).mkToolBox()
-  
-          // Parse and compile Scala code from string
-          def evaluateEquation(equation: String, t: Long, externalLabels: Set[String]): Double = {
-            // Generate Scala code to define symbols for each external label
-            val externalSymbols = externalLabels.map(label => s"val $label = \"$label\"").mkString("\n")
-
-            val code = s"""
-              |{
-              |  import scala.math.{abs, acos, asin, atan, atan2, cbrt, ceil, cos, cosh, exp, floor, hypot, log, log10, max, min, pow, round, signum, sin, sinh, sqrt, tan, tanh}
-              |  val randomDouble = () => ${env.randomDouble()} 
-              |  val randomGaussian = () => ${env.randomGaussian()} 
-              |  val t = $t 
-              |  $externalSymbols
-              |  $equation
-              |}
-            """.stripMargin
-
-            val tree = toolbox.parse(code)
-            toolbox.eval(tree).asInstanceOf[Double]
-          }
-  
           // Cache for storing evaluated endogenous variables
           var evaluatedCache: Map[String, Double] = Map()
-  
+
           // Main evaluation process
           val results = model.internalVariables.zipWithIndex.map { case (variable, idx) =>
             val label = model.internalParameterLabels.collectFirst { case (key, `idx`) => key }.get
@@ -181,7 +202,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
                 case Some(value) => value
                 case None =>
                   // Evaluate the endogenous variable using the Scala code
-                  val result = evaluateEquation(variable.equation, time, model.externalParameterLabels.keySet)
+                  val result = env.evaluateEquation(variable.equation, time, model.externalParameterLabels.keySet)
                   evaluatedCache += (label -> result)
                   result
               }
@@ -189,7 +210,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
             // Return the average sample value
             label -> samples.sum / samples.size
           }
-  
+
           // Return the computed response as JSON
           Ok(results)
       }
