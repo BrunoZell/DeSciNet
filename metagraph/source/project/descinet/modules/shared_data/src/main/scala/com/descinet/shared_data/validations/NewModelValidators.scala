@@ -68,8 +68,13 @@ object NewModelValidators {
     val allKeys = update.model.externalParameterLabels.keys ++ update.model.internalParameterLabels.keys
     // Convert the combined keys to a set to ensure uniqueness
     val uniqueKeys = allKeys.toSet
-    // Define a regex pattern to validate the keys
-    val validKeyPattern: Regex = "^[a-zA-Z][a-zA-Z0-9]*$".r
+
+    // A regex pattern to validate the keys:
+    // ^ asserts position at the start of the string
+    // [a-zA-Z_] matches the first character (letter or underscore)
+    // [a-zA-Z0-9_-]* matches subsequent characters (letters, digits, underscores, or hyphens)
+    // $ asserts position at the end of the string
+    val validKeyPattern: Regex = "^[a-zA-Z_][a-zA-Z0-9_-]*$".r
 
     // Check for duplicate keys and invalid key patterns
     DuplicateParameterLabels.whenA(allKeys.size != uniqueKeys.size)
