@@ -1,29 +1,38 @@
 package com.descinet.shared_data.combiners
 
+import cats.effect.Async
+import cats.syntax.all._
 import com.descinet.shared_data.serializers.Serializers
 import com.descinet.shared_data.types.Types._
 import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.schema.address.Address
 import org.tessellation.security.hash.Hash
+import org.typelevel.log4cats.slf4j.Slf4jLogger
+import org.typelevel.log4cats.SelfAwareStructuredLogger
 import scala.annotation.unused
 
 object Combiners {
-  def combineNewExternalVariable(
+  private def logger[F[_]: Async]: SelfAwareStructuredLogger[F] = Slf4jLogger.getLoggerFromName[F]("Combiners")
+
+  def combineNewExternalVariable[F[_]: Async](
     update: NewExternalVariable,
     state : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
     authority: Address
-  ): DataState[DeSciNetOnChainState, DeSciNetCalculatedState] = {
+  ): F[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]] = {
     // Construct new L0 type and derive ID as an UTF8-JSON Hash thereof
     val externalVariable = ExternalVariable(update.uniqueName, authority)
     val externalVariableId = Hash.fromBytes(Serializers.serializeExternalVariable(externalVariable)).toString
 
-    // Add external variable ID to onChain state
-    val newOnChainState = state.onChain.copy(externalVariables = state.onChain.externalVariables + externalVariableId)
+    // Log the insertion of the new external variable
+    logger[F].info(s"Inserting new external variable with ID $externalVariableId").flatMap { _ =>
+      // Add external variable ID to onChain state
+      val newOnChainState = state.onChain.copy(externalVariables = state.onChain.externalVariables + externalVariableId)
 
-    // Add external variable to calculated state, indexed by ID
-    val newCalculatedState = state.calculated.copy(externalVariables = state.calculated.externalVariables + (externalVariableId -> externalVariable))
+      // Add external variable to calculated state, indexed by ID
+      val newCalculatedState = state.calculated.copy(externalVariables = state.calculated.externalVariables + (externalVariableId -> externalVariable))
 
-    DataState(newOnChainState, newCalculatedState)
+      DataState(newOnChainState, newCalculatedState).pure[F]
+    }
   }
 
   def advanceMeasurementSequence(
