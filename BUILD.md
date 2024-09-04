@@ -2,10 +2,14 @@
 
 ## Metagraph Frontend
 
+From the repository root, run the following commands to start the frontend:
+
 ```bash
 yarn install
 yarn start-frontend
 ```
+
+The frontend expects a metagraph backend running on localhost.
 
 ## Metagraph
 

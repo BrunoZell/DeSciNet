@@ -37,8 +37,6 @@ Each \(t_i\) is a Global Snapshot Ordinal, with \(i\) increasing monotonically. 
 
 As we adapt the SCM framework to Metagraphs, we introduce the following notation. This deviates slightly from the standard SCM framework, but aligns well with the common notation of [cyclic causal models](https://arxiv.org/pdf/1611.06221).
 
-### Setup and Notation
-
 1. **Exogenous Variables \( X_j \):**
    - **Exogenous Variable Type (\(j\)):** Each \(j\) represents a specific class of exogenous variable (e.g., "temperature", "pressure", "Google Timeline").
    - **Instance of Exogenous Variables (\(X_j\)):** For each type \(j\), \(X_j\) represents the set of measured values for that type.
@@ -85,6 +83,8 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
      \[
      \mathbf{Y}(t) = \left\{ f_j\left(Y_{\text{Pa}_{\mathcal{J}}(j)}(t'), X_{\text{Pa}_{\mathcal{I}}(j)}(t(n)), \epsilon_j\right) \mid j \in \mathcal{J} \right\}
      \]
+
+###
 
 ### Metagraph Architecture
 
