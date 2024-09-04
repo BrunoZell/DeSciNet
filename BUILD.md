@@ -39,6 +39,7 @@ Make sure the Docker Deamon is running so that `docker build` and `docker run` c
 Then from within the `metagraph/scripts` directory, run the following command to build the metagraph:
 
 ```bash
+cd metagraph/scripts
 ./hydra build [--no_cache] [--run]
 ```
 
