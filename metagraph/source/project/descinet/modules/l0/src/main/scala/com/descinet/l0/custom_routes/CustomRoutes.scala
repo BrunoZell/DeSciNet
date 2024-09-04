@@ -154,14 +154,14 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
           // Traverse each sequence head
           def traverseSequenceHead(head: MeasurementSequenceHead): List[Measurement] = {
             @annotation.tailrec
-            def loop(current: MeasurementSequenceHead, acc: List[Measurement]): List[Measurement] = {
-              if ((hideLatest && current.measurement.timestamp < time) || (!hideLatest && current.measurement.timestamp <= time)) {
-                loop(current.previous.flatMap(state.externalMeasurementSequenceHeads.get).getOrElse(return acc), current.measurement :: acc)
-              } else {
-                acc
+            def loop(current: Option[MeasurementSequenceHead], acc: List[Measurement]): List[Measurement] = {
+              current match {
+                case Some(h) if (hideLatest && h.measurement.timestamp < time) || (!hideLatest && h.measurement.timestamp <= time) =>
+                  loop(h.previous.flatMap(state.externalMeasurementSequenceHeads.get), h.measurement :: acc)
+                case _ => acc
               }
             }
-            loop(head, Nil)
+            loop(Some(head), Nil)
           }
 
           // 'Key = ExternalVariable.label (model-local), 'Value = List[Measurement]
