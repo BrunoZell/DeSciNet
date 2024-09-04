@@ -109,6 +109,28 @@ const runDemo = async (options: {
     },
     account
   );
+
+  // New fetching loop for model ID
+  let modelID: string | undefined;
+  while (!modelID) {
+    console.log('Fetching model ID...');
+    const response = await fetch('http://localhost:9200/data-application/models');
+    const data: [string, any][] = (await response.json()) as [string, any][];
+
+    if (data.length > 0) {
+      modelID = data[0][0];
+      console.log('\x1b[38;5;214m%s\x1b[0m', 'Model ID:', modelID); // Colored orange
+    } else {
+      console.log('No models found, waiting for 2 more seconds...');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+  }
+
+  // Fetch environment data
+  const timestamp = Date.now();
+  const envResponse = await fetch(`http://localhost:9200/data-application/environment/${modelID}/${timestamp}`);
+  const envData = await envResponse.json();
+  console.dir(envData, {});
 };
 
 const program = new Command();
