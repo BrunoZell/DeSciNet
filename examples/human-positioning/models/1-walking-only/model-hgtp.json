@@ -1,7 +1,7 @@
 {
     "externalParameterLabels": {
-        "M_longitude": "57b63775d42f2d6c4521db56dc0f8f1617db3bf0074dd7ab86f6c06787fd9894",
-        "M_latitude": "c02cd468e9445f12f8e735197a28a1e5dcb188cdd8979171f0f99086ced83786"
+        "M_longitude": "4885b98e462453943f6efc749a07cec083cecf236a9f328471e936f5e12b75b1",
+        "M_latitude": "753b7b507601632799ec225e95a8af54834f9502c2eecf764bcf9028298a54a1"
     },
     "internalParameterLabels": {
         "H_longitude": 0,
@@ -10,10 +10,10 @@
     },
     "internalVariables": [
         {
-            "equation": "H_longitude = latest(M_longitude, t) + Normal.Sample(0, epsilon * sqrt(t - latestTime(M_longitude, t)))"
+            "equation": "latest(M_longitude, t) + randomGaussian() * epsilon * sqrt(t - latestTime(M_longitude, t))"
         },
         {
-            "equation": "H_latitude = latest(M_latitude, t) + Normal.Sample(0, epsilon * sqrt(t - latestTime(M_latitude, t)))"
+            "equation": "latest(M_latitude, t) + randomGaussian() * epsilon * sqrt(t - latestTime(M_latitude, t))"
         },
         {
             "equation": "epsilon = 1.0"

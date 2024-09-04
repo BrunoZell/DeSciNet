@@ -32,6 +32,37 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
     }
   }
 
+  private def evaluateModel(
+    modelId: String,
+    time: Long,
+    hideLatest: Boolean
+  ): F[Response[F]] = {
+    getState.flatMap { state =>
+      val model = state.models.get(modelId)
+
+      // Todo: Start dynamic causal model evaluation environment here. With:
+      // t = time
+      // For each external variable X_j in the model, get the full measurement vector X_j(t)
+      // -> when hideLatest = true, only retrieve X_j(t) for all t' < t.
+      //    This should remove the observation that happened exactly at the curren time t.
+      //    Which means that all variable evaluations Y_i(t) are predictions which might be different with X_j(t) known. This is to compute surprize.
+      // Evaluate all Y_i(t) by default, and sample each 1000 times.
+      // -> vNext: Keep a cache of evaluated Y_i(t).
+
+      // The evaluation environment has following Scala symbols defined:
+      
+      /// now: virtual timestamp t as Long
+      /// randomDouble : () -> scala.util.Random.nextDouble()
+      /// randomGaussian : () -> scala.util.Random.nextGaussian()
+      /// All labels of internal variables: "label" : (t : Long) -> Double
+      /// latest(exolabel : string, t : Long) defined for all external variable names: ExternalVariable_j.Xj.length - 1
+      /// latestTime(exolabel : string, t : Long) defined for all external variable names: ExternalVariable_j.Xj.length - 1
+
+      var sample = 0.0;
+      Ok(sample)
+    }
+  }
+
   // private def getAllModelsGroupedByTarget: F[Response[F]] = {
   //   getState.flatMap { state =>
   //     val groupedModels = state.models.groupBy(_._2.targetVariableGroup).map {
@@ -105,6 +136,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
   private val routes: HttpRoutes[F] = HttpRoutes.of[F] {
     case GET -> Root / "variables" => getAllVariables
     case GET -> Root / "models" => getAllModels
+    case GET -> Root / "evaluate" / modelId / time / hideLatest => evaluateModel(modelId, time, hideLatest)
     // case GET -> Root / "models" / "grouped-by-target" => getAllModelsGroupedByTarget
     case GET -> Root / "models" / AddressVar(address) => getAllModelsByAddress(address)
     // case GET -> Root / "models" / modelId / "equations" => getModelEquationsById(modelId)

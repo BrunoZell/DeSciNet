@@ -41,7 +41,7 @@ node --loader ts-node/esm create-external-variable.ts -u "Human_Position_lon"
 node --loader ts-node/esm create-external-variable.ts -u "Human_Position_lat"
 ```
 
-You can view all external variables declared in the metagraph by visting [data-l1://data-application/variables](http://localhost:9200/data-application/variables).
+You can view all external variables declared in the metagraph by visting [data-l1://data-application/variables](http://localhost:9200/data-application/variables) in your browser.
 
 Lets retrieve the _External Variable ID_ for each of these variables:
 
@@ -164,7 +164,15 @@ Response Data
 }
 ```
 
-You can view the uploaded model in the causal model registry by visiting [data-l1://data-application/causal-models](http://localhost:9200/data-application/causal-models).
+You can view the uploaded model in the causal model registry by visiting [data-l1://data-application/models](http://localhost:9200/data-application/models) in your browser.
+
+## Evaluate the Model
 
 
 ## Run a backtest
+
+The important question now is: Does the model reflect reality?
+
+DeSciNet answers this question by sampling the models predictions and compares them to predictions if future measurements of external variables would have been known. The difference in the two sampled probability distribution is used to compute the Kullback-Leibler divergence, which quantifies the _surprise_ of the model's predictions.
+
+A low _surprise_ score indicates that the model is a good fit for the data, while a high _surprise_ score indicates that the model is not a good fit for the data.
