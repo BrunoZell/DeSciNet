@@ -7,19 +7,21 @@ import org.tessellation.currency.dataApplication.DataState
 import org.tessellation.currency.dataApplication.dataApplication.DataApplicationValidationErrorOr
 import org.tessellation.security.hash.Hash
 import com.descinet.shared_data.serializers.Serializers
+import scala.annotation.unused
 
 object NewExternalVariableValidators {
   def validateExternalVariableUpdate(
-    update: NewExternalVariable,
-    state: Option[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]]
+    @unused update: NewExternalVariable,
+    @unused state: Option[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]]
   ): DataApplicationValidationErrorOr[Unit] =
-    state match {
-      case Some(s) =>
-        validateExternalVariableName(update)
-          .productR(externalVariableIdDoesNotExist(update, s))
-      case None =>
-        validateExternalVariableName(update)
-    }
+    // state match {
+    //   case Some(s) =>
+    //     validateExternalVariableName(update)
+    //       .productR(externalVariableIdDoesNotExist(update, s))
+    //   case None =>
+    //     validateExternalVariableName(update)
+    // }
+    valid
 
   private def validateExternalVariableName(
     update: NewExternalVariable

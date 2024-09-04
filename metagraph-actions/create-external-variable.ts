@@ -18,7 +18,7 @@ const createExternalVariable = async (options: {
 
   const walletPrivateKey = dag4.keyStore.generatePrivateKey();
   const walletAddress = dag4.keyStore.getDagAddressFromPrivateKey(walletPrivateKey);
-  
+
   const account = dag4.createAccount(walletPrivateKey);
 
   console.log(`Account Details`);
@@ -27,6 +27,7 @@ const createExternalVariable = async (options: {
   await sendActionMessage(
     {
       NewExternalVariable: {
+        authority: walletAddress,
         uniqueName: options.uniqueName,
       }
     },

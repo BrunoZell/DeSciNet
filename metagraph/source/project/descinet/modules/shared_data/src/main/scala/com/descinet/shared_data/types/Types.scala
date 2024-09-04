@@ -35,8 +35,9 @@ object Types {
 
   @derive(decoder, encoder)
   case class Measurement(
-    elapsed   : Long,     /// elapsed time in milliseconds since last measurement
-    value     : Double,   /// measurement value
+    timestamp  : Long,     /// absolute timestamp of measurement in UNIX ms
+    // elapsed   : Long,     /// elapsed time in milliseconds since last measurement
+    values     : Map[String, Double],   /// measured values, 'Key = name, 'Value = value
   )
 
   // @derive(decoder, encoder)
@@ -94,8 +95,8 @@ object Types {
 
   @derive(decoder, encoder)
   case class NewExternalVariable(
-    uniqueName          : String,
     authority           : Address,
+    uniqueName          : String,
   ) extends DeSciNetUpdate
 
   @derive(decoder, encoder)

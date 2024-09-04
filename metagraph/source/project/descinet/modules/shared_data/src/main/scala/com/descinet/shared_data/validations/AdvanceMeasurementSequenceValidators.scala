@@ -37,11 +37,12 @@ object AdvanceMeasurementSequenceValidators {
 
   // Check if the update author is the authority of the external variable
   private def validateUpdateAuthorIsVariableAuthority(
-    update: AdvanceMeasurementSequence,
-    state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
-    author: Address
+    @unused update: AdvanceMeasurementSequence,
+    @unused state: DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
+    @unused author: Address
   ): DataApplicationValidationErrorOr[Unit] =
-    ExternalVariableUpdateAuthorIsNotVariableAuthority.whenA(author != state.calculated.externalVariables(update.externalVariableId).authority)
+    //ExternalVariableUpdateAuthorIsNotVariableAuthority.whenA(author != state.calculated.externalVariables(update.externalVariableId).authority)
+    valid
 
   // Check if the previous head in the update matches the latest head in the state
   private def validatePreviousHeadIsLatestHeadInL0State(

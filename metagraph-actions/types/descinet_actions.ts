@@ -1,5 +1,6 @@
 type NewExternalVariableAction = {
     NewExternalVariable: {
+      authority: string;
       uniqueName: string;
     };
   };

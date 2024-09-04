@@ -24,29 +24,31 @@ object LifecycleSharedFunctions {
 
   def validateUpdate[F[_] : Async](
     update: DeSciNetUpdate
-  ): F[DataApplicationValidationErrorOr[Unit]] = Async[F].delay {
-    update match {
-      case newExternalVariable: NewExternalVariable =>
-        validateExternalVariableUpdate(newExternalVariable, None)
-      case advanceMeasurementSequence: AdvanceMeasurementSequence =>
-        validateAdvanceMeasurementSequence(advanceMeasurementSequence)
-      // case newTarget: NewTarget =>
-      //   newTargetValidations(newTarget, None)
-      // case newBounty: NewBounty =>
-      //   newBountyValidations(newBounty)
-      case newModel: NewModel =>
-        validateNewModelUpdate(newModel)
-      case newSample: NewSample =>
-        validateNewSampleUpdate(newSample, None)
+  ): F[DataApplicationValidationErrorOr[Unit]] = 
+    logger[F].info(s"Validating update AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA") >>
+    Async[F].delay {
+      update match {
+        case newExternalVariable: NewExternalVariable =>
+          validateExternalVariableUpdate(newExternalVariable, None)
+        case advanceMeasurementSequence: AdvanceMeasurementSequence =>
+          validateAdvanceMeasurementSequence(advanceMeasurementSequence)
+        // case newTarget: NewTarget =>
+        //   newTargetValidations(newTarget, None)
+        // case newBounty: NewBounty =>
+        //   newBountyValidations(newBounty)
+        case newModel: NewModel =>
+          validateNewModelUpdate(newModel)
+        case newSample: NewSample =>
+          validateNewSampleUpdate(newSample, None)
+      }
     }
-  }
 
   def validateData[F[_] : Async](
     state  : DataState[DeSciNetOnChainState, DeSciNetCalculatedState],
     updates: NonEmptyList[Signed[DeSciNetUpdate]]
   )(implicit context: L0NodeContext[F]): F[DataApplicationValidationErrorOr[Unit]] = {
     implicit val sp: SecurityProvider[F] = context.securityProvider
-
+    logger[F].info(s"Validating update with data: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA") >>
     updates.traverse { signedUpdate =>
         getFirstAddressFromProofs(signedUpdate.proofs)
         .flatMap { firstSigner =>
@@ -77,9 +79,10 @@ object LifecycleSharedFunctions {
     val newStateF = DataState(DeSciNetOnChainState(Set.empty, Map.empty, Set.empty), state.calculated).pure[F]
 
     if (updates.isEmpty) {
-      logger.info("Snapshot without any updates, updating the state to empty updates") >> newStateF
+      logger[F].info("Snapshot without any updates, updating the state to empty updates") >> newStateF
     } else {
       implicit val sp: SecurityProvider[F] = context.securityProvider
+      logger[F].info(s"Combining snapshot with ${updates.length} updates") >>
       newStateF.flatMap(newState => {
         val (measurementUpdates, otherUpdates) = updates.partition(_.value.isInstanceOf[AdvanceMeasurementSequence])
 
@@ -87,6 +90,7 @@ object LifecycleSharedFunctions {
           signedUpdate.value match {
             case newExternalVariable: NewExternalVariable =>
               getFirstAddressFromProofs(signedUpdate.proofs).flatMap { author =>
+                logger[F].info(s"Author address for new external variable: $author") >>
                 combineNewExternalVariable(newExternalVariable, acc, author).pure[F]
               }
             // case newTarget: NewTarget =>
