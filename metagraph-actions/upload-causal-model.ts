@@ -22,13 +22,13 @@ const uploadCausalModel = async (options: {
 
   const account = dag4.createAccount(walletPrivateKey);
 
-  console.log(`Account Details`);
+  console.log('\x1b[38;5;214m%s\x1b[0m', 'Account Details:'); // Colored orange
   console.dir(account.keyTrio, {});
 
   // Read and parse the JSON file
   const modelData = JSON.parse(await fs.readFile(options.file, 'utf-8'));
 
-  console.log(`Loaded Model Details`);
+  console.log('\x1b[34m%s\x1b[0m', 'Loaded Model Details:'); // Blue text
   console.dir(modelData, {});
   
   if (!modelData.externalParameterLabels) {

@@ -48,8 +48,8 @@ const sendActionMessage = async (
 
   let response;
   try {
-    console.log('Sending Action Message:');
-    console.log(JSON.stringify(body, null, 2));
+    console.log('\x1b[32m%s\x1b[0m', 'Sending Action Message:'); // Dark green text
+    console.dir(body, { depth: null, colors: true });
 
     response = await axios.post(
       metagraphL1DataUrl + '/data',
@@ -57,11 +57,11 @@ const sendActionMessage = async (
     );
 
     console.log('Response Data');
-    console.log(JSON.stringify(response.data, null, 2));
+    console.dir(response.data, { depth: null, colors: true });
   } catch (e) {
     if (isAxiosError(e)) {
       console.log(`Status: ${e.status}`);
-      console.log(JSON.stringify(e.response?.data, null, 2));
+      console.dir(e.response?.data, { depth: null, colors: true });
       throw new Error('Send Action Message Error: See above for details');
     }
     throw e;
