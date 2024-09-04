@@ -41,100 +41,33 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
     }
   }
 
-  private def evaluateModel(
-    modelId: String,
+  private def collectExternalMeasurementsForModel(
+    state: DeSciNetCalculatedState,
+    model: Model,
     time: Long,
     hideLatest: Boolean
-  ): F[Response[F]] = {
-    getState.flatMap { state =>
-      val model = state.models.get(modelId)
+  ): Map[String, List[Measurement]] = {
+    val externalMeasurements = model.externalParameterLabels.map { case (localLabel, externalVariableId) =>
+      localLabel -> state.externalMeasurementSequenceHeads.get(externalVariableId)
+    }.toMap
 
-      // Todo: Start dynamic causal model evaluation environment here. With:
-      // t = time
-      // For each external variable X_j in the model, get the full measurement vector X_j(t)
-      // -> when hideLatest = true, only retrieve X_j(t) for all t' < t.
-      //    This should remove the observation that happened exactly at the curren time t.
-      //    Which means that all variable evaluations Y_i(t) are predictions which might be different with X_j(t) known. This is to compute surprize.
-      // Evaluate all Y_i(t) by default, and sample each 1000 times.
-      // -> vNext: Keep a cache of evaluated Y_i(t).
+    def traverseSequenceHead(head: MeasurementSequenceHead): List[Measurement] = {
+      @annotation.tailrec
+      def loop(current: Option[MeasurementSequenceHead], acc: List[Measurement]): List[Measurement] = {
+        current match {
+          case Some(h) if (hideLatest && h.measurement.timestamp < time) || (!hideLatest && h.measurement.timestamp <= time) =>
+            loop(h.previous.flatMap(state.externalMeasurementSequenceHeads.get), h.measurement :: acc)
+          case _ => acc
+        }
+      }
+      loop(Some(head), Nil)
+    }
 
-      // The evaluation environment has following Scala symbols defined:
-      
-      /// now: virtual timestamp t as Long
-      /// randomDouble : () -> scala.util.Random.nextDouble()
-      /// randomGaussian : () -> scala.util.Random.nextGaussian()
-      /// All labels of internal variables: "label" : (t : Long) -> Double
-      /// latest(exolabel : string, t : Long) defined for all external variable names: ExternalVariable_j.Xj.length - 1
-      /// latestTime(exolabel : string, t : Long) defined for all external variable names: ExternalVariable_j.Xj.length - 1
-
-      var sample = 0.0;
-      Ok(sample)
+    externalMeasurements.map {
+      case (localLabel, Some(head)) => localLabel -> traverseSequenceHead(head)
+      case (localLabel, None) => localLabel -> List.empty[Measurement]
     }
   }
-
-  // private def evaluateModel(
-  //   modelId: String,
-  //   time: Long,
-  //   hideLatest: Boolean
-  // ): IO[Response[IO]] = {
-  //   getState.flatMap { state =>
-  //     state.models.get(modelId) match {
-  //       case None => NotFound(s"Model with id $modelId not found.")
-  //       case Some(model) =>
-  //         // Map externalParameterLabels to MeasurementSequenceHead
-  //         val externalMeasurements = model.externalParameterLabels.map { label =>
-  //           label -> state.externalMeasurementSequenceHeads.getOrElse(label, MeasurementSequenceHead.empty)
-  //         }.toMap
-          
-  //         // Log the resulting externalMeasurements
-  //         println(s"External Measurements: $externalMeasurements")
-          
-  //         val env = new EvaluationEnvironment()
-  
-  //         // Prepare an evaluation context with available random functions
-  //         val toolbox = runtimeMirror(getClass.getClassLoader).mkToolBox()
-  
-  //         // Parse and compile Scala code from string
-  //         def evaluateEquation(equation: String, t: Long): Double = {
-  //           val code = s"""
-  //             |{
-  //             |  val randomDouble = () => ${env.randomDouble()} 
-  //             |  val randomGaussian = () => ${env.randomGaussian()} 
-  //             |  val t = $t 
-  //             |  $equation
-  //             |}
-  //           """.stripMargin
-  
-  //           val tree = toolbox.parse(code)
-  //           toolbox.eval(tree).asInstanceOf[Double]
-  //         }
-  
-  //         // Cache for storing evaluated endogenous variables
-  //         var evaluatedCache: Map[String, Double] = Map()
-  
-  //         // Main evaluation process
-  //         val results = model.internalVariables.zipWithIndex.map { case (variable, idx) =>
-  //           val label = model.internalParameterLabels.collectFirst { case (key, `idx`) => key }.get
-  //           val samples = (1 to 1000).map { _ =>
-  //             val cached = evaluatedCache.get(label)
-  //             cached match {
-  //               case Some(value) => value
-  //               case None =>
-  //                 // Evaluate the endogenous variable using the Scala code
-  //                 val result = evaluateEquation(variable.equation, time)
-  //                 evaluatedCache += (label -> result)
-  //                 result
-  //             }
-  //           }
-  //           // Return the average sample value
-  //           label -> samples.sum / samples.size
-  //         }
-  
-  //         // Return the computed response as JSON
-  //         Ok(results.asJson)
-  //     }
-  //   }
-  // }
 
   private def getEnvironment(
     modelId: String,
@@ -145,32 +78,87 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
       state.models.get(modelId) match {
         case None => NotFound(s"Model with id $modelId not found.")
         case Some(model) =>
-          // Map externalParameterLabels to Option[MeasurementSequenceHead]
-          val externalMeasurements = model.externalParameterLabels.map { case (localLabel, externalVariableId) =>
-            localLabel -> state.externalMeasurementSequenceHeads.get(externalVariableId)
-          }.toMap
+          val traversedMeasurements = collectExternalMeasurementsForModel(state, model, time, hideLatest)
+          Ok(traversedMeasurements)
+      }
+    }
+  }
 
-          // Traverse each sequence head
-          def traverseSequenceHead(head: MeasurementSequenceHead): List[Measurement] = {
-            @annotation.tailrec
-            def loop(current: Option[MeasurementSequenceHead], acc: List[Measurement]): List[Measurement] = {
-              current match {
-                case Some(h) if (hideLatest && h.measurement.timestamp < time) || (!hideLatest && h.measurement.timestamp <= time) =>
-                  loop(h.previous.flatMap(state.externalMeasurementSequenceHeads.get), h.measurement :: acc)
-                case _ => acc
+  private def evaluateModel(
+    modelId: String,
+    time: Long,
+    hideLatest: Boolean
+  ): F[Response[F]] = {
+    getState.flatMap { state =>
+      state.models.get(modelId) match {
+        case None => NotFound(s"Model with id $modelId not found.")
+        case Some(model) =>
+          val externalMeasurements = collectExternalMeasurementsForModel(state, model, time, hideLatest)
+          
+          // Log the resulting externalMeasurements
+          println(s"External Measurements: $externalMeasurements")
+          
+          // Todo: Start dynamic causal model evaluation environment here. With:
+          // t = time
+          // For each external variable X_j in the model, get the full measurement vector X_j(t)
+          // -> when hideLatest = true, only retrieve X_j(t) for all t' < t.
+          //    This should remove the observation that happened exactly at the curren time t.
+          //    Which means that all variable evaluations Y_i(t) are predictions which might be different with X_j(t) known. This is to compute surprize.
+          // Evaluate all Y_i(t) by default, and sample each 1000 times.
+          // -> vNext: Keep a cache of evaluated Y_i(t).
+
+          // The evaluation environment has following Scala symbols defined:
+
+          /// now: virtual timestamp t as Long
+          /// randomDouble : () -> scala.util.Random.nextDouble()
+          /// randomGaussian : () -> scala.util.Random.nextGaussian()
+          /// All labels of internal variables: "label" : (t : Long) -> Double
+          /// latest(exolabel : string, t : Long) defined for all external variable names: ExternalVariable_j.Xj.length - 1
+          /// latestTime(exolabel : string, t : Long) defined for all external variable names: ExternalVariable_j.Xj.length - 1
+
+          val env = new EvaluationEnvironment()
+  
+          // Prepare an evaluation context with available random functions
+          val toolbox = runtimeMirror(getClass.getClassLoader).mkToolBox()
+  
+          // Parse and compile Scala code from string
+          def evaluateEquation(equation: String, t: Long): Double = {
+            val code = s"""
+              |{
+              |  val randomDouble = () => ${env.randomDouble()} 
+              |  val randomGaussian = () => ${env.randomGaussian()} 
+              |  val t = $t 
+              |  $equation
+              |}
+            """.stripMargin
+  
+            val tree = toolbox.parse(code)
+            toolbox.eval(tree).asInstanceOf[Double]
+          }
+  
+          // Cache for storing evaluated endogenous variables
+          var evaluatedCache: Map[String, Double] = Map()
+  
+          // Main evaluation process
+          val results = model.internalVariables.zipWithIndex.map { case (variable, idx) =>
+            val label = model.internalParameterLabels.collectFirst { case (key, `idx`) => key }.get
+            val samples = (1 to 1000).map { _ =>
+              val cached = evaluatedCache.get(label)
+              cached match {
+                case Some(value) => value
+                case None =>
+                  // Evaluate the endogenous variable using the Scala code
+                  val result = evaluateEquation(variable.equation, time)
+                  evaluatedCache += (label -> result)
+                  result
               }
             }
-            loop(Some(head), Nil)
+            // Return the average sample value
+            label -> samples.sum / samples.size
           }
-
-          // 'Key = ExternalVariable.label (model-local), 'Value = List[Measurement]
-          val traversedMeasurements: Map[String, List[Measurement]] = externalMeasurements.map {
-            case (localLabel, Some(head)) => localLabel -> traverseSequenceHead(head)
-            case (localLabel, None) => localLabel -> List.empty[Measurement]
-          }
-
-          // Serialize to JSON and return
-          Ok(traversedMeasurements)
+  
+          // Return the computed response as JSON
+          Ok(results.asJson)
       }
     }
   }
