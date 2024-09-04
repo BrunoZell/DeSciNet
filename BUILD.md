@@ -52,6 +52,12 @@ Where:
 * `--no_cache` is an optional parameter to build the images without using the Docker build cache.
 * `--run` is an optional parameter to automatically run the containers after the images are built.
 
+If there is a `Permission denied` error, try marking `hydra` as executable:
+
+```bash
+chmod +x hydra
+```
+
 You can also build the metagraph with `sbt` directly on your dev machine. Navigate to `metagraph/source/project/descinet` and run `sbt compile`. Make sure to have `GITHUB_TOKEN` environment variable set to a valid GitHub token which can read public package repositories: `export GITHUB_TOKEN="[your_token]"`.
 
 ### Run the Metagraph
