@@ -56,7 +56,6 @@ class ModelEvaluator(
   time: Long
 ) extends EvaluationContext {
   private val rng = new Random()
-  private var evaluatedCache: Map[String, Double] = Map()
   private var evaluationStack: Set[String] = Set()
   private val toolbox = runtimeMirror(getClass.getClassLoader).mkToolBox()
 
@@ -94,32 +93,27 @@ class ModelEvaluator(
       throw new RuntimeException(s"Cyclic dependency detected for variable $label")
     }
 
-    evaluatedCache.getOrElse(label, {
-      evaluationStack += label
-      val equation = model.internalVariables(model.internalParameterLabels(label)).equation
-      val result = evaluateEquation(equation, t, model.externalParameterLabels.keySet)
-      evaluatedCache += (label -> result)
-      evaluationStack -= label
-      result
-    })
+    evaluationStack += label
+    val equation = model.internalVariables(model.internalParameterLabels(label)).equation
+    val result = evaluateEquation(equation, t, model.externalParameterLabels.keySet)
+    evaluationStack -= label
+    result
   }
 
   // Parse and compile Scala code from string
   def evaluateEquation(equation: String, t: Long, externalLabels: Set[String]): Double = {
     val externalSymbols = externalLabels.map(label => s"val $label = \"$label\"").mkString("\n")
     val endogenousSymbols = model.internalParameterLabels.keys.map { label =>
-      s"def $label(t: Long): Double = environm€nt.evaluateEndogenous(\"$label\", t)"
+      s"def $label(t: Long): Double = env.evaluateEndogenous(\"$label\", t)"
     }.mkString("\n")
 
-    // using environm€nt as a symbol as special characters are not allowed as Causal Model variable labels
-    // but are valid Scala. So that environm€nt isn't directly available to the SCM equation.
     val code = s"""
-      |(environm€nt: com.descinet.l0.EvaluationContext) => {
+      |(env: com.descinet.l0.EvaluationContext) => {
       |  import scala.math._
-      |  def randomDouble(): Double = environm€nt.randomDouble() 
-      |  def randomGaussian(): Double = environm€nt.randomGaussian() 
-      |  def latest(exolabel: String, t: Long): Option[Double] = environm€nt.latest(exolabel, t) 
-      |  def latestTime(exolabel: String, t: Long): Option[Long] = environm€nt.latestTime(exolabel, t) 
+      |  def randomDouble(): Double = env.randomDouble() 
+      |  def randomGaussian(): Double = env.randomGaussian() 
+      |  def latest(exolabel: String, t: Long): Option[Double] = env.latest(exolabel, t) 
+      |  def latestTime(exolabel: String, t: Long): Option[Long] = env.latestTime(exolabel, t) 
       |  val t: Long = $t 
       |  $externalSymbols
       |  $endogenousSymbols
@@ -138,11 +132,7 @@ class ModelEvaluator(
     model.internalVariables.zipWithIndex.map { case (variable, idx) =>
       val label = model.internalParameterLabels.collectFirst { case (key, `idx`) => key }.get
       val samples = (1 to 1000).map { _ =>
-        evaluatedCache.getOrElse(label, {
-          val result = evaluateEquation(variable.equation, time, model.externalParameterLabels.keySet)
-          evaluatedCache += (label -> result)
-          result
-        })
+        evaluateEquation(variable.equation, time, model.externalParameterLabels.keySet)
       }
       label -> samples.sum / samples.size
     }.toMap
