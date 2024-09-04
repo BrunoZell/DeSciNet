@@ -37,7 +37,7 @@ object Types {
   case class Measurement(
     timestamp  : Long,     /// absolute timestamp of measurement in UNIX ms
     // elapsed   : Long,     /// elapsed time in milliseconds since last measurement
-    values     : Map[String, Double],   /// measured values, 'Key = name, 'Value = value
+    value     : Double,   /// measured value
   )
 
   // @derive(decoder, encoder)

@@ -9,10 +9,19 @@ import eu.timepit.refined.auto._
 import org.http4s._
 import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
 import org.http4s.dsl.Http4sDsl
+import org.http4s.dsl.io.{LongVar, PathVar}
 import org.http4s.server.middleware.CORS
 import org.tessellation.ext.http4s.AddressVar
 import org.tessellation.routes.internal.{InternalUrlPrefix, PublicRoutes}
 import org.tessellation.schema.address.Address
+
+object BoolVar {
+  def unapply(str: String): Option[Boolean] = str.toLowerCase match {
+    case "true"  => Some(true)
+    case "false" => Some(false)
+    case _       => None
+  }
+}
 
 case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateService[F]) extends Http4sDsl[F] with PublicRoutes[F] {
   private def getState: F[DeSciNetCalculatedState] =
@@ -60,6 +69,43 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
 
       var sample = 0.0;
       Ok(sample)
+    }
+  }
+
+  private def getEnvironment(
+    modelId: String,
+    time: Long,
+    hideLatest: Boolean
+  ): F[Response[F]] = {
+    getState.flatMap { state =>
+      state.models.get(modelId) match {
+        case None => NotFound(s"Model with id $modelId not found.")
+        case Some(model) =>
+          // Map externalParameterLabels to MeasurementSequenceHead
+          val externalMeasurements = model.externalParameterLabels.map { label =>
+            label -> state.externalMeasurementSequenceHeads.getOrElse(label, MeasurementSequenceHead.empty)
+          }.toMap
+
+          // Traverse each sequence head
+          def traverseSequenceHead(head: MeasurementSequenceHead): List[Measurement] = {
+            @annotation.tailrec
+            def loop(current: MeasurementSequenceHead, acc: List[Measurement]): List[Measurement] = {
+              if ((hideLatest && current.measurement.timestamp < time) || (!hideLatest && current.measurement.timestamp <= time)) {
+                loop(current.previous.getOrElse(return acc), current.measurement :: acc)
+              } else {
+                acc
+              }
+            }
+            loop(head, Nil)
+          }
+
+          val traversedMeasurements = externalMeasurements.map { case (label, head) =>
+            label -> traverseSequenceHead(head)
+          }
+
+          // Serialize to JSON and return
+          Ok(traversedMeasurements.asJson)
+      }
     }
   }
 
@@ -136,7 +182,8 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
   private val routes: HttpRoutes[F] = HttpRoutes.of[F] {
     case GET -> Root / "variables" => getAllVariables
     case GET -> Root / "models" => getAllModels
-    case GET -> Root / "evaluate" / modelId / time / hideLatest => evaluateModel(modelId, time, hideLatest)
+    case GET -> Root / "environment" / modelId / LongVar(time) / BoolVar(hideLatest) => getEnvironment(modelId, time, hideLatest)
+    case GET -> Root / "evaluate" / modelId / LongVar(time) / BoolVar(hideLatest) => evaluateModel(modelId, time, hideLatest)
     // case GET -> Root / "models" / "grouped-by-target" => getAllModelsGroupedByTarget
     case GET -> Root / "models" / AddressVar(address) => getAllModelsByAddress(address)
     // case GET -> Root / "models" / modelId / "equations" => getModelEquationsById(modelId)
