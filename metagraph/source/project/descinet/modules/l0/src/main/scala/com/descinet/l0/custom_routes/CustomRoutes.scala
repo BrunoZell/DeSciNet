@@ -14,6 +14,8 @@ import org.http4s.server.middleware.CORS
 import org.tessellation.ext.http4s.AddressVar
 import org.tessellation.routes.internal.{InternalUrlPrefix, PublicRoutes}
 import org.tessellation.schema.address.Address
+import scala.reflect.runtime.universe._
+import scala.tools.reflect.ToolBox
 
 object HideLatestVar {
   def unapply(str: String): Option[Boolean] = str.toLowerCase match {
@@ -51,6 +53,10 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
       localLabel -> state.externalMeasurementSequenceHeads.get(externalVariableId)
     }.toMap
 
+    /**
+     * Traverses the linked list of MeasurementSequenceHead to collect all measurements.
+     * The measurements are collected in ascending order by timestamp.
+     */
     def traverseSequenceHead(head: MeasurementSequenceHead): List[Measurement] = {
       @annotation.tailrec
       def loop(current: Option[MeasurementSequenceHead], acc: List[Measurement]): List[Measurement] = {
@@ -63,8 +69,13 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
       loop(Some(head), Nil)
     }
 
+    /**
+     * Collects external measurements for each local label.
+     * The measurements are reversed to ensure they are in descending order by timestamp.
+     * This reversal is done once here to optimize the performance of subsequent operations.
+     */
     externalMeasurements.map {
-      case (localLabel, Some(head)) => localLabel -> traverseSequenceHead(head)
+      case (localLabel, Some(head)) => localLabel -> traverseSequenceHead(head).reverse // Reverse once here
       case (localLabel, None) => localLabel -> List.empty[Measurement]
     }
   }
@@ -96,28 +107,45 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
           val externalMeasurements = collectExternalMeasurementsForModel(state, model, time, hideLatest)
           
           // Log the resulting externalMeasurements
-          println(s"External Measurements: $externalMeasurements")
-          
-          // Todo: Start dynamic causal model evaluation environment here. With:
-          // t = time
-          // For each external variable X_j in the model, get the full measurement vector X_j(t)
-          // -> when hideLatest = true, only retrieve X_j(t) for all t' < t.
-          //    This should remove the observation that happened exactly at the curren time t.
-          //    Which means that all variable evaluations Y_i(t) are predictions which might be different with X_j(t) known. This is to compute surprize.
-          // Evaluate all Y_i(t) by default, and sample each 1000 times.
-          // -> vNext: Keep a cache of evaluated Y_i(t).
+          // println(s"External Measurements: $externalMeasurements")
 
-          // The evaluation environment has following Scala symbols defined:
+          // The EvaluationEnvironment contains all symbols available to structured equations.
+          class EvaluationEnvironment(externalMeasurements: Map[String, List[Measurement]]) {
+            private val rng = new Random()
 
-          /// now: virtual timestamp t as Long
-          /// randomDouble : () -> scala.util.Random.nextDouble()
-          /// randomGaussian : () -> scala.util.Random.nextGaussian()
-          /// All labels of internal variables: "label" : (t : Long) -> Double
-          /// latest(exolabel : string, t : Long) defined for all external variable names: ExternalVariable_j.Xj.length - 1
-          /// latestTime(exolabel : string, t : Long) defined for all external variable names: ExternalVariable_j.Xj.length - 1
+            // Helper functions for randomness
+            def randomDouble(): Double = rng.nextDouble()
+            def randomGaussian(): Double = rng.nextGaussian()
 
-          val env = new EvaluationEnvironment()
-  
+            // New methods to conform to the required signatures
+
+            /**
+             * Retrieves the latest observation value (Double) for a given external variable name (exolabel) at a specified time (time).
+             * Assumes that the list of measurements for each exolabel is sorted in descending order by timestamp.
+             * This assumption holds because the lists are reversed in the collectExternalMeasurementsForModel method.
+             */
+            def latest(exolabel: String, time: Long): Option[Double] = {
+              externalMeasurements.get(exolabel).flatMap { measurements =>
+                // Find the first measurement with a timestamp <= time
+                measurements.find(_.timestamp <= time).map(_.value)
+              }
+            }
+
+            /**
+             * Retrieves the timestamp of the last observation for a given external variable name (exolabel) at a specified time (time).
+             * Assumes that the list of measurements for each exolabel is sorted in descending order by timestamp.
+             * This assumption holds because the lists are reversed in the collectExternalMeasurementsForModel method.
+             */
+            def latestTime(exolabel: String, time: Long): Option[Long] = {
+              externalMeasurements.get(exolabel).flatMap { measurements =>
+                // Find the first measurement with a timestamp <= time
+                measurements.find(_.timestamp <= time).map(_.timestamp)
+              }
+            }
+          }
+
+          val env = new EvaluationEnvironment(externalMeasurements)
+
           // Prepare an evaluation context with available random functions
           val toolbox = runtimeMirror(getClass.getClassLoader).mkToolBox()
   
@@ -158,7 +186,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
           }
   
           // Return the computed response as JSON
-          Ok(results.asJson)
+          Ok(results)
       }
     }
   }
