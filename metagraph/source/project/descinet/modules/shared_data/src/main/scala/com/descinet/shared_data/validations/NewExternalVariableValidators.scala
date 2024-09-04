@@ -11,17 +11,16 @@ import scala.annotation.unused
 
 object NewExternalVariableValidators {
   def validateExternalVariableUpdate(
-    @unused update: NewExternalVariable,
-    @unused state: Option[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]]
+    update: NewExternalVariable,
+    state: Option[DataState[DeSciNetOnChainState, DeSciNetCalculatedState]]
   ): DataApplicationValidationErrorOr[Unit] =
-    // state match {
-    //   case Some(s) =>
-    //     validateExternalVariableName(update)
-    //       .productR(externalVariableIdDoesNotExist(update, s))
-    //   case None =>
-    //     validateExternalVariableName(update)
-    // }
-    valid
+    state match {
+      case Some(s) =>
+        validateExternalVariableName(update)
+          .productR(externalVariableIdDoesNotExist(update, s))
+      case None =>
+        validateExternalVariableName(update)
+    }
 
   private def validateExternalVariableName(
     update: NewExternalVariable
