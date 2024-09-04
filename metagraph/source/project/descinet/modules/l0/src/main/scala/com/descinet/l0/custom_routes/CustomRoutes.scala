@@ -18,6 +18,13 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
   private def getState: F[DeSciNetCalculatedState] =
     calculatedStateService.getCalculatedState.map(_.state)
 
+  private def getAllVariables: F[Response[F]] = {
+    getState.flatMap { state =>
+      val allVariablesResponse = state.variables.toList
+      Ok(allVariablesResponse)
+    }
+  }
+
   private def getAllModels: F[Response[F]] = {
     getState.flatMap { state =>
       val allModelsResponse = state.models.toList
@@ -96,6 +103,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
   // }
 
   private val routes: HttpRoutes[F] = HttpRoutes.of[F] {
+    case GET -> Root / "variables" => getAllVariables
     case GET -> Root / "models" => getAllModels
     // case GET -> Root / "models" / "grouped-by-target" => getAllModelsGroupedByTarget
     case GET -> Root / "models" / AddressVar(address) => getAllModelsByAddress(address)
