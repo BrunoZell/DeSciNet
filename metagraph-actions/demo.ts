@@ -132,6 +132,13 @@ const runDemo = async (options: {
   const envData = await envResponse.json();
   console.log('\x1b[38;5;214m%s\x1b[0m', `Environment Data for model ${modelID} at timestamp ${timestamp}`); // Colored orange
   console.dir(envData, {});
+
+  // Fetch evaluation data
+  const evalResponse = await fetch(`http://localhost:9200/data-application/evaluate/${modelID}/${timestamp}`);
+  const evalData = await evalResponse.json();
+  console.log('\x1b[38;5;214m%s\x1b[0m', 'Evaluation Data:'); // Colored orange
+  console.dir(evalData, {});
+
 };
 
 const program = new Command();
