@@ -72,6 +72,70 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
     }
   }
 
+  // private def evaluateModel(
+  //   modelId: String,
+  //   time: Long,
+  //   hideLatest: Boolean
+  // ): IO[Response[IO]] = {
+  //   getState.flatMap { state =>
+  //     state.models.get(modelId) match {
+  //       case None => NotFound(s"Model with id $modelId not found.")
+  //       case Some(model) =>
+  //         // Map externalParameterLabels to MeasurementSequenceHead
+  //         val externalMeasurements = model.externalParameterLabels.map { label =>
+  //           label -> state.externalMeasurementSequenceHeads.getOrElse(label, MeasurementSequenceHead.empty)
+  //         }.toMap
+          
+  //         // Log the resulting externalMeasurements
+  //         println(s"External Measurements: $externalMeasurements")
+          
+  //         val env = new EvaluationEnvironment()
+  
+  //         // Prepare an evaluation context with available random functions
+  //         val toolbox = runtimeMirror(getClass.getClassLoader).mkToolBox()
+  
+  //         // Parse and compile Scala code from string
+  //         def evaluateEquation(equation: String, t: Long): Double = {
+  //           val code = s"""
+  //             |{
+  //             |  val randomDouble = () => ${env.randomDouble()} 
+  //             |  val randomGaussian = () => ${env.randomGaussian()} 
+  //             |  val t = $t 
+  //             |  $equation
+  //             |}
+  //           """.stripMargin
+  
+  //           val tree = toolbox.parse(code)
+  //           toolbox.eval(tree).asInstanceOf[Double]
+  //         }
+  
+  //         // Cache for storing evaluated endogenous variables
+  //         var evaluatedCache: Map[String, Double] = Map()
+  
+  //         // Main evaluation process
+  //         val results = model.internalVariables.zipWithIndex.map { case (variable, idx) =>
+  //           val label = model.internalParameterLabels.collectFirst { case (key, `idx`) => key }.get
+  //           val samples = (1 to 1000).map { _ =>
+  //             val cached = evaluatedCache.get(label)
+  //             cached match {
+  //               case Some(value) => value
+  //               case None =>
+  //                 // Evaluate the endogenous variable using the Scala code
+  //                 val result = evaluateEquation(variable.equation, time)
+  //                 evaluatedCache += (label -> result)
+  //                 result
+  //             }
+  //           }
+  //           // Return the average sample value
+  //           label -> samples.sum / samples.size
+  //         }
+  
+  //         // Return the computed response as JSON
+  //         Ok(results.asJson)
+  //     }
+  //   }
+  // }
+
   private def getEnvironment(
     modelId: String,
     time: Long,
