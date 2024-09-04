@@ -127,7 +127,8 @@ class ModelEvaluator(
 
     val tree = toolbox.parse(code)
     val compiledCode = toolbox.compile(tree)
-    compiledCode()(this).asInstanceOf[Double]
+    val function = compiledCode().asInstanceOf[EvaluationContext => Double]
+    function(this)
   }
 
   // Main evaluation process
