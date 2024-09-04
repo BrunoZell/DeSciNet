@@ -57,15 +57,15 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
 3. **Endogenous Variables \( Y_i(t) \):**
    - **Endogenous Variable Type (\(i\)):** Each \(i\) represents a type of endogenous variable, influenced by other endogenous and exogenous variables.
    - **Endogenous Variable at Time \(t\) (\(Y_i(t)\)):** \(Y_i(t)\) represents the state of the \(i\)th type of endogenous variable at time \(t\).
-   - **Parents of an Endogenous Variable (\(\text{Pa}_j\)):**
-     - **Endogenous Parents (\(\text{Pa}_Y(j)\)):** The set \(\text{Pa}_Y(j)\) includes the indices of endogenous variables that directly influence \(Y_i(t)\).
-     - **Exogenous Parents (\(\text{Pa}_X(j)\)):** The set \(\text{Pa}_X(j)\) includes the indices of exogenous variables that directly influence \(Y_i(t)\).
+   - **Parents of an Endogenous Variable (\(\text{Pa}_i\)):**
+     - **Endogenous Parents (\(\text{Pa}_Y(i)\)):** The set \(\text{Pa}_Y(ji)\) includes the indices of endogenous variables that directly influence \(Y_i(t)\).
+     - **Exogenous Parents (\(\text{Pa}_X(i)\)):** The set \(\text{Pa}_X(i)\) includes the indices of exogenous variables that directly influence \(Y_i(t)\).
 
 4. **Structural Equations for Endogenous Variables:**
-   - **Structural Equation for \(Y_i(t)\):** The value of the \(j\)th type of endogenous variable at time \(t\) is determined by a function \(f_i\), which depends on:
-     - The current and past values of its endogenous parents \(Y_{\text{Pa}_Y(j)}(t')\) for \( t' \leq t \).
-     - The current and past values of its exogenous parents \(X_{\text{Pa}_X(j)}(t(n))\) for \( t(n) \leq t \).
-     - An unobserved noise term \(\epsilon_j\), accounting for randomness or unmodeled factors.
+   - **Structural Equation for \(Y_i(t)\):** The value of the \(i\)th type of endogenous variable at time \(t\) is determined by a function \(f_i\), which depends on:
+     - The current and past values of its endogenous parents \(Y_{\text{Pa}_Y(i)}(t')\) for \( t' \leq t \).
+     - The current and past values of its exogenous parents \(X_{\text{Pa}_X(i)}(t(n))\) for \( t(n) \leq t \).
+     - An unobserved noise term \(\epsilon_i\), accounting for randomness or unmodeled factors.
 
      \[
      Y_i(t) = f_i\left(Y_{\text{Pa}_Y(j)}(t'), X_{\text{Pa}_X(j)}(t(n)), \epsilon_j\right)
