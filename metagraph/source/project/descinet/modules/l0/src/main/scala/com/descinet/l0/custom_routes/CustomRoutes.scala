@@ -150,17 +150,21 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
           val toolbox = runtimeMirror(getClass.getClassLoader).mkToolBox()
   
           // Parse and compile Scala code from string
-          def evaluateEquation(equation: String, t: Long): Double = {
+          def evaluateEquation(equation: String, t: Long, externalLabels: Set[String]): Double = {
+            // Generate Scala code to define symbols for each external label
+            val externalSymbols = externalLabels.map(label => s"val $label = \"$label\"").mkString("\n")
+
             val code = s"""
               |{
               |  import scala.math.{abs, acos, asin, atan, atan2, cbrt, ceil, cos, cosh, exp, floor, hypot, log, log10, max, min, pow, round, signum, sin, sinh, sqrt, tan, tanh}
               |  val randomDouble = () => ${env.randomDouble()} 
               |  val randomGaussian = () => ${env.randomGaussian()} 
               |  val t = $t 
+              |  $externalSymbols
               |  $equation
               |}
             """.stripMargin
-  
+
             val tree = toolbox.parse(code)
             toolbox.eval(tree).asInstanceOf[Double]
           }
@@ -177,7 +181,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
                 case Some(value) => value
                 case None =>
                   // Evaluate the endogenous variable using the Scala code
-                  val result = evaluateEquation(variable.equation, time)
+                  val result = evaluateEquation(variable.equation, time, model.externalParameterLabels.keySet)
                   evaluatedCache += (label -> result)
                   result
               }
