@@ -1,4 +1,4 @@
-# SCM Framework
+# DeSciNet Causal Discovery Framework
 
 Let's use insights from the Structured Causal Model (SCM) literature to define a framework for measurement and modeling around Constellations Metagraphs.
 
@@ -25,7 +25,7 @@ Every causal model \(M\) can be associated with a directed graph, \(G(M)\), wher
 
 Dear Constellation Network enthusiast: note that \(\text{Pa}_i \subseteq V \setminus V_i\) implies that causal models are a DAG (Directed Acyclic Graph).
 
-## Adaptation to Constellation Network Metagraphs
+## Relating Structured Causal Models to Constellation Network Metagraphs
 
 Metagraphs on the Constellation Network define data pipelines, processing data from sources through validation logic and transformations. We can treat these Metagraphs as sources of exogenous variables \(U\), assuming that the data passing through is considered valid or _true_.
 
@@ -33,7 +33,7 @@ We define different types \(T\) of exogenous variables \(u^T\) by specifying a _
 
 Each \(t_i\) is a Global Snapshot Ordinal, with \(i\) increasing monotonically. To relate this virtual timestamp back to a physical timestamp, we define \( d_i = t_i - t_{i-1} \) as the time interval between consecutive measurements.
 
-## Time-Based Dynamic Causal Model Structure for Metagraphs
+## Time-Based Dynamic Causal Model Structure for Metagraph Data
 
 As we adapt the SCM framework to Metagraphs, we introduce the following notation. This deviates slightly from the standard SCM framework, but aligns well with the common notation of [cyclic causal models](https://arxiv.org/pdf/1611.06221).
 
@@ -56,37 +56,39 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
 
 3. **Endogenous Variables \( Y_i(t) \):**
    - **Endogenous Variable Type (\(i\)):** Each \(i\) represents a type of endogenous variable, influenced by other endogenous and exogenous variables.
-   - **Endogenous Variable at Time \(t\) (\(Y_j(t)\)):** \(Y_j(t)\) represents the state of the \(i\)th type of endogenous variable at time \(t\).
+   - **Endogenous Variable at Time \(t\) (\(Y_i(t)\)):** \(Y_i(t)\) represents the state of the \(i\)th type of endogenous variable at time \(t\).
    - **Parents of an Endogenous Variable (\(\text{Pa}_j\)):**
-     - **Endogenous Parents (\(\text{Pa}_Y(j)\)):** The set \(\text{Pa}_Y(j)\) includes the indices of endogenous variables that directly influence \(Y_j(t)\).
-     - **Exogenous Parents (\(\text{Pa}_X(j)\)):** The set \(\text{Pa}_X(j)\) includes the indices of exogenous variables that directly influence \(Y_j(t)\).
+     - **Endogenous Parents (\(\text{Pa}_Y(j)\)):** The set \(\text{Pa}_Y(j)\) includes the indices of endogenous variables that directly influence \(Y_i(t)\).
+     - **Exogenous Parents (\(\text{Pa}_X(j)\)):** The set \(\text{Pa}_X(j)\) includes the indices of exogenous variables that directly influence \(Y_i(t)\).
 
 4. **Structural Equations for Endogenous Variables:**
-   - **Structural Equation for \(Y_j(t)\):** The value of the \(j\)th type of endogenous variable at time \(t\) is determined by a function \(f_j\), which depends on:
+   - **Structural Equation for \(Y_i(t)\):** The value of the \(j\)th type of endogenous variable at time \(t\) is determined by a function \(f_j\), which depends on:
      - The current and past values of its endogenous parents \(Y_{\text{Pa}_Y(j)}(t')\) for \( t' \leq t \).
      - The current and past values of its exogenous parents \(X_{\text{Pa}_X(j)}(t(n))\) for \( t(n) \leq t \).
      - An unobserved noise term \(\epsilon_j\), accounting for randomness or unmodeled factors.
 
      \[
-     Y_j(t) = f_j\left(Y_{\text{Pa}_Y(j)}(t'), X_{\text{Pa}_X(j)}(t(n)), \epsilon_j\right)
+     Y_i(t) = f_j\left(Y_{\text{Pa}_Y(j)}(t'), X_{\text{Pa}_X(j)}(t(n)), \epsilon_j\right)
      \]
-     This equation models the evolution of \(Y_j(t)\) based on its dependencies.
+     This equation models the evolution of \(Y_i(t)\) based on its dependencies.
 
 5. **Complete Model Definition:**
    - **Set of Endogenous Variables at Time \(t\) (\(\mathbf{Y}(t)\)):** The complete set of endogenous variables at time \(t\) is denoted by:
 
      \[
-     \mathbf{Y}(t) = \{ Y_j(t) \mid j \in \mathcal{J} \}
+     \mathbf{Y}(t) = \{ Y_i(t) \mid j \in \mathcal{J} \}
      \]
-     Each \(Y_j(t)\) is determined by its structural equation:
+     Each \(Y_i(t)\) is determined by its structural equation:
 
      \[
      \mathbf{Y}(t) = \left\{ f_j\left(Y_{\text{Pa}_{\mathcal{J}}(j)}(t'), X_{\text{Pa}_{\mathcal{I}}(j)}(t(n)), \epsilon_j\right) \mid j \in \mathcal{J} \right\}
      \]
 
-###
+## A Virtual Machine for Dynamic Causal Model Evaluation
 
-### Metagraph Architecture
+
+
+## Metagraph Architecture
 
 The Constellation Network's Metagraph architecture supports this dynamic causal model by managing the flow of data through Metagraphs, acting as sources of exogenous variables and facilitating the computation of endogenous variables through defined structural equations.
 
@@ -104,6 +106,6 @@ The Metagraph defines the following data update types to support the dynamic cau
 
 ### L0 State
 
-### Optimization Goal
+## Optimization Goal
 
 Each model \( M \) aims to predict the value of future exogenous measurements \( u^T_{t_{n+1}} \) given all historic exogenous sets \( U_{t_i} \) where \( t_i \leq t_n \).
