@@ -17,8 +17,6 @@ import org.tessellation.routes.internal.{InternalUrlPrefix, PublicRoutes}
 import org.tessellation.schema.address.Address
 import scala.reflect.runtime.universe._
 import scala.tools.reflect.ToolBox
-import io.circe.syntax._
-import io.circe.generic.auto._
 
 object HideLatestVar {
   def unapply(str: String): Option[Boolean] = str.toLowerCase match {
@@ -114,11 +112,8 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
             Ok(results)
           } catch {
             case e: Exception =>
-              val errorDetails = Map(
-                "error" -> e.getMessage,
-                "stackTrace" -> e.getStackTrace.map(_.toString).toList
-              )
-              InternalServerError(errorDetails.asJson)
+              val errorDetails = s"Error: ${e.getMessage}\nStackTrace: ${e.getStackTrace.map(_.toString).mkString("\n")}"
+              InternalServerError(errorDetails)
           }
       }
     }
