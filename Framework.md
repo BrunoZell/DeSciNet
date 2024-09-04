@@ -73,16 +73,24 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
      This equation models the evolution of \(Y_i(t)\) based on its dependencies.
 
 5. **Complete Model Definition:**
-   - **Set of Endogenous Variables at Time \(t\) (\(\mathbf{Y}(t)\)):** The complete set of endogenous variables at time \(t\) is denoted by:
+   Given a model \(m\) with exogenous variables \( J_m \subseteq J \) and endogenous      variables \( I_m \subseteq I \), the complete model is defined as:
+   
+   1. **Exogenous Variables:** The model depends on exogenous variables \( X_j(t(n)) \) for \( j \in J_m \),  which     are referenced using unique labels within the model's equations.
+   
+   2. **Endogenous Variables:** The endogenous variables \( Y_i(t) \) for \( i \in I_m \) are determined by      structural equations \( f_i \), which depend on both exogenous and endogenous  variables.
+   
+   3. **Model Representation:**
+      The set of endogenous variables evolves according to:
+   
+      \[
+      \mathbf{Y}(t) = \left\{ f_i\left(Y_{\text{Pa}_{Y}(i)}(t'), X_{\text{Pa}_{X}(i)}(t (n)),     \epsilon_i\right) \mid i \in I_m \right\}
+      \]
+      where:
+      - \( X_{\text{Pa}_{X}(i)}(t(n)) \) represents the set of exogenous parents for each  \(i     \in I_m\), coming from the set \( J_m \).
+      - \( Y_{\text{Pa}_{Y}(i)}(t') \) represents the set of endogenous parents for each \(i     \in I_m\), coming from the set \( I_m \).
+      - \( \epsilon_i \) represents the noise terms associated with each endogenous  variable.
 
-     \[
-     \mathbf{Y}(t) = \{ Y_i(t) \mid j \in \mathcal{J} \}
-     \]
-     Each \(Y_i(t)\) is determined by its structural equation:
-
-     \[
-     \mathbf{Y}(t) = \left\{ f_i\left(Y_{\text{Pa}_{\mathcal{J}}(j)}(t'), X_{\text{Pa}_{\mathcal{I}}(j)}(t(n)), \epsilon_j\right) \mid j \in \mathcal{J} \right\}
-     \]
+   This complete model specification captures the dynamic evolution of endogenous variables as a function of both exogenous inputs and stochastic processes, all referenced through the unique labels defined within the model.
 
 ## A Virtual Machine for Dynamic Causal Model Evaluation
 
