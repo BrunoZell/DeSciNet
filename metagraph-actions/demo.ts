@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import boxen from 'boxen';
 import fetch from 'node-fetch';
+import readline from 'readline';
 
 import 'dotenv/config';
 import { dag4 } from '@stardust-collective/dag4';
@@ -13,6 +14,24 @@ type VariableDetails = {
 };
 
 type VariableData = [string, VariableDetails][];
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+const waitForUserConfirmation = (): Promise<void> => {
+  return new Promise((resolve) => {
+    rl.question('Press "y" to continue: ', (answer) => {
+      if (answer.toLowerCase() === 'y') {
+        resolve();
+      } else {
+        console.log('Invalid input. Please press "y" to continue.');
+        waitForUserConfirmation().then(resolve);
+      }
+    });
+  });
+};
 
 const runDemo = async (options: {
   
@@ -31,6 +50,8 @@ const runDemo = async (options: {
 
   console.log('\x1b[38;5;214m%s\x1b[0m', 'Account Details:'); // Colored orange
   console.dir(account.keyTrio, {});
+
+  await waitForUserConfirmation();
 
   const externalVariables = [
     { uniqueName: 'Human_Position_lon' },
@@ -75,6 +96,8 @@ const runDemo = async (options: {
       console.dir(variableIDs, {});
     }
   }
+
+  await waitForUserConfirmation();
 
   const modelData = {
     externalParameterLabels: variableIDs,
@@ -126,6 +149,8 @@ const runDemo = async (options: {
     }
   }
 
+  await waitForUserConfirmation();
+
   // Fetch environment data
   const timestamp = Date.now();
   const envResponse = await fetch(`http://localhost:9200/data-application/environment/${modelID}/${timestamp}`);
@@ -133,12 +158,15 @@ const runDemo = async (options: {
   console.log('\x1b[38;5;214m%s\x1b[0m', `Environment Data for model ${modelID} at timestamp ${timestamp}`); // Colored orange
   console.dir(envData, {});
 
+  await waitForUserConfirmation();
+
   // Fetch evaluation data
   const evalResponse = await fetch(`http://localhost:9200/data-application/evaluate/${modelID}/${timestamp}`);
   const evalData = await evalResponse.json();
   console.log('\x1b[38;5;214m%s\x1b[0m', 'Evaluation Data:'); // Colored orange
   console.dir(evalData, {});
 
+  rl.close();
 };
 
 const program = new Command();
