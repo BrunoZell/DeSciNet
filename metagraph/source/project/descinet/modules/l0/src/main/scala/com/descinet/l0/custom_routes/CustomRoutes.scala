@@ -14,6 +14,7 @@ import org.http4s.server.middleware.CORS
 import org.tessellation.ext.http4s.AddressVar
 import org.tessellation.routes.internal.{InternalUrlPrefix, PublicRoutes}
 import org.tessellation.schema.address.Address
+// import io.circe.syntax._
 
 object BoolVar {
   def unapply(str: String): Option[Boolean] = str.toLowerCase match {
@@ -163,12 +164,13 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
             loop(head, Nil)
           }
 
+          // 'Key = ExternalVariable.label (model-local), 'Value = List[Measurement]
           val traversedMeasurements: Map[String, List[Measurement]] = externalMeasurements.collect {
             case (localLabel, Some(head)) => localLabel -> traverseSequenceHead(head)
           }
 
           // Serialize to JSON and return
-          Ok(traversedMeasurements.asJson)
+          Ok(traversedMeasurements)
       }
     }
   }
