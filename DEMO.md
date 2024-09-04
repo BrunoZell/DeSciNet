@@ -4,6 +4,8 @@ This guide will walk you through the steps to create and evaluate a custom causa
 
 For more examples, look through the [examples](./examples) directory.
 
+For a mathematical background, see the [Framework](./Framework.md).
+
 ## Start the Metagraph
 
 Start the metagraph backend and wait for the cluster to come online:
