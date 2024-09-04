@@ -168,14 +168,14 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
 
               // Generate Scala code to define symbols for each endogenous variable
               val endogenousSymbols = model.internalParameterLabels.keys.map { label =>
-                s"def $label(t: Long): Double = evaluateEndogenous(\"$label\", t)"
+                s"def $label(t: Long): Double = env.evaluateEndogenous(\"$label\", t)"
               }.mkString("\n")
 
               val code = s"""
-                |{
+                |(env: Any) => {
                 |  import scala.math.{abs, acos, asin, atan, atan2, cbrt, ceil, cos, cosh, exp, floor, hypot, log, log10, max, min, pow, round, signum, sin, sinh, sqrt, tan, tanh}
-                |  val randomDouble = () => ${randomDouble()} 
-                |  val randomGaussian = () => ${randomGaussian()} 
+                |  val randomDouble = () => env.randomDouble() 
+                |  val randomGaussian = () => env.randomGaussian() 
                 |  val t = $t 
                 |  $externalSymbols
                 |  $endogenousSymbols
@@ -184,7 +184,8 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
               """.stripMargin
 
               val tree = toolbox.parse(code)
-              toolbox.eval(tree).asInstanceOf[Double]
+              val compiledCode = toolbox.compile(tree)
+              compiledCode()(env).asInstanceOf[Double]
             }
           }
 
