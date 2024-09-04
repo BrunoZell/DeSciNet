@@ -20,7 +20,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
 
   private def getAllVariables: F[Response[F]] = {
     getState.flatMap { state =>
-      val allVariablesResponse = state.variables.toList
+      val allVariablesResponse = state.externalVariables.toList
       Ok(allVariablesResponse)
     }
   }
