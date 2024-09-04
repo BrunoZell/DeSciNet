@@ -173,8 +173,13 @@ Each model has an ID. Lets say our model ID is `f36d44383a278fbd648c5659726d20dc
 Now you can query http://localhost:9200/data-application/environment/f36d44383a278fbd648c5659726d20dc2c39d151116409a78c4b46ba60f9ba6f/1725471294912, which should read in all observations of the models external variables up to UNIX millisecond timestamp `1725471294912`, and returns all measurements:
 
 ```json
-
+{
+  "M_longitude": [],
+  "M_latitude": []
+}
 ```
+
+In this case, there are no measurements uploaded yet.
 
 On it's own it doesn't do anything, but it is helpful to understand what data is available.
 
