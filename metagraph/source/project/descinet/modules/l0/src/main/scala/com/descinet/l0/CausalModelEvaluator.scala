@@ -19,16 +19,26 @@ class ModelEvaluator(
   def randomDouble(): Double = rng.nextDouble()
   def randomGaussian(): Double = rng.nextGaussian()
 
-  // Retrieves the latest observation value for a given external variable name at a specified time
+  /**
+   * Retrieves the latest observation value (Double) for a given external variable name (exolabel) at a specified time (time).
+   * Assumes that the list of measurements for each exolabel is sorted in descending order by timestamp.
+   * This assumption holds because the lists are reversed in the collectExternalMeasurementsForModel method.
+   */
   def latest(exolabel: String, time: Long): Option[Double] = {
     externalMeasurements.get(exolabel).flatMap { measurements =>
+      // Find the first measurement with a timestamp <= time
       measurements.find(_.timestamp <= time).map(_.value)
     }
   }
 
-  // Retrieves the timestamp of the last observation for a given external variable name at a specified time
+  /**
+   * Retrieves the timestamp of the last observation for a given external variable name (exolabel) at a specified time (time).
+   * Assumes that the list of measurements for each exolabel is sorted in descending order by timestamp.
+   * This assumption holds because the lists are reversed in the collectExternalMeasurementsForModel method.
+   */
   def latestTime(exolabel: String, time: Long): Option[Long] = {
     externalMeasurements.get(exolabel).flatMap { measurements =>
+      // Find the first measurement with a timestamp <= time
       measurements.find(_.timestamp <= time).map(_.timestamp)
     }
   }
