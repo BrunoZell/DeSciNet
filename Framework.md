@@ -92,13 +92,9 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
 
    This complete model specification captures the dynamic evolution of endogenous variables as a function of both exogenous inputs and stochastic processes, all referenced through the unique labels defined within the model.
 
-## A Virtual Machine for Dynamic Causal Model Evaluation
-
-
-
 ## Metagraph Architecture
 
-The Constellation Network's Metagraph architecture supports this dynamic causal model by managing the flow of data through Metagraphs, acting as sources of exogenous variables and facilitating the computation of endogenous variables through defined structural equations.
+The DeSciNet Metagraph architecture supports any instance of such dynamic causal models by managing the flow of data through a Metagraph, managing exogenous variables and facilitating the computation of endogenous variables through defined structural equations.
 
 ### Data Update Types
 
@@ -113,6 +109,9 @@ The Metagraph defines the following data update types to support the dynamic cau
 3. **NewModel:** Define a new model \( M \) as a set of endogenous variables \( V \). Each \( V_j \) is defined through a structural equation referring to past values of any \( V_i \in V \) in model \( M \) and any \( u^T_{t_i} \in U_{t_i} \).
 
 ### L0 State
+
+### A Virtual Machine for Dynamic Causal Model Evaluation
+
 
 ## Optimization Goal
 
