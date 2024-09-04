@@ -9,7 +9,7 @@ import eu.timepit.refined.auto._
 import org.http4s._
 import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
 import org.http4s.dsl.Http4sDsl
-import org.http4s.dsl.io.{LongVar, PathVar}
+import org.http4s.dsl.io.{LongVar}
 import org.http4s.server.middleware.CORS
 import org.tessellation.ext.http4s.AddressVar
 import org.tessellation.routes.internal.{InternalUrlPrefix, PublicRoutes}
@@ -147,7 +147,7 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
         case Some(model) =>
           // Map externalParameterLabels to MeasurementSequenceHead
           val externalMeasurements = model.externalParameterLabels.map { label =>
-            label -> state.externalMeasurementSequenceHeads.getOrElse(label, MeasurementSequenceHead.empty)
+            label -> state.externalMeasurementSequenceHeads.getOrElse(label, MeasurementSequenceHead()) // Ensure MeasurementSequenceHead() is a valid default
           }.toMap
 
           // Traverse each sequence head
