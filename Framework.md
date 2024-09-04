@@ -62,13 +62,13 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
      - **Exogenous Parents (\(\text{Pa}_X(j)\)):** The set \(\text{Pa}_X(j)\) includes the indices of exogenous variables that directly influence \(Y_i(t)\).
 
 4. **Structural Equations for Endogenous Variables:**
-   - **Structural Equation for \(Y_i(t)\):** The value of the \(j\)th type of endogenous variable at time \(t\) is determined by a function \(f_j\), which depends on:
+   - **Structural Equation for \(Y_i(t)\):** The value of the \(j\)th type of endogenous variable at time \(t\) is determined by a function \(f_i\), which depends on:
      - The current and past values of its endogenous parents \(Y_{\text{Pa}_Y(j)}(t')\) for \( t' \leq t \).
      - The current and past values of its exogenous parents \(X_{\text{Pa}_X(j)}(t(n))\) for \( t(n) \leq t \).
      - An unobserved noise term \(\epsilon_j\), accounting for randomness or unmodeled factors.
 
      \[
-     Y_i(t) = f_j\left(Y_{\text{Pa}_Y(j)}(t'), X_{\text{Pa}_X(j)}(t(n)), \epsilon_j\right)
+     Y_i(t) = f_i\left(Y_{\text{Pa}_Y(j)}(t'), X_{\text{Pa}_X(j)}(t(n)), \epsilon_j\right)
      \]
      This equation models the evolution of \(Y_i(t)\) based on its dependencies.
 
@@ -81,7 +81,7 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
      Each \(Y_i(t)\) is determined by its structural equation:
 
      \[
-     \mathbf{Y}(t) = \left\{ f_j\left(Y_{\text{Pa}_{\mathcal{J}}(j)}(t'), X_{\text{Pa}_{\mathcal{I}}(j)}(t(n)), \epsilon_j\right) \mid j \in \mathcal{J} \right\}
+     \mathbf{Y}(t) = \left\{ f_i\left(Y_{\text{Pa}_{\mathcal{J}}(j)}(t'), X_{\text{Pa}_{\mathcal{I}}(j)}(t(n)), \epsilon_j\right) \mid j \in \mathcal{J} \right\}
      \]
 
 ## A Virtual Machine for Dynamic Causal Model Evaluation
