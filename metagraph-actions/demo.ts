@@ -130,7 +130,7 @@ const runDemo = async (options: {
   const timestamp = Date.now();
   const envResponse = await fetch(`http://localhost:9200/data-application/environment/${modelID}/${timestamp}`);
   const envData = await envResponse.json();
-  console.log('\x1b[38;5;214m%s\x1b[0m', 'Environment Data for model', modelID); // Colored orange
+  console.log('\x1b[38;5;214m%s\x1b[0m', `Environment Data for model ${modelID} at timestamp ${timestamp}`); // Colored orange
   console.dir(envData, {});
 };
 
