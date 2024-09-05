@@ -108,6 +108,7 @@ The Metagraph defines the following data update types to support the dynamic cau
 
 ### A Virtual Machine for Dynamic Causal Model Evaluation
 
+Check out the [code](https://github.com/BrunoZell/DeSciNet/blob/main/metagraph/source/project/descinet/modules/l0/src/main/scala/com/descinet/l0/CausalModelEvaluator.scala).
 
 ## Optimization Goal
 
