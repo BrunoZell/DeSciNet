@@ -16,7 +16,7 @@ where:
 2. **V** is a set $\{V_1, V_2, \ldots, V_n\}$ of variables, called endogenous, determined by variables in the model—specifically, variables in $U \cup V$;
 3. **F** is a set of functions $\{f_1, f_2, \ldots, f_n\}$ where each $f_i$ maps from the domains of $U_i \cup \text{Pa}_i$ to $V_i$. Here, $U_i \subseteq U$ and $\text{Pa}_i \subseteq V \setminus V_i$, and the entire set $F$ provides a mapping from $U \cup V$ to $V$. The equation
 
-   $$ v_i = f_i(\text{Pa}_i, u_i), \quad i = 1, \ldots, n, $$
+$$ v_i = f_i(\text{Pa}_i, u_i), \quad i = 1, \ldots, n, $$
 
    assigns a value to $V_i$ based on a select set of variables in $V \cup U$. The set $F$ ensures a unique solution $V(u)$.
 
@@ -42,11 +42,10 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
    - **Measurement Ordinal ($n$):** $n$ is the index representing the sequence of measurements for a specific instance of an exogenous variable.
    - **Timestamp of Ordinal ($t(n)$):** $t(n)$ is the timestamp when the $n$th measurement was taken.
    - **Set of Time Indices ($\mathbb{T}_j$):** The set $\mathbb{T}_j$ contains all timestamps $t(n)$ where measurements of $X_j$ have been observed.
-   - **Exogenous Variable Subset at Time $t$ ($X_j(t)$):** For a given time $t$, $X_j(t)$ is the subset of $X_j$ containing all measurements up to and including time $t$:
+   - **Exogenous Variable Subset at Time $t$ ($X_j(t)$):** For a given time $t$, $X_j(t)$ is the subset of $X_j$ containing all measurements up to and including time $t$. This subset captures the historical data for the exogenous variable type $j$ up to time $t$.
 
-     $$ X_j(t) = \{ X_j(p_j, t(n)) \mid t(n) \leq t, t(n) \in \mathbb{T}_j \} $$
+   $$ X_j(t) = \{ X_j(p_j, t(n)) \mid t(n) \leq t, t(n) \in \mathbb{T}_j \}$$
 
-     This subset captures the historical data for the exogenous variable type $j$ up to time $t$.
 
 2. **Time Indexing:**
    - **Discrete Time Points:** $t_1, t_2, \dots, t_n$ are discrete time points corresponding to when exogenous measurements occurred, with $t_n$ being the latest measurement (the current time).
@@ -65,9 +64,9 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
      - The current and past values of its exogenous parents $X_{\text{Pa}_X(i)}(t(n))$ for $t(n) \leq t$.
      - An unobserved noise term $\epsilon_i$, accounting for randomness or unmodeled factors.
 
-     $$ Y_i(t) = f_i\left(Y_{\text{Pa}_Y(j)}(t'), X_{\text{Pa}_X(j)}(t(n)), \epsilon_j\right) $$
+   $$ Y_i(t) = f_i\left(Y_{\text{Pa}_Y(j)}(t'), X_{\text{Pa}_X(j)}(t(n)), \epsilon_j\right) $$
 
-     This equation models the evolution of $Y_i(t)$ based on its dependencies.
+   This equation models the evolution of $Y_i(t)$ based on its dependencies.
 
 5. **Complete Model Definition:**
    Given a model $m$ with exogenous variables $J_m \subseteq J$ and endogenous      variables $I_m \subseteq I$, the complete model is defined as:
@@ -79,7 +78,7 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
    3. **Model Representation:**
       The set of endogenous variables evolves according to:
    
-      $$ \mathbf{Y}(t) = \left\{ f_i\left(Y_{\text{Pa}_{Y}(i)}(t'), X_{\text{Pa}_{X}(i)}(t (n)),     \epsilon_i\right) \mid i \in I_m \right\} $$
+   $$ \mathbf{Y}(t) = \left\{ f_i\left(Y_{\text{Pa}_{Y}(i)}(t'), X_{\text{Pa}_{X}(i)}(t (n)),     \epsilon_i\right) \mid i \in I_m \right\} $$
 
       where:
       - $X_{\text{Pa}_{X}(i)}(t(n))$ represents the set of exogenous parents for each  $i     \in I_m$, coming from the set $J_m$.
