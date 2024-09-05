@@ -16,9 +16,7 @@ where:
 2. **V** is a set $\{V_1, V_2, \ldots, V_n\}$ of variables, called endogenous, determined by variables in the model—specifically, variables in $U \cup V$;
 3. **F** is a set of functions $\{f_1, f_2, \ldots, f_n\}$ where each $f_i$ maps from the domains of $U_i \cup \text{Pa}_i$ to $V_i$. Here, $U_i \subseteq U$ and $\text{Pa}_i \subseteq V \setminus V_i$, and the entire set $F$ provides a mapping from $U \cup V$ to $V$. The equation
 
-   $$
-   v_i = f_i(\text{Pa}_i, u_i), \quad i = 1, \ldots, n,
-   $$
+   $$ v_i = f_i(\text{Pa}_i, u_i), \quad i = 1, \ldots, n, $$
    assigns a value to $V_i$ based on a select set of variables in $V \cup U$. The set $F$ ensures a unique solution $V(u)$.
 
 Every causal model $M$ can be associated with a directed graph, $G(M)$, where each node represents a variable, and directed edges point from members of $\text{Pa}_i$ and $U_i$ toward $V_i$. This graph encodes the causal relationships between variables.
