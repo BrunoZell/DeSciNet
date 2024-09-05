@@ -63,7 +63,7 @@ $$ X_j(t) = \{ X_j(p_j, t(n)) \mid t(n) \leq t, t(n) \in \mathbb{T}_j \} $$
      - The current and past values of its exogenous parents $X_{\text{Pa}_X(i)}(t(n))$ for $t(n) \leq t$.
      - An unobserved noise term $\epsilon_i$, accounting for randomness or unmodeled factors.
 
-   $$ Y_i(t) = f_i\left(Y_{\text{Pa}_Y(j)}(t'), X_{\text{Pa}_X(j)}(t(n)), \epsilon_j\right) $$
+$$ Y_i(t) = f_i\left(Y_{\text{Pa}_Y(j)}(t'), X_{\text{Pa}_X(j)}(t(n)), \epsilon_j\right) $$
 
    This equation models the evolution of $Y_i(t)$ based on its dependencies.
 
