@@ -78,12 +78,12 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
    3. **Model Representation:**
       The set of endogenous variables evolves according to:
    
-   $$ \mathbf{Y}(t) = \left\{ f_i\left(Y_{\text{Pa}_{Y}(i)}(t'), X_{\text{Pa}_{X}(i)}(t (n)),     \epsilon_i\right) \mid i \in I_m \right\} $$
+$$ \mathbf{Y}(t) = \left\{ f_i\left(Y_{\text{Pa}_{Y}(i)}(t'), X_{\text{Pa}_{X}(i)}(t (n)), \epsilon_i\right) \mid i \in I_m \right\} $$
 
-      where:
-      - $X_{\text{Pa}_{X}(i)}(t(n))$ represents the set of exogenous parents for each  $i     \in I_m$, coming from the set $J_m$.
-      - $Y_{\text{Pa}_{Y}(i)}(t')$ represents the set of endogenous parents for each $i     \in I_m$, coming from the set $I_m$.
-      - $\epsilon_i$ represents the noise terms associated with each endogenous  variable.
+   where:
+   - $X_{\text{Pa}_{X}(i)}(t(n))$ represents the set of exogenous parents for each  $i \in I_m$, coming from the set $J_m$.
+   - $Y_{\text{Pa}_{Y}(i)}(t')$ represents the set of endogenous parents for each $i \in I_m$, coming from the set $I_m$.
+   - $\epsilon_i$ represents the noise terms associated with each endogenous  variable.
 
    This complete model specification captures the dynamic evolution of endogenous variables as a function of both exogenous inputs and stochastic processes, all referenced through the unique labels defined within the model.
 
