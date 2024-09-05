@@ -100,7 +100,18 @@ class ModelEvaluator(
     result
   }
 
-  // Parse and compile Scala code from string
+  /**
+   * Parses and compiles a Scala code string representing an equation, then evaluates it.
+   * This method dynamically constructs a Scala code block that includes the provided equation,
+   * along with necessary imports and definitions for external and endogenous variables.
+   * The code block is then parsed, compiled, and executed within the context of the current
+   * EvaluationContext instance.
+   *
+   * @param equation The equation to be evaluated, represented as a string.
+   * @param t The time at which to evaluate the equation.
+   * @param externalLabels A set of external variable labels that are used in the equation.
+   * @return The evaluated result of the equation as a Double.
+   */
   def evaluateEquation(equation: String, t: Long, externalLabels: Set[String]): Double = {
     val externalSymbols = externalLabels.map(label => s"val $label = \"$label\"").mkString("\n")
     val endogenousSymbols = model.internalParameterLabels.keys.map { label =>
