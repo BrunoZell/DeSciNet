@@ -40,7 +40,7 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
    - **Exogenous Variable Type $j$:** Each $j$ represents a specific class of exogenous variable (e.g., "temperature", "pressure", "Google Timeline").
    - **Instance of Exogenous Variables $X_j$:** For each type $j$, $X_j$ represents the set of measured values for that type.
    - **Measurement Ordinal $n$:** $n$ is the index representing the sequence of measurements for a specific instance of an exogenous variable.
-   - **Timestamp of Ordinal $t(n)$:** $t(n)$ is the timestamp when the $n$th measurement was taken.
+   - **Timestamp of Ordinal $t(n)$:** $t(n)$ is the timestamp when the $n$ th measurement was taken.
    - **Set of Time Indices $\mathbb{T}_j$:** The set $\mathbb{T}_j$ contains all timestamps $t(n)$ where measurements of $X_j$ have been observed.
    - **Exogenous Variable Subset at Time $t$ $X_j(t)$:** For a given time $t$, $X_j(t)$ is the subset of $X_j$ containing all measurements up to and including time $t$. This subset captures the historical data for the exogenous variable type $j$ up to time $t$.
 
@@ -52,7 +52,7 @@ $$ X_j(t) = \{ X_j(p_j, t(n)) \mid t(n) \leq t, t(n) \in \mathbb{T}_j \} $$
 
 3. **Endogenous Variables $Y_i(t)$:**
    - **Endogenous Variable Type $i$:** Each $i$ represents a type of endogenous variable, influenced by other endogenous and exogenous variables.
-   - **Endogenous Variable at Time $t$ $Y_i(t)$:** $Y_i(t)$ represents the state of the $i$th type of endogenous variable at time $t$.
+   - **Endogenous Variable at Time $t$ $Y_i(t)$:** $Y_i(t)$ represents the state of the $i$ th type of endogenous variable at time $t$.
    - **Parents of an Endogenous Variable $\text{Pa}_i$:**
      - **Endogenous Parents $\text{Pa}_Y(i)$:** The set $\text{Pa}_Y(ji)$ includes the indices of endogenous variables that directly influence $Y_i(t)$.
      - **Exogenous Parents $\text{Pa}_X(i)$:** The set $\text{Pa}_X(i)$ includes the indices of exogenous variables that directly influence $Y_i(t)$.
@@ -61,11 +61,9 @@ $$ X_j(t) = \{ X_j(p_j, t(n)) \mid t(n) \leq t, t(n) \in \mathbb{T}_j \} $$
    - **Structural Equation for $Y_i(t)$:** The value of the $i$ th type of endogenous variable at time $t$ is determined by a function $f_i$, which depends on:
      - The current and past values of its endogenous parents $Y_{\text{Pa}_Y(i)}(t')$ for $t' \leq t$.
      - The current and past values of its exogenous parents $X_{\text{Pa}_X(i)}(t(n))$ for $t(n) \leq t$.
-     - An unobserved noise term $\epsilon_i$, accounting for randomness or unmodeled factors.
+     - An unobserved noise term $\epsilon_i$, accounting for randomness or unmodeled factors. This equation models the evolution of $Y_i(t)$ based on its dependencies.
 
-  $$ Y_i(t) = f_i\left(Y_{\text{Pa}_Y(j)}(t'), X_{\text{Pa}_X(j)}(t(n)), \epsilon_j\right) $$
-
-  This equation models the evolution of $Y_i(t)$ based on its dependencies.
+$$ Y_i(t) = f_i\left(Y_{\text{Pa}_Y(j)}(t'), X_{\text{Pa}_X(j)}(t(n)), \epsilon_j\right) $$
 
 5. **Complete Model Definition:**
    Given a model $m$ with exogenous variables $J_m \subseteq J$ and endogenous      variables $I_m \subseteq I$, the complete model is defined as:
@@ -77,7 +75,9 @@ $$ X_j(t) = \{ X_j(p_j, t(n)) \mid t(n) \leq t, t(n) \in \mathbb{T}_j \} $$
    3. **Model Representation:**
       The set of endogenous variables evolves according to:
    
-  $$ \mathbf{Y}(t) = \left\{ f_i\left(Y_{\text{Pa}_{Y}(i)}(t'), X_{\text{Pa}_{X}(i)}(t (n)), \epsilon_i\right) \mid i \in I_m \right\} $$
+```math
+\mathbf{Y}(t) = \left\{ f_i\left(Y_{\text{Pa}_{Y}(i)}(t'), X_{\text{Pa}_{X}(i)}(t (n)), \epsilon_i\right) \mid i \in I_m \right\}
+```
 
    where:
    - $X_{\text{Pa}_{X}(i)}(t(n))$ represents the set of exogenous parents for each  $i \in I_m$, coming from the set $J_m$.
