@@ -44,8 +44,7 @@ As we adapt the SCM framework to Metagraphs, we introduce the following notation
    - **Set of Time Indices ($\mathbb{T}_j$):** The set $\mathbb{T}_j$ contains all timestamps $t(n)$ where measurements of $X_j$ have been observed.
    - **Exogenous Variable Subset at Time $t$ ($X_j(t)$):** For a given time $t$, $X_j(t)$ is the subset of $X_j$ containing all measurements up to and including time $t$. This subset captures the historical data for the exogenous variable type $j$ up to time $t$.
 
-   $$ X_j(t) = \{ X_j(p_j, t(n)) \mid t(n) \leq t, t(n) \in \mathbb{T}_j \}$$
-
+$$ X_j(t) = \{ X_j(p_j, t(n)) \mid t(n) \leq t, t(n) \in \mathbb{T}_j \} $$
 
 2. **Time Indexing:**
    - **Discrete Time Points:** $t_1, t_2, \dots, t_n$ are discrete time points corresponding to when exogenous measurements occurred, with $t_n$ being the latest measurement (the current time).
