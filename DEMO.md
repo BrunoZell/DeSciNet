@@ -125,7 +125,7 @@ Loaded Model Details:
     {
       equation: 'H_latitude = latest(M_latitude, t) + Normal.Sample(0, epsilon * sqrt(t - latestTime(M_latitude, t)))'
     },
-    { equation: 'epsilon = 1.0' }
+    { equation: '1.0' }
   ]
 }
 Sending Action Message:
@@ -146,7 +146,7 @@ Sending Action Message:
           {
             equation: 'latest(M_latitude, t) + randomGaussian() * epsilon * sqrt(t - latestTime(M_latitude, t))'
           },
-          { equation: 'epsilon = 1.0' }
+          { equation: '1.0' }
         ]
       }
     }
