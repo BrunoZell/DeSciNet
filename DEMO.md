@@ -15,16 +15,16 @@ cd metagraph/scripts
 ./hydra build --run
 ```
 
-## Start the Frontend
+## Automatic Demo
 
-Start the frontend:
+To run this automatically, run:
 
 ```bash
-cd metagraph-frontend
-yarn run dev
+cd metagraph-actions
+node --loader ts-node/esm demo.ts
 ```
 
-Open the browser and navigate to `http://localhost:3000`.
+What follows is a step by step guide to running the demo manually.
 
 ## Declare external variables
 
@@ -79,7 +79,7 @@ Lets take the [`examples/human-positioning/models/1-walking-only/model-hgtp.json
             "equation": "latest(M_latitude, t) + randomGaussian() * epsilon * sqrt(t - latestTime(M_latitude, t))"
         },
         {
-            "equation": "epsilon = 1.0"
+            "equation": "1.0"
         }
     ]
 }
@@ -183,10 +183,13 @@ In this case, there are no measurements uploaded yet.
 
 On it's own it doesn't do anything, but it is helpful to understand what data is available.
 
-Next, lets evaluate the model by calling 
+Next, lets evaluate the model by calling the model's evaluation endpoint:
 
+```bash
+curl -s -X GET "http://localhost:9200/data-application/evaluate/f36d44383a278fbd648c5659726d20dc2c39d151116409a78c4b46ba60f9ba6f/1725471294912/"
+```
 
-## Run a backtest
+## Run a surprise backtest
 
 The important question now is: Does the model reflect reality?
 

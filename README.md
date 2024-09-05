@@ -2,7 +2,20 @@
 
 ## Project Overview
 
-DeSciNet is a crowd-sourced model-building network that leverages a general-purpose model selection algorithm centered around surprise quantification and arbitrary structured causal models. The core value proposition of DeSciNet is to enable the community to collaboratively build, evaluate, and select the best causal models based on their ability to predict observed data.
+DeSciNet is a crowd-sourced model-building network that leverages a general-purpose model selection algorithm centered around surprise quantification.
+
+Its causal execution environment can evaluate arbitrary structured causal models that conform to the DeSciNet dynamic causal model framework.
+
+The core value proposition of DeSciNet is to enable the community to collaboratively build, evaluate, and select the best causal models based on their ability to predict observed data.
+
+
+For a mathematical background, see the [DeSciNet Framework.md](./Framework.md).
+
+For examples of causal models, look through the [examples](./examples) directory.
+
+To build this project, see the [BUILD.md](./BUILD.md).
+
+To try it out locally, see the [DEMO.md](./DEMO.md).
 
 ### Key Features
 
@@ -18,81 +31,6 @@ DeSciNet is a crowd-sourced model-building network that leverages a general-purp
 2. **Prediction and Surprise Calculation**: Each model predicts the probability of the actual observations. A low surprise indicates a good prediction, while a high surprise indicates a poor prediction.
 3. **Summing Up Surprise**: The surprise for all observations is summed up to get a total surprise for the model.
 4. **Model Ranking**: Models are ranked based on their total surprise, with the lowest surprise model being the best.
-
-### How to Run
-
-1. **Prepare Observations File**: Create an `observations.json` file with the following structure:
-    ```json
-    [
-      {
-        "latitude": 34.052235,
-        "longitude": 118.243683,
-        "timestamp": 1622548800000
-      },
-      {
-        "latitude": 40.712776,
-        "longitude": 74.005974,
-        "timestamp": 1622635200000
-      },
-      {
-        "latitude": 51.507351,
-        "longitude": 0.127758,
-        "timestamp": 1622721600000
-      }
-    ]
-    ```
-
-2. **Run Backend**:
-    ```sh
-    cd node
-    dotnet run
-    ```
-
-3. **Run Frontend**:
-    ```sh
-    cd frontend
-    yarn install
-    yarn dev
-    ```
-
-4. **Load Observations in Browser**:
-    - Open your browser and navigate to `http://localhost:3000`.
-    - Drop the `observations.json` file into the application.
-
-5. **Or Run Surprise Backtest Manually**:
-    ```sh
-    curl -X POST http://localhost:5000/backtest/model-1 -H "Content-Type: application/json" -d @observations.json
-    ```
-
-    It will output the surprise for each observation, and the total model surprise over all observations:
-    ```json
-    {
-      "modelName": "model-1",
-      "surprises": [
-        {
-          "latitudeSurprise": 61161.24970075105,
-          "longitudeSurprise": 63742.415754987414,
-          "timestamp": "2021-06-02T12:00:00",
-          "totalSurprise": 124903.66545573846
-        },
-        {
-          "latitudeSurprise": 63305.268561105564,
-          "longitudeSurprise": 63937.053127532155,
-          "timestamp": "2021-06-03T12:00:00",
-          "totalSurprise": 252145.98714437618
-        }
-      ],
-      "totalSurprise": 252145.98714437618
-    }
-    ```
-
-### Root Folders
-
-- **node**: Contains the main program and related files for running the DeSciNet application.
-- **model-1**: Includes the first version of the human movement model and its related files.
-- **model-2**: Contains an alternative human movement model with different assumptions and structures.
-- **scm**: Holds the structural causal model (SCM) framework and related utilities.
-- **google-timeline**: Manages data export from Google location history.
 
 ### Future Directions
 
